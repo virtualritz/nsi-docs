@@ -21,8 +21,11 @@ project = 'NSI'
 copyright = '2015–, The 3Delight Team. All rights reserved.'
 author = 'Olivier Paquet, Aghiles Kheffache, François Colbert, Berj Bannayan'
 
-
 # -- General configuration ---------------------------------------------------
+
+# ReadTheDocs sets the master doc to 'contents'. We use Sphinx default 'index'
+# so wee need to specify an override.
+master_doc = 'index'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
