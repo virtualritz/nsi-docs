@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. image:: assets/nsi_logo.svg
+.. image:: image/nsi_logo.svg
 
 A flexible, modern API for renderers
 
