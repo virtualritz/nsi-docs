@@ -38,8 +38,8 @@ the future.
 The C API
 ---------
 
-This section will describe in detail the c implementation of the nsi, as
-provided in the ``nsi.h`` file. This will also be a reference for the
+This section will describe in detail the C implementation of the nsi, as
+provided in the :doc:`nsi.h` file. This will also be a reference for the
 interface in other languages as all concepts are the same.
 
 .. code-block:: c
@@ -47,7 +47,7 @@ interface in other languages as all concepts are the same.
    #define NSI_VERSION 1
 
 The ``NSI_VERSION`` macro exists in case there is a need at some point
-to break source compatibility of the c interface.
+to break source compatibility of the C interface.
 
 .. code-block:: c
 
@@ -93,7 +93,7 @@ convenience typedef and is defined as:
    typedef int NSIContext_t;
 
 If ``NSIBegin`` fails for some reason, it returns ``NSI_BAD_CONTEXT``
-which is defined in ``nsi.h``:
+which is defined in :doc:`nsi.h`:
 
 .. code-block:: c
 
@@ -125,7 +125,7 @@ creation of the context:
    +------------------------+---------+-------------------------------------------------------+
    | ``streamformat``       | string  | The format of the command stream to write. Possible   |
    |                        |         | formats are:                                          |
-   |                        |         +---------------+---------------------------------------+
+   +------------------------+---------+---------------+---------------------------------------+
    |                        |         | ``nsi``       | Produces an                           |
    |                        |         |               | :ref:`nsi stream<section:nsistream>`  |
    |                        |         +---------------+---------------------------------------+
@@ -174,8 +174,8 @@ The meaning of these two parameters will not be documented for every
 function. Instead, they will document the parameters which can be given
 in the array.
 
-The ``name`` member is a c string which gives the parameter’s name. The
-``type`` member identifies the parameter’s type, using one of the
+The ``name`` member is a C string which gives the parameter's name. The
+``type`` member identifies the parameter's type, using one of the
 following constants:
 
 -  ``NSITypeFloat`` for a single 32-bit floating point value.
@@ -205,7 +205,7 @@ following constants:
 -  ``NSITypeDoubleMatrix`` for a transformation matrix, given as 16
    64-bit floating point values.
 
--  ``NSITypePointer`` for a c pointer.
+-  ``NSITypePointer`` for a C pointer.
 
 Array types are specified by setting the bit defined by the
 ``NSIParamIsArray`` constant in the ``flags`` member and the length of
@@ -265,7 +265,7 @@ This function is used to create a new node. Its parameters are:
    Otherwise, it emits an error. Note that handles need only be unique
    within a given interface context. It is acceptable to reuse the same
    handle inside different contexts. The ``NSIHandle_t`` typedef is
-   defined in `nsi.h`:
+   defined in :doc:`nsi.h`:
 
    .. code-block:: c
 
@@ -277,7 +277,7 @@ This function is used to create a new node. Its parameters are:
 ``nparams``, ``params``
    This pair describes a list of optional parameters. *There are no
    optional parameters defined as of now*. The ``NSIParam_t`` type is
-   described in .
+   described in :ref:`this section<CAPI:optionalparam>`.
 
 --------------
 
@@ -329,14 +329,15 @@ attribute to its default value, use .
 
 --------------
 
-::
+.. code-block:: c
 
    void NSISetAttributeAtTime(
        NSIContext_t ctx,
        NSIHandle_t object,
        double time,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
 
 This function sets time-varying attributes (i.e. motion blurred). The
 ``time`` parameter specifies at which time the attribute is being
@@ -350,14 +351,13 @@ an attribute using this function replaces any value previously set by
 
 --------------
 
-[CAPI:nsideleteattribute]
-
-::
+.. code-block:: c
 
    void NSIDeleteAttribute(
        NSIContext_t ctx,
        NSIHandle_t object,
-       const char *name );
+       const char *name
+   )
 
 This function deletes any attribute with a name which matches the
 ``name`` parameter on the specified object. There is no way to delete an
@@ -373,9 +373,7 @@ default to whatever is declared inside the shader.
 Making connections
 ~~~~~~~~~~~~~~~~~~
 
-[CAPI:nsidisconnect]
-
-::
+.. code-block:: c
 
    void NSIConnect(
        NSIContext_t ctx,
@@ -384,14 +382,18 @@ Making connections
        NSIHandle_t to,
        const char *to_attr,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
+
+.. code-block:: c
 
    void NSIDisconnect(
        NSIContext_t ctx,
        NSIHandle_t from,
        const char *from_attr,
        NSIHandle_t to,
-       const char *to_attr );
+       const char *to_attr
+   )
 
 These two functions respectively create or remove a connection between
 two elements. It is not an error to create a connection which already
@@ -417,7 +419,8 @@ With ``NSIDisconnect``, the handle for either node may be the special
 value . This will remove all connections which match the other three
 parameters. For example, to disconnect everything from the :
 
-::
+.. code-block:: c
+   :linenos:
 
    NSIDisconnect( NSI_ALL_NODES, "", NSI_SCENE_ROOT, "objects" );
 
@@ -426,12 +429,13 @@ parameters. For example, to disconnect everything from the :
 Evaluating procedurals
 ~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: c
 
    void NSIEvaluate(
        NSIContext_t ctx,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
 
 This function includes a block of interface calls from an external
 source into the current scene. It blends together the concepts of a
@@ -481,7 +485,7 @@ that the file will be loaded before rendering begins.
 Error reporting
 ~~~~~~~~~~~~~~~
 
-::
+.. code-block:: c
 
    enum NSIErrorLevel
    {
@@ -489,10 +493,13 @@ Error reporting
        NSIErrInfo = 1,
        NSIErrWarning = 2,
        NSIErrError = 3
-   };
+   }
+
+.. code-block:: c
 
    typedef void (*NSIErrorHandler_t)(
-       void *userdata, int level, int code, const char *message );
+       void *userdata, int level, int code, const char *message
+   )
 
 This defines the type of the error handler callback given to the
 ``NSIBegin`` function. When it is called, the ``level`` parameter is one
@@ -529,12 +536,13 @@ The intended meaning of the error levels is as follows:
 Rendering
 ~~~~~~~~~
 
-::
+.. code-block:: c
 
    void NSIRenderControl(
        NSIContext_t ctx,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
 
 This function is the only control function of the api. It is responsible
 of starting, suspending and stopping the render. It also allows for
@@ -573,12 +581,13 @@ A pointer to a user function that should be called on rendering status
 changes. This function must have no return value and accept a pointer
 argument, a nsi context argument and an integer argument :
 
-::
+.. code-block:: c
 
    void StoppedCallback(
        void* stoppedcallbackdata,
        NSIContext_t ctx,
-       int status);
+       int status
+   )
 
 The third parameter is an integer which can take the following values:
 
@@ -602,7 +611,7 @@ A pointer that will be passed back to the ``stoppedcallback`` function.
 The Lua API
 -----------
 
-The scripted interface is slightly different than its C counterpart
+The scripted interface is slightly different than its counterpart
 since it has been adapted to take advantage of the niceties of Lua. The
 main differences with the C api are:
 
@@ -622,7 +631,7 @@ main differences with the C api are:
 
 shows an example shader creation logic in Lua
 
-::
+.. code-block:: lua
 
    nsi.Create( "lambert", "shader" );
    nsi.SetAttribute(
@@ -696,7 +705,7 @@ key values:
 
 Here are some example of well formed parameters:
 
-::
+.. code-block:: lua
 
    --[[ strings, floats and integers do not need a 'type' specifier ]] --
    p1 = {name="shaderfilename", data="emitter"};
@@ -800,7 +809,7 @@ The and are shown in .
 The C++ API wrappers
 --------------------
 
-The ``nsi.hpp`` file provides C++ wrappers which are less tedious to use
+The :doc:`nsi.hpp` file provides C++ wrappers which are less tedious to use
 than the low level C interface. All the functionality is inline so no
 additional libraries are needed and there are no abi issues to consider.
 
@@ -810,17 +819,16 @@ Creating a context
 The core of these wrappers is the ``NSI::Context`` class. Its default
 construction will require linking with the renderer.
 
-::
+.. code-block:: cpp
 
    #include "nsi.hpp"
 
    NSI::Context nsi;
 
-[dynamicapi] The ``nsi_dynamic.hpp`` file provides an alternate api
-source which will load the renderer at runtime and thus requires no
-direct linking.
+The :doc:`nsi_dynamic.hpp` file provides an alternate api source which
+will load the renderer at runtime and thus requires no direct linking.
 
-::
+.. code-block:: cpp
 
    #include "nsi.hpp"
    #include "nsi_dynamic.hpp"
@@ -831,13 +839,13 @@ direct linking.
 In both cases, a new nsi context can then be created with the ``Begin``
 method.
 
-::
+.. code-block:: cpp
 
    nsi.Begin();
 
 This will be bound to the ``NSI::Context`` object and released when the
 object is deleted. It is also possible to bind the object to a handle
-from the c api, in which case it will not be released unless the ``End``
+from the C api, in which case it will not be released unless the ``End``
 method is explicitly called.
 
 Argument passing
@@ -847,7 +855,7 @@ The ``NSI::Context`` class has methods for all the other nsi calls. The
 optional parameters of those can be set by several accessory classes and
 given in many ways. The most basic is a single argument.
 
-::
+.. code-block:: cpp
 
    nsi.SetAttribute("handle", NSI::FloatArg("fov", 45.0f));
 
@@ -997,7 +1005,7 @@ subclassing, for example) in order to store any extra information that
 it might need later.
 
 The ``nsi_version`` member must be set to ``NSI_VERSION`` (defined in
-``nsi.h``), so the renderer is able to determine which version of nsi
+:doc:`nsi.h`), so the renderer is able to determine which version of nsi
 was used when compiling the procedural.
 
 The function pointers types used in the definition are :
