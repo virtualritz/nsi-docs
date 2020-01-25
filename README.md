@@ -63,7 +63,6 @@ extensions = [
 ```
 Finally, to build the PDF:
 ```
-cd docs
 make latexpdf
 ```
 The result will be in docs/_build/latex/nsi.pdf
