@@ -1,4 +1,4 @@
-# nsi-docs
+# nsi Documentation
 Documentation for Illumination Research’s Nodal Scene Interface – nsi.
 
 ## Building
@@ -43,7 +43,7 @@ This can be ran from the command line directly, e.g.:
 will generate `NSI.mobi`.
 
 
-### LaTEX/LaTexPDF target
+### LaTex/LaTexPDF target
 
 You need a Tex installation.
 
