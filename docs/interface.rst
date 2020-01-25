@@ -50,7 +50,6 @@ The ``NSI_VERSION`` macro exists in case there is a need at some point
 to break source compatibility of the c interface.
 
 .. code-block:: c
-   :linenos:
 
    #define NSI_SCENE_ROOT ".root"
 
