@@ -1,11 +1,11 @@
-# nsi-docs
+# nsi Documentation
 Documentation for Illumination Research’s Nodal Scene Interface – nsi.
 
 ## Building
 
 First, change into the `docs` folder. This contains the Sphinx project.
 The root folder of the repository only contains the YML configuration
-for [ReadTheDocs](https://nsi.readthedocs.com) and this readme.
+for [ReadTheDocs](https://nsi.readthedocs.io/) and this readme.
 ```
 cd docs
 ```
@@ -33,7 +33,7 @@ The result will be in `_build/epub/NSI.epub`.
 
 If you own a *Kindle* or other e-book reader that requires Mobipocket
 format, conversion of the EPUB to this format is best done with
-Amazon's native tool,
+Amazon’s native tool,
 [kindlegen](https://www.amazon.com/gp/feature.html?docId=1000765211).
 
 This can be ran from the command line directly, e.g.:
@@ -43,7 +43,7 @@ This can be ran from the command line directly, e.g.:
 will generate `NSI.mobi`.
 
 
-### LaTEX/LaTexPDF target
+### LaTex/LaTexPDF target
 
 You need a Tex installation.
 
@@ -63,7 +63,6 @@ extensions = [
 ```
 Finally, to build the PDF:
 ```
-cd docs
 make latexpdf
 ```
 The result will be in docs/_build/latex/nsi.pdf
