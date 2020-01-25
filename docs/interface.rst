@@ -42,97 +42,121 @@ This section will describe in detail the c implementation of the nsi, as
 provided in the ``nsi.h`` file. This will also be a reference for the
 interface in other languages as all concepts are the same.
 
-::
+.. code-block:: c
 
    #define NSI_VERSION 1
 
 The ``NSI_VERSION`` macro exists in case there is a need at some point
 to break source compatibility of the c interface.
 
-::
+.. code-block:: c
+   :linenos:
 
    #define NSI_SCENE_ROOT ".root"
 
-The ``NSI_SCENE_ROOT`` macro defines the handle of the .
+The ``NSI_SCENE_ROOT`` macro defines the handle of
+:ref:`root node<section:rootnode>`.
 
-[NSI_ALL_NODES]
-
-::
+.. code-block:: c
 
    #define NSI_ALL_NODES ".all"
 
 The ``NSI_ALL_NODES`` macro defines a special handle to refer to all
-nodes in some contexts, such as the .
+nodes in some contexts, such as when
+:ref:`removing connections<CAPI:nsiconnect>`.
 
 .. _CAPI:contexthandling:
 
 Context handling
 ~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: c
 
    NSIContext_t NSIBegin(
-       int nparams,
-       const NSIParam_t *params );
+      int nparams,
+      const NSIParam_t *params
+   )
 
-   void NSIEnd( NSIContext_t ctx );
+.. code-block:: c
+
+   void NSIEnd(
+      NSIContext_t ctx
+   )
 
 These two functions control creation and destruction of a nsi context,
 identified by a handle of type ``NSIContext_t``. A context must be given
 explicitly when calling all other functions of the interface. Contexts
 may be used in multiple threads at once. The ``NSIContext_t`` is a
-convenience typedef and is defined as such:
+convenience typedef and is defined as:
 
-::
+.. code-block:: c
 
    typedef int NSIContext_t;
 
 If ``NSIBegin`` fails for some reason, it returns ``NSI_BAD_CONTEXT``
-which is defined in nsi.h:
+which is defined in ``nsi.h``:
 
-::
+.. code-block:: c
 
    #define NSI_BAD_CONTEXT ((NSIContext_t)0)
 
 Optional parameters may be given to ``NSIBegin()`` to control the
 creation of the context:
 
-Sets the type of context to create. The possible types are:
+.. table::
+   :widths: 2 1 2 5
 
-:math:`\rightarrow` To execute the calls directly in the renderer.
-
-:math:`\rightarrow` To write the interface calls to a stream, for later
-execution. The target for writing the stream must be specified in
-another parameter.
-
-The file to which the stream is to be output, if the context type is
-apistream. Specify ``"stdout"`` to write to standard output and
-``"stderr"`` to write to standard error.
-
-The format of the command stream to write. Possible formats are:
-
-:math:`\rightarrow` Produces a .
-
-:math:`\rightarrow` Produces a binary encoded .
-
-The type of compression to apply to the written command stream.
-
-A function which is to be called by the renderer to report errors. The
-default handler will print messages to the console.
-
-The ``userdata`` parameter of the error reporting function.
-
-A list of procedural types that should be executed immediately when a
-call to or a procedural node is encountered and ``NSIBegin``\ ’s output
-``type`` is ``apistream``. This will replace any matching call to
-``NSIEvaluate`` with the results of the procedural’s execution.
+   +------------------------+---------+-------------------------------------------------------+
+   | ``type``               | string  | Sets the type of context to create. The possible      |
+   |                        |         | types are:                                            |
+   +------------------------+---------+---------------+---------------------------------------+
+   |                        |         | ``render``    | Execute the calls directly in the     |
+   |                        |         |               | renderer.                             |
+   |                        |         +---------------+---------------------------------------+
+   |                        |         | ``apistream`` | To write the interface calls to a     |
+   |                        |         |               | stream, for later execution.          |
+   |                        |         |               | The target for writing the stream     |
+   |                        |         |               | must be specified in another          |
+   |                        |         |               | parameter.                            |
+   +------------------------+---------+---------------+---------------------------------------+
+   | ``streamfilename``     | string  | The file to which the stream is to be output, if the  |
+   |                        |         | context type is ``apistream``.                        |
+   |                        |         | Specify ``stdout`` to write to standard output and    |
+   |                        |         | ``stderr`` to write to standard error.                |
+   +------------------------+---------+-------------------------------------------------------+
+   | ``streamformat``       | string  | The format of the command stream to write. Possible   |
+   |                        |         | formats are:                                          |
+   |                        |         +---------------+---------------------------------------+
+   |                        |         | ``nsi``       | Produces an                           |
+   |                        |         |               | :ref:`nsi stream<section:nsistream>`  |
+   |                        |         +---------------+---------------------------------------+
+   |                        |         | ``binarynsi`` | Produces a binary encoded             |
+   |                        |         |               | :ref:`nsi stream<section:nsistream>`  |
+   +------------------------+---------+---------------+---------------------------------------+
+   | ``streamcompression``  | string  | The type of compression to apply to the written       |
+   |                        |         | command stream.                                       |
+   +------------------------+---------+-------------------------------------------------------+
+   | ``errorhandler``       | pointer | A function which is to be called by the renderer to   |
+   |                        |         | report errors. The default handler will print         |
+   |                        |         | messages to the console.                              |
+   +------------------------+---------+-------------------------------------------------------+
+   | ``errorhandlerdata``   | pointer | The ``userdata`` parameter of the error reporting     |
+   |                        |         | function.                                             |
+   +------------------------+---------+-------------------------------------------------------+
+   | ``executeprocedurals`` | string  | A list of procedural types that should be executed    |
+   |                        |         | immediately when a call to or a procedural node is    |
+   |                        |         | encountered and ``NSIBegin()``'s output ``type`` is   |
+   |                        |         | ``apistream``. This will replace any matching call    |
+   |                        |         | to ``NSIEvaluate()`` with the results of the          |
+   |                        |         | procedural's execution.                               |
+   +------------------------+---------+-------------------------------------------------------+
 
 .. _CAPI:optionalparam:
 
 Passing optional parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: c
 
    struct NSIParam_t
    {
@@ -215,53 +239,64 @@ added. This is read to know which values of the other parameter to use.
 Node creation
 ~~~~~~~~~~~~~
 
-::
+.. code-block:: c
 
    void NSICreate(
        NSIContext_t context,
        NSIHandle_t handle,
        const char *type,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
 
 This function is used to create a new node. Its parameters are:
 
-The context returned by ``NSIBegin``. See
 
-A node handle. This string will uniquely identify the node in the scene.
+``context``
+      The context returned by ``NSIBegin()``. See
+      :ref:`context handling<CAPI:contexthandling>`.
 
-If the supplied handle matches an existing node, the function does
-nothing if all other parameters match the call which created that node.
-Otherwise, it emits an error. Note that handles need only be unique
-within a given interface context. It is acceptable to reuse the same
-handle inside different contexts. The ``NSIHandle_t`` typedef is defined
-in nsi.h:
+``handle``
+   A node handle. This string will uniquely identify the node in the
+   scene.
 
-::
+   If the supplied handle matches an existing node, the function does
+   nothing if all other parameters match the call which created that
+   node.
+   Otherwise, it emits an error. Note that handles need only be unique
+   within a given interface context. It is acceptable to reuse the same
+   handle inside different contexts. The ``NSIHandle_t`` typedef is
+   defined in `nsi.h`:
 
-   typedef const char * NSIHandle_t;
+   .. code-block:: c
 
-The type of node to create. See .
+      typedef const char* NSIHandle_t;
 
-This pair describes a list of optional parameters. *There are no
-optional parameters defined as of now*. The ``NSIParam_t`` type is
-described in .
+``type``
+   The type of :ref:`node<section:nodes>` to create.
+
+``nparams``, ``params``
+   This pair describes a list of optional parameters. *There are no
+   optional parameters defined as of now*. The ``NSIParam_t`` type is
+   described in .
 
 --------------
 
-::
+.. code-block:: c
 
    void NSIDelete(
        NSIContext_t ctx,
        NSIHandle_t handle,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
 
 This function deletes a node from the scene. All connections to and from
 the node are also deleted. Note that it is not possible to delete the or
 the node. Its parameters are:
 
-The context returned by ``NSIBegin``. See
+The context returned by ``NSIBegin()``. See
+:ref:`context handling<CAPI:contexthandling>`.
 
 A node handle. It identifies the node to be deleted.
 
@@ -277,22 +312,21 @@ call.
 Setting attributes
 ~~~~~~~~~~~~~~~~~~
 
-[CAPI:nsisetattribute] [CAPI:nsisetattributeattime]
-
-::
+.. code-block:: c
 
    void NSISetAttribute(
        NSIContext_t ctx,
        NSIHandle_t object,
        int nparams,
-       const NSIParam_t *params );
+       const NSIParam_t *params
+   )
 
 This functions sets attributes on a previously node. All of the function
 become attributes of the node. On a node, this function is used to set
 the implicitly defined shader parameters. Setting an attribute using
-this function replaces any value previously set by ``NSISetAttribute``
-or ``NSISetAttributeAtTime``. To reset an attribute to its default
-value, use .
+this function replaces any value previously set by
+``NSISetAttribute()`` or ``NSISetAttributeAtTime()``. To reset an
+attribute to its default value, use .
 
 --------------
 

@@ -8,7 +8,7 @@
  viewBox="0.00 0.00 202.87 344.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 340)">
 <title>G</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-340 198.87,-340 198.87,4 -4,4"/>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-340 198.87,-340 198.87,4 -4,4"/>
 <!-- driver -->
 <g id="node1" class="node">
 <title>driver</title>

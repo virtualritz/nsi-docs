@@ -11,9 +11,7 @@ This makes some features more complex to use than they should be and
 prevents or greatly increases the complexity of implementing other
 features.
 
-The design of the nsi was shaped by multiple goals:[designgoal]
-
-.. _section:background:simplicity
+The design of the nsi was shaped by multiple goals:
 
 Simplicity
    The interface itself should be simple to understand and use, even if

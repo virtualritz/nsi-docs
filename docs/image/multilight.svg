@@ -8,7 +8,7 @@
  viewBox="0.00 0.00 399.00 392.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 388)">
 <title>multilight</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-388 395,-388 395,4 -4,4"/>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-388 395,-388 395,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster_1</title>
 <path fill="none" stroke="grey" d="M127,-204C127,-204 371,-204 371,-204 377,-204 383,-210 383,-216 383,-216 383,-318 383,-318 383,-324 377,-330 371,-330 371,-330 127,-330 127,-330 121,-330 115,-324 115,-318 115,-318 115,-216 115,-216 115,-210 121,-204 127,-204"/>

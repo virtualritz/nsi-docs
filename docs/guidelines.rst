@@ -34,7 +34,7 @@ definition and will be ignored.
 A word – or two – about attributes
 ----------------------------------
 
-.. figure:: assets/attribute_inheritance.svg
+.. figure:: image/attribute_inheritance.svg
    :alt: Attribute inheritance and override
    :height: 7cm
 
@@ -51,9 +51,9 @@ and ``nvertices`` defined — otherwise the geometry is invalid [#]_.
 In osl shaders, attributes are accessed using the ``getattribute()``
 function and *this is the only way to access attributes in nsi*. Having
 one way to set and to access attributes makes things simpler (a
-:ref:`design goal<section:background:simplicity>`) and allows for extra
-flexibility (another design goal). shows two features of attribute
-assignment in nsi:
+:ref:`design goal<section:background>`) and allows for extra flexibility
+(another design goal). shows two features of attribute assignment in
+nsi:
 
 Attribute inheritance
    Attributes attached at some parent (in this case, a *metal* material)
@@ -72,9 +72,9 @@ including vertex attributes such as texture coordinates.
 Instancing
 ----------
 
-.. figure:: ./assets/instancing.svg
+.. figure:: image/instancing.svg
    :alt: Instancing in nsi with attribute inheritance and per-instance
-   attribute override
+         attribute override
    :height: 7cm
 
    Instancing in nsi with attribute inheritance and per-instance
@@ -95,7 +95,7 @@ semantics.
 Creating OSL networks
 ---------------------
 
-.. figure:: osl_network
+.. figure:: image/osl_network.svg
    :alt: A simple osl network connected to an attributes node
    :width: 12cm
 
@@ -155,7 +155,7 @@ Some observations:
 Lighting in the nodal scene interface
 -------------------------------------
 
-.. image:: assets/lights.svg
+.. image:: image/lights.svg
 
 There are no special light source nodes in nsi (although the node, which
 defines a sphere of infinite radius, could be considered as a light in
@@ -264,7 +264,7 @@ shown in .
 Defining output drivers and layers
 ----------------------------------
 
-.. figure:: output_channels
+.. figure:: image/output_channels.svg
    :alt: nsi graph showing the image output chain
    :height: 6cm
 
@@ -291,7 +291,7 @@ A more complex example is shown in : a left and right cameras are used
 to drive two file outputs, each having two layers (``Ci`` and
 ``Diffuse`` colors).
 
-.. figure:: output_channels_stereo
+.. figure:: image/output_channels_stereo.svg
    :alt: nsi graph for a stereo image output
    :height: 7cm
 
@@ -304,14 +304,14 @@ to drive two file outputs, each having two layers (``Ci`` and
 Light layers
 ------------
 
-.. image:: asstes/lightsets.svg
+.. image:: image/multilight.svg
 
 The ability to render a certain set of lights per output layer has a
 formal workflow in nsi. One can use three methods to define the lights
 used by a given output layer:
 
 #. Connect the geometry defining lights directly to the
-   ``outputlayer.lightset`` attribute [multilight:two]
+   ``outputlayer.lightset`` attribute
 
 #. Create a set of lights using the ``set`` node and connect it into
    ``outputlayer.lightset``
@@ -345,7 +345,7 @@ object (mirror) to the visibility attribute of the source object (ghost)
 to *override* its visibility status. Essentially, this "injects" a new
 value for the ghost visibility for rays coming from the mirror.
 
-.. figure:: assets/vampire.svg
+.. figure:: image/vampire.svg
    :alt: Visibility override, both hierarchically and inter-object
    :name: fig:vampire
    :height: 7cm

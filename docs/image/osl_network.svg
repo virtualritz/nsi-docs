@@ -8,7 +8,7 @@
  viewBox="0.00 0.00 570.51 259.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 255)">
 <title>osl_network</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-255 566.51,-255 566.51,4 -4,4"/>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-255 566.51,-255 566.51,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster_1</title>
 <path fill="none" stroke="grey" d="M20,-8C20,-8 426.05,-8 426.05,-8 432.05,-8 438.05,-14 438.05,-20 438.05,-20 438.05,-231 438.05,-231 438.05,-237 432.05,-243 426.05,-243 426.05,-243 20,-243 20,-243 14,-243 8,-237 8,-231 8,-231 8,-20 8,-20 8,-14 14,-8 20,-8"/>
