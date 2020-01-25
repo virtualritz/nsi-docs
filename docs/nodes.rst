@@ -4,62 +4,74 @@ Nodes
 =====
 
 The following sections describe available nodes in technical terms.
-Refer to for usage details.
+Refer to :ref:`the rendering guidelines<section:guidelines>` for usage
+details.
 
 .. table:: nsi nodes overview
+   :widths: 2 8
 
-   +--------------+-------------------------------------+---------------+
-   | **Node**     | **Function**                        | **Reference** |
-   +==============+=====================================+===============+
-   | root         | Scene’s root                        |               |
-   +--------------+-------------------------------------+---------------+
-   | global       | Global settings node                |               |
-   +--------------+-------------------------------------+---------------+
-   | set          | To express relationships to groups  |               |
-   |              | of nodes                            |               |
-   +--------------+-------------------------------------+---------------+
-   | shader       | osl shader or layer in a shader     |               |
-   |              | group                               |               |
-   +--------------+-------------------------------------+---------------+
-   | attributes   | Container for generic attributes    |               |
-   |              | (e.g. visibility)                   |               |
-   +--------------+-------------------------------------+---------------+
-   | transform    | Transformation to place objects in  |               |
-   |              | the scene                           |               |
-   +--------------+-------------------------------------+---------------+
-   | mesh         | Polygonal mesh or subdivision       |               |
-   |              | surface                             |               |
-   +--------------+-------------------------------------+---------------+
-   | faceset      | Assign attributes to part of a mesh |               |
-   +--------------+-------------------------------------+---------------+
-   | cubiccurves  | B-spline and Catmull-Rom curves     |               |
-   +--------------+-------------------------------------+---------------+
-   | linearcurves | Linearly interpolated curves        |               |
-   +--------------+-------------------------------------+---------------+
-   | particles    | Collection of particles             |               |
-   +--------------+-------------------------------------+---------------+
-   | procedural   | Geometry to be loaded in delayed    |               |
-   |              | fashion                             |               |
-   +--------------+-------------------------------------+---------------+
-   | environment  | Geometry type to define environment |               |
-   |              | lighting                            |               |
-   +--------------+-------------------------------------+---------------+
-   | \*camera     | Set of nodes to create viewing      |               |
-   |              | cameras                             |               |
-   +--------------+-------------------------------------+---------------+
-   | outputdriver | Location where to output rendered   |               |
-   |              | pixels                              |               |
-   +--------------+-------------------------------------+---------------+
-   | outputlayer  | Describes one render layer to be    |               |
-   |              | connected to an ``outputdriver``    |               |
-   |              | node                                |               |
-   +--------------+-------------------------------------+---------------+
-   | screen       | Describes how the view from a       |               |
-   |              | camera will be rasterized into an   |               |
-   |              | ``outputlayer`` node                |               |
-   +--------------+-------------------------------------+---------------+
+   +----------------------------------------+-------------------------+
+   | **Node**                               | **Function**            |
+   +========================================+=========================+
+   | :ref:`root<node:root>`                 | The scene's root        |
+   +----------------------------------------+-------------------------+
+   | :ref:`global<node:global>`             | Global settings node    |
+   +----------------------------------------+-------------------------+
+   | :ref:`set<node:set>`                   | Expresses relationships |
+   |                                        | of groups of nodes      |
+   +----------------------------------------+-------------------------+
+   | :ref:`shader<node:shader>`             | osl shader or layer in  |
+   |                                        | a shader group          |
+   +----------------------------------------+-------------------------+
+   | :ref:`attributes<node:attributes>`     | Container for generic   |
+   |                                        | attributes (e.g.        |
+   |                                        | visibility)             |
+   +----------------------------------------+-------------------------+
+   | :ref:`transform<node:transform>`       | Transformation to place |
+   |                                        | objects in the scene    |
+   +----------------------------------------+-------------------------+
+   | :ref:`instances<node:instances>`       | Specifies instances of  |
+   |                                        | other nodes             |
+   +----------------------------------------+-------------------------+
+   | :ref:`mesh<node:mesh>`                 | Polygonal mesh or       |
+   |                                        | subdivision surface     |
+   +----------------------------------------+-------------------------+
+   | :ref:`faceset<node:faceset>`           | Assign attributes to    |
+   |                                        | part of a mesh          |
+   +----------------------------------------+-------------------------+
+   | :ref:`curves<node:curves>`             | Linear, b-spline and    |
+   |                                        | Catmull-Rom curves      |
+   +----------------------------------------+-------------------------+
+   | :ref:`particles<node:particles>`       | Collection of particles |
+   +----------------------------------------+-------------------------+
+   | :ref:`procedural<node:procedural>`     | Geometry to be loaded   |
+   |                                        | or generated in delayed |
+   |                                        | fashion                 |
+   +----------------------------------------+-------------------------+
+   | :ref:`volume<node:volume>`             | A volume loaded from a  |
+   |                                        | VDB file                |
+   +----------------------------------------+-------------------------+
+   | :ref:`environment<node:environment>`   | Geometry type to define |
+   |                                        | environment lighting    |
+   +----------------------------------------+-------------------------+
+   | :ref:`camera<node:camera>`             | Set of nodes to create  |
+   |                                        | viewing cameras         |
+   +----------------------------------------+-------------------------+
+   | :ref:`outputdriver<node:outputdriver>` | A target where to       |
+   |                                        | output rendered pixels  |
+   +----------------------------------------+-------------------------+
+   | :ref:`outputlayer<node:outputlayer>`   | Describes one render    |
+   |                                        | layer to be connected   |
+   |                                        | to an ``outputdriver``  |
+   |                                        | node                    |
+   +----------------------------------------+-------------------------+
+   | :ref:`screen<node:screen>`             | Describes how the view  |
+   |                                        | from acamera will be    |
+   |                                        | rasterized into an      |
+   |                                        | ``outputlayer`` node    |
+   +----------------------------------------+-------------------------+
 
-.. _section:rootnode:
+.. _node:root:
 
 The root node
 -------------
@@ -72,7 +84,7 @@ node has the reserved handle name ``.root`` and doesn’t need to be
 created using ``NSICreate``. The root node has two defined attributes:
 ``objects`` and ``geometryattributes``. Both are explained in .
 
-.. _section:globalnode:
+.. _node:global:
 
 The global node
 ---------------
@@ -199,7 +211,7 @@ Full path of the file where rendering statistics will be written. An
 empty string will write statistics to standard output. The name ``null``
 will not output statistics.
 
-.. _section:setnode:
+.. _node:set:
 
 The set node
 ------------
@@ -211,7 +223,7 @@ has the following attributes:
 
 This connection accepts all nodes that are members of the set.
 
-.. _section:meshnode:
+.. _node:mesh:
 
 The mesh node
 -------------
@@ -276,7 +288,7 @@ value for each pair of values given in ``subdivision.creasevertices``.
 
        10 0 0   13 0 0   13 3 0   10 3 0 ]
 
-.. _section:facesetnode:
+.. _node:faceset:
 
 The faceset node
 ----------------
@@ -309,7 +321,7 @@ of the original geometry will be part of this face set.
    Connect "attributes1" "" "subdiv" "geometryattributes"
    Connect "attributes2" "" "set1" "geometryattributes"
 
-.. _section:curvesnode:
+.. _node:curves:
 
 The curves node
 ---------------
@@ -346,7 +358,7 @@ curves. Attributes which fall in that last category must always specify
 . Note that a single curve is considered a face as far as use of is
 concerned.
 
-.. _section:particlesnode:
+.. _node:particles:
 
 The particles node
 ------------------
@@ -376,7 +388,7 @@ such transient particles. This implies that the number of *id*\ s might
 vary for each time step of a motion-blurred particle cloud so the use of
 is mandatory by definition.
 
-.. _section:proceduralnode:
+.. _node:procedural:
 
 The procedural node
 -------------------
@@ -409,7 +421,7 @@ Specifies a bounding box for the geometry where ``boundingbox[0]`` and
 ``boundingbox[1]`` correspond, respectively, to the "minimum" and the
 "maximum" corners of the box.
 
-.. _section:environmentnode:
+.. _node:environment:
 
 The environment node
 --------------------
@@ -427,7 +439,7 @@ sampled. The angle is measured around the :math:`\mathrm{Z+}` axis [4]_.
 If the angle is set to :math:`0`, the environment describes a
 directional light. Refer to for more about how to specify light sources.
 
-.. _section:shadernode:
+.. _node:shader:
 
 The shader node
 ---------------
@@ -443,7 +455,7 @@ other shader nodes to build shader networks. osl shader networks must
 form acyclic graphs or they will be rejected. Refer to for instructions
 on osl network creation and usage.
 
-.. _section:attributesnode:
+.. _node:attributes:
 
 The attributes node
 -------------------
@@ -511,7 +523,7 @@ When a geometry node (usually a ) is connected to this attribute, it
 will be used to restrict the effect of the attributes node, which will
 apply only inside the volume defined by the connected geometry object.
 
-.. _section:transformnode:
+.. _node:transform:
 
 The transform node
 ------------------
@@ -538,7 +550,7 @@ geometry nodes, other transform nodes and camera nodes.
 This is where may be connected to affect any geometry transformed by
 this node. Refer to and for explanation on how this connection is used.
 
-.. _section:instancesnode:
+.. _node:instances:
 
 The instances nodes
 -------------------
@@ -556,7 +568,7 @@ An optional model selector for each instance.
 
 An optional list of indices of instances which are not to be rendered.
 
-.. _section:outputdrivernode:
+.. _node:outputdriver:
 
 The outputdriver node
 ---------------------
@@ -578,7 +590,7 @@ file.
 Any extra attributes are also forwarded to the output driver which may
 interpret them however it wishes.
 
-.. _section:outputlayernode:
+.. _node:outputlayer:
 
 The outputlayer node
 --------------------
@@ -677,7 +689,7 @@ The value given to pixels where nothing is rendered.
 Any extra attributes are also forwarded to the output driver which may
 interpret them however it wishes.
 
-.. _section:screennode:
+.. _node:screen:
 
 The screen node
 ---------------
@@ -731,7 +743,7 @@ image change for every frame. A nonzero value will cause the same
 pattern to be used for all frames. A value of zero will cause the
 pattern to change with the frame attribute of the .
 
-.. _section:volumenode:
+.. _node:volume:
 
 The volume node
 ---------------
@@ -756,7 +768,7 @@ name the first of three scalar grids (ie. "velocityX").
 
 A scaling factor applied to the motion vectors.
 
-.. _section:camera:
+.. _node:camera:
 
 Camera Nodes
 ------------
@@ -790,7 +802,7 @@ defined by a list of exactly two values:
 -  Distance to the ``far`` clipping plane, behind which scene objects
    are clipped.
 
-.. _section:orthographiccamera:
+.. _node:orthographiccamera:
 
 The orthographiccamera node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -798,7 +810,7 @@ The orthographiccamera node
 This node defines an orthographic camera with a view direction towards
 the :math:`\mathrm{Z-}` axis. This camera has no specific attributes.
 
-.. _section:perspectivecameranode:
+.. _node:perspectivecamera:
 
 The perspectivecamera node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -830,7 +842,7 @@ Number of sides of the camera’s aperture. The mininum number of sides is
 A rotation angle (in degrees) to be applied to the camera’s aperture, in
 the image plane.
 
-.. _section:fisheyecameranode:
+.. _node:fisheyecamera:
 
 The fisheyecamera node
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -855,6 +867,8 @@ limited to a 180 field of view.
 stereographic mapping fails to work with field of views close to 360
 degrees.
 
+.. _node:cylindricalcamera:
+
 The cylindricalcamera node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -870,7 +884,7 @@ Specifies the horizontal field of view, in degrees. The default value is
 This offset allows to render stereoscopic cylindrical images by
 specifying an eye offset
 
-.. _section:sphericalcamera:
+.. _node:sphericalcamera:
 
 The sphericalcamera node
 ~~~~~~~~~~~~~~~~~~~~~~~~

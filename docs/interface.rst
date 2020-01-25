@@ -6,8 +6,8 @@ The interface abstraction
 
 The Nodal Scene Interface is built around the concept of nodes. Each
 node has a unique handle to identify it and a type which describes its
-intended function in the scene. Nodes are abstract containers for data
-for which the interpretation depends on the node type. Nodes can also be
+intended function in the scene. Nodes are abstract containers for data.
+The interpretation depends on the node type. Nodes can also be
 connected to each other to express relationships.
 
 Data is stored on nodes as attributes. Each attribute has a name which
@@ -26,7 +26,7 @@ What we refer to as the nsi has two major components:
 
 -  Methods to create nodes, attributes and their connections.
 
--  Node types understood by the renderer. These are described in .
+-  :ref:`Node types<section:nodes>` understood by the renderer.
 
 Much of the complexity and expressiveness of the interface comes from
 the supported nodes. The first part was kept deliberately simple to make
