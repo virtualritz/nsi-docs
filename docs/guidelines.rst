@@ -1,8 +1,4 @@
-.. |nbsp| unicode:: 0xA0
-   :trim:
-
-.. |nsp| unicode:: 0x200B
-   :trim:
+.. include:: definitions.rst
 
 .. _chapter:guidelines:
 
@@ -65,7 +61,7 @@ and ``nvertices`` defined — otherwise the geometry is invalid [#]_.
 In osl shaders, attributes are accessed using the ``getattribute()``
 function and *this is the only way to access attributes in nsi*. Having
 one way to set and to access attributes makes things simpler (a
-:ref:`design goal<section:background>`) and allows for extra flexibility
+:ref:`design goal<chapter:background>`) and allows for extra flexibility
 (another design goal). shows two features of attribute assignment in
 nsi:
 
