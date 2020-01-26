@@ -32,9 +32,9 @@ Below is an example shader creation logic in Lua.
     nsi.Create( "lambert", "shader" );
     nsi.SetAttribute(
         "lambert", {
-           { name ="filename", data="lambert_material.oso" },
-           { name ="Kd", data=.55},
-           { name ="albedo", data = { 1, 0.5, 0.3 }, type = nsi.TypeColor }
+           { name = "filename", data = "lambert_material.oso" },
+           { name = "Kd", data = 0.55 },
+           { name = "albedo", data = { 1, 0.5, 0.3 }, type = nsi.TypeColor }
         }
     );
 
@@ -177,10 +177,9 @@ It is also possible to evaluate a Lua script *inline* using the
         "script" "string" 1 ["nsi.Create(\"light\", \"shader\");"]
         "type" "string" 1 ["lua"]
 
-Both ``"filename"`` and ``"script"`` can be specified to
-``NSIEvaluate()`` in one go, in which case the inline script will be
-evaluated before the file and both scripts will share the same |nsi| and
-Lua contexts.
+Both ``filename`` and ``script`` can be specified to ``NSIEvaluate()``
+in one go, in which case the inline script will be evaluated before the
+file and both scripts will share the same |nsi| and Lua contexts.
 
 Any error during script parsing or evaluation will be sent to |nsi|'s error
 handler.
@@ -207,14 +206,18 @@ All parameters passed to ``NSIEvaluate()`` will appear in the
         "userdata" "color[2]" 1 [1 0 1 2 3 4]
 
 Will register a ``userdata`` entry in the ``nsi.scriptparameters``
-table. So executing the following line in ``test.lua``:
+table. So executing the following line in the ``test.lua`` script
+that the above snippete references:
 
 .. code-block:: lua
-    :linenos:
 
     print( nsi.scriptparameters.userdata.data[5] );
 
-Will print `3.0.`
+Will print:
+
+.. code-block:: shell
+
+    3.0
 
 .. _luaapi:errors:
 
@@ -225,7 +228,6 @@ Use ``nsi.utilities.ReportError()`` to send error messages to the error
 handler defined in the current nsi context. For example:
 
 .. code-block:: lua
-    :linenos:
 
     nsi.utilities.ReportError( nsi.ErrWarning, "Watch out!" );
 
@@ -234,11 +236,11 @@ The and are shown in .
 .. table:: Lua |nsi| error codes
     :widths: 1 1
 
-    =================== ================
+    =================== =================
     **Lua Error Codes** **C equivalent**
-    =================== ================
-    nsi.ErrMessage      NSIErrMessage
-    nsi.ErrWarning      NSIErrMessage
-    nsi.ErrInfo         NSIErrInfo
-    nsi.ErrError        NSIErrError
-    =================== ================
+    =================== =================
+    ``nsi.ErrMessage``  ``NSIErrMessage``
+    ``nsi.ErrWarning``  ``NSIErrMessage``
+    ``nsi.ErrInfo``     ``NSIErrInfo``
+    ``nsi.ErrError``    ``NSIErrError``
+    =================== =================
