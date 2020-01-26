@@ -3,7 +3,7 @@ Script Objects
 
 It is a design goal to provide an easy to use and flexible scripting
 language for nsi. The Lua language has been selected for such a task
-because of its performance, lightness and features [6]_. A flexible
+because of its performance, lightness and features [#]_. A flexible
 scripting interface greatly reduces the need to have api extensions. For
 example, what is known as “conditional evaluation” and “Ri filters” in
 the *RenderMan* api are superseded by the scripting features of nsi.
@@ -18,4 +18,7 @@ the *RenderMan* api are superseded by the scripting features of nsi.
 
 To be continued …
 
-.. _chapter:guidelines:
+.. rubric:: Footnotes
+
+.. [#]
+   Lua is also portable and streamable.

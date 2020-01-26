@@ -1,8 +1,10 @@
+#############
 The Interface
-=============
+#############
 
+*************************
 The interface abstraction
--------------------------
+*************************
 
 The Nodal Scene Interface is built around the concept of nodes. Each
 node has a unique handle to identify it and a type which describes its
@@ -252,33 +254,33 @@ Node creation
 
 This function is used to create a new node. Its parameters are:
 
-``context``
-      The context returned by ``NSIBegin()``. See
-      :ref:`context handling<CAPI:contexthandling>`.
+| ``context``
+|      The context returned by ``NSIBegin()``. See
+|      :ref:`context handling<CAPI:contexthandling>`.
 
-``handle``
-   A node handle. This string will uniquely identify the node in the
-   scene.
+| ``handle``
+|   A node handle. This string will uniquely identify the node in the
+    scene.
 
-   If the supplied handle matches an existing node, the function does
-   nothing if all other parameters match the call which created that
-   node.
-   Otherwise, it emits an error. Note that handles need only be unique
-   within a given interface context. It is acceptable to reuse the same
-   handle inside different contexts. The ``NSIHandle_t`` typedef is
-   defined in :doc:`nsi.h`:
+    If the supplied handle matches an existing node, the function does
+    nothing if all other parameters match the call which created that
+    node.
+    Otherwise, it emits an error. Note that handles need only be unique
+    within a given interface context. It is acceptable to reuse the same
+    handle inside different contexts. The ``NSIHandle_t`` typedef is
+    defined in :doc:`nsi.h`:
 
-   .. code-block:: c
+    .. code-block:: c
 
-      typedef const char* NSIHandle_t;
+       typedef const char* NSIHandle_t;
 
-``type``
-   The type of :ref:`node<chapter:nodes>` to create.
+| ``type``
+|   The type of :ref:`node<chapter:nodes>` to create.
 
-``nparams``, ``params``
-   This pair describes a list of optional parameters. *There are no
-   optional parameters defined as of now*. The ``NSIParam_t`` type is
-   described in :ref:`this section<CAPI:optionalparam>`.
+| ``nparams``, ``params``
+    This pair describes a list of optional parameters. *There are no
+    optional parameters defined as of now*. The ``NSIParam_t`` type is
+    described in :ref:`this section<CAPI:optionalparam>`.
 
 --------------
 
@@ -348,7 +350,7 @@ have the same specification throughout the time range. A notable
 exception is the ``P`` attribute on which can be of different size for
 each time step because of appearing or disappearing particles. Setting
 an attribute using this function replaces any value previously set by
-``NSISetAttribute``.
+``NSISetAttribute()``.
 
 --------------
 
@@ -413,10 +415,10 @@ The name of the attribute to which the connection is made. If this is an
 empty string then the connection is made to the node instead of to a
 specific attribute of the node.
 
-``NSIConnect`` accepts additional optional parameters. Refer to for more
+``NSIConnect()`` accepts additional optional parameters. Refer to for more
 about their utility.
 
-With ``NSIDisconnect``, the handle for either node may be the special
+With ``NSIDisconnect()``, the handle for either node may be the special
 value . This will remove all connections which match the other three
 parameters. For example, to disconnect everything from the :
 
@@ -903,7 +905,7 @@ The interface stream
 It is important for a scene description api to be streamable. This
 allows saving scene description into files, communicating scene state
 between processes and provide extra flexibility when sending commands to
-the renderer [1]_.
+the renderer [#]_.
 
 Instead of re-inventing the wheel, the authors have decided to use
 exactly the same format as is used by the *RenderMan* Interface
@@ -917,7 +919,7 @@ Bytestream (rib). This has several advantages:
    already available).
 
 Note that since Lua is part of the api, one can use Lua files for api
-streaming [2]_. [section:rib]
+streaming [#]_.
 
 .. _section:dllprocedurals:
 
@@ -1087,7 +1089,7 @@ Please note, however, that the ``proc`` static variable in this example
 contains only constant values, which allows it to be allocated as a
 static variable. In a more complex implementation, it could have been
 over-allocated (or subclassed, in C++) to hold additional, variable
-data [3]_. In that case, it would have been better to allocate the
+data [#]_. In that case, it would have been better to allocate the
 descriptor dynamically – and release it in ``NSI_PROCEDURAL_UNLOAD`` –
 so the procedural could be loaded independently from multiple parallel
 renders, each using its own instance of the ``NSIProcedural_t``
@@ -1112,3 +1114,19 @@ descriptor.
        NSI_PROCEDURAL_INIT(proc, min_unload, min_execute);
        return &proc;
    }
+
+--------------
+
+.. rubric:: Footnotes
+
+.. [#]
+   The streamable nature of the *RenderMan* api, through rib, is an
+   undeniable advantage. RenderMan is a registered trademark of Pixar.
+
+.. [#]
+   Preliminary tests show that the Lua parser is as fast as an optimized
+   ascii rib parser.
+
+.. [#]
+   A good example of this is available in the *3Delight* installation,
+   in file ``examples/procedurals/gear.cpp``.

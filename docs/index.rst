@@ -10,12 +10,12 @@ A flexible, modern API for renderers
 | Authors
 | Olivier Paquet, Aghiles Kheffache, François Colbert, Berj Bannayan
 
-2015- The 3Delight Team. All rights reserved.
 
+Jump to
+-------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
    background
    interface
@@ -24,13 +24,8 @@ A flexible, modern API for renderers
    guidelines
    acknowledgments
 
-
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. Indices and tables
+    ==================
+    * :ref:`genindex`
+    * :ref:`modindex`
+    * :ref:`search`

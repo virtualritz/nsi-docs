@@ -4,7 +4,7 @@ Nodes
 =====
 
 The following sections describe available nodes in technical terms.
-Refer to :ref:`the rendering guidelines<section:guidelines>` for usage
+Refer to :ref:`the rendering guidelines<chapter:guidelines>` for usage
 details.
 
 .. table:: Overview of nsi nodes
@@ -493,7 +493,7 @@ exception of shader execution semantics: there is no surface position
 following node attribute is recognized:
 
 Specifies the cone angle representing the region of the sphere to be
-sampled. The angle is measured around the :math:`\mathrm{Z+}` axis [4]_.
+sampled. The angle is measured around the :math:`\mathrm{Z+}` axis [#]_.
 If the angle is set to :math:`0`, the environment describes a
 directional light. Refer to for more about how to specify light sources.
 
@@ -717,7 +717,7 @@ Each component of those types is stored according to the
 The name of an ocio color profile to apply to rendered image data prior
 to quantization.
 
-If set to 1, dithering is applied to integer scalars [5]_. Otherwise, it
+If set to 1, dithering is applied to integer scalars [#]_. Otherwise, it
 must be set to 0.
 
 If set to 1, an alpha channel is included in the output layer.
@@ -967,3 +967,15 @@ instructs the renderer not to trace the corresponding ray sample.
 ``time`` — The time at which the ray is sampled.
 
 ``(u, v)`` — Coordinates, in screen space, of the ray being traced.
+
+--------------
+
+.. rubric:: Footnotes
+
+.. [#]
+   To position the environment dome one must connect the node to a
+   :ref:`transform node<node:transform>` and apply the desired rotation.
+
+.. [#]
+   It is sometimes desirable to turn off dithering, for example, when
+   outputting object IDs.

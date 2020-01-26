@@ -1,4 +1,10 @@
-.. _section:guidelines:
+.. |nbsp| unicode:: 0xA0
+   :trim:
+
+.. |nsp| unicode:: 0x200B
+   :trim:
+
+.. _chapter:guidelines:
 
 Rendering Guidelines
 ====================
@@ -10,45 +16,51 @@ Basic scene anatomy
 
 .. figure:: image/basic_scene_anatomy.svg
    :alt: The fundamental building blocks of an nsi scene
-   :height: 7cm
+   :align: right
+   :figwidth: 45%
 
    The fundamental building blocks of an nsi scene
-
 
 A minimal (and useful) nsi scene graph contains the three following
 components:
 
 #. Geometry linked to the ``.root`` node, usually through a transform
-   chain
+   chain.
 
-#. OSL materials linked to scene geometry through an node [#]_
+#. OSL materials linked to scene geometry through an node.
 
-#. At least one *outputdriver→outputlayer→screen→camera→* ``.root``
-   chain to describe a view and an output device.
+#. At least one *outputdriver* |nsp| → |nsp| *outputlayer* |nsp| → |nsp|
+   *screen* |nsp| → |nsp| *camera* |nsp| → |nsp| ``.root`` chain to
+   describe a view and an output device.
 
 The scene graph in shows a renderable scene with all the necessary
 elements. Note how the connections always lead to the ``.root`` node. In
 this view, a node with no output connections is not relevant by
 definition and will be ignored.
 
+.. Caution::
+   For the scene to be visible, at least one of the materials has to be
+   *emissive*.
+
 .. _section:attributes:
 
 A word – or two – about attributes
 ----------------------------------
 
-.. figure:: image/attribute_inheritance.svg
-   :alt: Attribute inheritance and override
-   :height: 7cm
-
-   Attribute inheritance and override
-
 Those familiar with the *RenderMan* standard will remember the various
 ways to attach information to elements of the scene (standard
 attributes, user attributes, primitive variables, construction
-parameters [#]_). In nsi things are simpler and all attributes are set
+parameters). [#]_
+
+.. figure:: image/attribute_inheritance.svg
+   :alt: Attribute inheritance and override
+
+   Attribute inheritance and override
+
+In nsi things are simpler and all attributes are set
 through the ``SetAttribute()`` mechanism. The only distinction is that
 some attributes are required (*intrinsic attributes*) and some are
-optional: a :ref:`mesh node<section:meshnode>` needs to have ``P``
+optional: a :ref:`mesh node<node:mesh>` needs to have ``P``
 and ``nvertices`` defined — otherwise the geometry is invalid [#]_.
 In osl shaders, attributes are accessed using the ``getattribute()``
 function and *this is the only way to access attributes in nsi*. Having
@@ -74,23 +86,24 @@ including vertex attributes such as texture coordinates.
 Instancing
 ----------
 
+Instancing in nsi is naturally performed by connecting a geometry to
+more than one transform (connecting a geometry node into a
+``transform.objects`` attribute).
+
 .. figure:: image/instancing.svg
    :alt: Instancing in nsi with attribute inheritance and per-instance
          attribute override
-   :height: 7cm
+   :figwidth: 75%
 
    Instancing in nsi with attribute inheritance and per-instance
    attribute override
 
-Instancing in nsi is naturally performed by connecting a geometry to
-more than one transform (connecting a geometry node into a
-``transform.objects`` attribute). shows a simple scene with a geometry
-instanced three times. The scene also demonstrates how to override an
-attribute for one particular geometry instance, an operation very
-similar to what we have seen in :ref:`the attributes
-section<section:attributes>`. Note that transforms can also be
-instanced and this allows for *instances of instances* using the same
-semantics.
+The above figure shows a simple scene with a geometry instanced three
+times. The scene also demonstrates how to override an attribute for one
+particular geometry instance, an operation very similar to what we have
+seen in :ref:`the attributes section<section:attributes>`. Note that
+transforms can also be instanced and this allows for *instances of
+instances* using the same semantics.
 
 .. _section:creating_osl_networks:
 
@@ -99,11 +112,8 @@ Creating OSL networks
 
 .. figure:: image/osl_network.svg
    :alt: A simple osl network connected to an attributes node
-   :width: 12cm
 
    A simple osl network connected to an attributes node
-
-[fig:osl_network]
 
 The semantics used to create osl networks are the same as for scene
 creation. Each shader node in the network corresponds to a which must be
@@ -122,8 +132,8 @@ Some observations:
    geometry. In this is done in the ``read_attribute`` node (). More
    about this subject in .
 
-
-::
+.. code-block:: shell
+   :linenos:
 
    Create "ggx_metal" "shader"
    SetAttribute "ggx"
@@ -157,30 +167,38 @@ Some observations:
 Lighting in the nodal scene interface
 -------------------------------------
 
-.. image:: image/lights.svg
+.. figure:: image/lights.svg
+   :alt: Creating lights in nsi
+   :align: right
+
+   Creating lights in nsi
 
 There are no special light source nodes in nsi (although the node, which
 defines a sphere of infinite radius, could be considered as a light in
 practice). Any scene geometry can become a light source if its surface
-shader produces an ``emission()`` closure. Some operations on light
-sources, such as *light linking*, are done using more general approaches
-(see ). Follows a quick summary on how to create different kinds of
-light in nsi.
+shader produces an ``emission()`` `closure
+<https://3delight.atlassian.net/wiki/display/3DSP/General+Guidelines#GeneralGuidelines-SupportedClosures>`_.
+Some operations on light sources, such as *light linking*, are done
+using more :ref:`general approaches<section:lightlinking>`.
+Following is a quick summary on how to create different kinds of light
+in nsi.
 
 Area lights
 ~~~~~~~~~~~
 
 Area lights are created by attaching an emissive surface material to
-geometry. shows a simple osl shader for such lights (standard osl
+geometry. Below is a simple osl shader for such lights (standard osl
 emitter).
 
-::
+.. code-block:: c
+   :caption: Example emitter for area lights
+   :linenos:
 
    // Copyright (c) 2009-2010 Sony Pictures Imageworks Inc., et al.  All Rights Reserved.
-   surface emitter [[ string help = "Lambertian emitter material" ]]
+   surface emitter     [[ string help = "Lambertian emitter material" ]]
    (
-       float power = 1 [[  string help = "Total power of the light" ]],
-       color Cs = 1 [[  string help = "Base color" ]])
+       float power = 1 [[ string help = "Total power of the light" ]],
+       color Cs = 1    [[ string help = "Base color" ]])
    {
        // Because emission() expects a weight in radiance, we must convert by dividing
        // the power (in Watts) by the surface area and the factor of PI implied by
@@ -196,15 +214,17 @@ Such lights are created using an epsilon sized geometry (a small disk, a
 particle, etc.) and optionally using extra parameters to the
 ``emission()`` closure.
 
-::
+.. code-block:: c
+   :caption: An example osl spot light shader
+   :linenos:
 
-   surface spotLight(
+   surface spotlight(
        color i_color = color(1),
        float intenstity = 1,
        float coneAngle = 40,
        float dropoff = 0,
-       float penumbraAngle = 0 )
-   {
+       float penumbraAngle = 0
+   ) {
        color result = i_color * intenstity * M_PI;
 
        /* Cone and penumbra */
@@ -219,8 +239,7 @@ particle, etc.) and optionally using extra parameters to the
 
        result *= smoothstep(low, high, cosangle);
 
-       if (dropoff > 0)
-       {
+       if (dropoff > 0) {
            result *= clamp(pow(cosangle, 1 + dropoff),0,1);
        }
        Ci = result / surfacearea() * emission();
@@ -230,8 +249,8 @@ Directional and HDR lights
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Directional lights are created by using the node and setting the
-``angle`` attribute to 0. hdr lights are also created using the
-environment node, albeit with a :math:`2\pi` cone angle, and reading a
+``angle`` attribute to 0. HDR lights are also created using the
+environment node, albeit with a 2π cone angle, and reading a
 high dynamic range texture in the attached surface shader. Other
 directional constructs, such as *solar lights*, can also be obtained
 using the environment node.
@@ -240,10 +259,13 @@ Since the node defines a sphere of infinite radius any connected osl
 shader must only rely on the ``I`` variable and disregard ``P``, as is
 shown in .
 
-::
+.. code-block:: c
+   :linenos:
+   :caption: An example osl shader to do HDR lighting
 
-   shader hdrlight( string texturename = "" )
-   {
+   shader hdrlight(
+       string texturename = ""
+   ) {
        vector wi = transform("world", I);
 
        float longitude = atan2(wi[0], wi[2]);
@@ -252,12 +274,12 @@ shown in .
        float s = (longitude + M_PI) / M_2PI;
        float t = (latitude + M_PI_2) / M_PI;
 
-       Ci = emission() * texture (texturename, s, t);
+       Ci = emission() * texture(texturename, s, t);
    }
 
-..
+.. Note::
 
-   note — Environment geometry is visible to camera rays by default so
+   Environment geometry is visible to camera rays by default so
    it will appear as a background in renders. To disable this simply
    switch off camera visibility on the associated node.
 
@@ -306,7 +328,7 @@ to drive two file outputs, each having two layers (``Ci`` and
 Light layers
 ------------
 
-.. image:: image/multilight.svg
+.. figure:: image/multilight.svg
 
 The ability to render a certain set of lights per output layer has a
 formal workflow in nsi. One can use three methods to define the lights
