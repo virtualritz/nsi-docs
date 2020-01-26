@@ -1,4 +1,4 @@
-.. _section:nodes:
+.. _chapter:nodes:
 
 Nodes
 =====
@@ -7,82 +7,83 @@ The following sections describe available nodes in technical terms.
 Refer to :ref:`the rendering guidelines<section:guidelines>` for usage
 details.
 
-.. table:: nsi nodes overview
+.. table:: Overview of nsi nodes
    :widths: 2 8
 
-   +----------------------------------------+-------------------------+
-   | **Node**                               | **Function**            |
-   +========================================+=========================+
-   | :ref:`root<node:root>`                 | The scene's root        |
-   +----------------------------------------+-------------------------+
-   | :ref:`global<node:global>`             | Global settings node    |
-   +----------------------------------------+-------------------------+
-   | :ref:`set<node:set>`                   | Expresses relationships |
-   |                                        | of groups of nodes      |
-   +----------------------------------------+-------------------------+
-   | :ref:`shader<node:shader>`             | osl shader or layer in  |
-   |                                        | a shader group          |
-   +----------------------------------------+-------------------------+
-   | :ref:`attributes<node:attributes>`     | Container for generic   |
-   |                                        | attributes (e.g.        |
-   |                                        | visibility)             |
-   +----------------------------------------+-------------------------+
-   | :ref:`transform<node:transform>`       | Transformation to place |
-   |                                        | objects in the scene    |
-   +----------------------------------------+-------------------------+
-   | :ref:`instances<node:instances>`       | Specifies instances of  |
-   |                                        | other nodes             |
-   +----------------------------------------+-------------------------+
-   | :ref:`mesh<node:mesh>`                 | Polygonal mesh or       |
-   |                                        | subdivision surface     |
-   +----------------------------------------+-------------------------+
-   | :ref:`faceset<node:faceset>`           | Assign attributes to    |
-   |                                        | part of a mesh          |
-   +----------------------------------------+-------------------------+
-   | :ref:`curves<node:curves>`             | Linear, b-spline and    |
-   |                                        | Catmull-Rom curves      |
-   +----------------------------------------+-------------------------+
-   | :ref:`particles<node:particles>`       | Collection of particles |
-   +----------------------------------------+-------------------------+
-   | :ref:`procedural<node:procedural>`     | Geometry to be loaded   |
-   |                                        | or generated in delayed |
-   |                                        | fashion                 |
-   +----------------------------------------+-------------------------+
-   | :ref:`volume<node:volume>`             | A volume loaded from a  |
-   |                                        | VDB file                |
-   +----------------------------------------+-------------------------+
-   | :ref:`environment<node:environment>`   | Geometry type to define |
-   |                                        | environment lighting    |
-   +----------------------------------------+-------------------------+
-   | :ref:`camera<node:camera>`             | Set of nodes to create  |
-   |                                        | viewing cameras         |
-   +----------------------------------------+-------------------------+
-   | :ref:`outputdriver<node:outputdriver>` | A target where to       |
-   |                                        | output rendered pixels  |
-   +----------------------------------------+-------------------------+
-   | :ref:`outputlayer<node:outputlayer>`   | Describes one render    |
-   |                                        | layer to be connected   |
-   |                                        | to an ``outputdriver``  |
-   |                                        | node                    |
-   +----------------------------------------+-------------------------+
-   | :ref:`screen<node:screen>`             | Describes how the view  |
-   |                                        | from acamera will be    |
-   |                                        | rasterized into an      |
-   |                                        | ``outputlayer`` node    |
-   +----------------------------------------+-------------------------+
+   +----------------------------------------+--------------------------+
+   | **Node**                               | **Function**             |
+   +========================================+==========================+
+   | :ref:`root<node:root>`                 | The scene's root         |
+   +----------------------------------------+--------------------------+
+   | :ref:`global<node:global>`             | Global settings node     |
+   +----------------------------------------+--------------------------+
+   | :ref:`set<node:set>`                   | Expresses relationships  |
+   |                                        | of groups of nodes       |
+   +----------------------------------------+--------------------------+
+   | :ref:`shader<node:shader>`             | osl shader or layer in a |
+   |                                        | shader group             |
+   +----------------------------------------+--------------------------+
+   | :ref:`attributes<node:attributes>`     | Container for generic    |
+   |                                        | attributes (e.g.         |
+   |                                        | visibility)              |
+   +----------------------------------------+--------------------------+
+   | :ref:`transform<node:transform>`       | Transformation to place  |
+   |                                        | objects in the scene     |
+   +----------------------------------------+--------------------------+
+   | :ref:`instances<node:instances>`       | Specifies instances of   |
+   |                                        | other nodes              |
+   +----------------------------------------+--------------------------+
+   | :ref:`mesh<node:mesh>`                 | Polygonal mesh or        |
+   |                                        | subdivision surface      |
+   +----------------------------------------+--------------------------+
+   | :ref:`faceset<node:faceset>`           | Assign attributes to     |
+   |                                        | part of a mesh           |
+   +----------------------------------------+--------------------------+
+   | :ref:`curves<node:curves>`             | Linear, b-spline and     |
+   |                                        | Catmull-Rom curves       |
+   +----------------------------------------+--------------------------+
+   | :ref:`particles<node:particles>`       | Collection of particles  |
+   +----------------------------------------+--------------------------+
+   | :ref:`procedural<node:procedural>`     | Geometry to be loaded    |
+   |                                        | or generated in delayed  |
+   |                                        | fashion                  |
+   +----------------------------------------+--------------------------+
+   | :ref:`volume<node:volume>`             | A volume loaded from a   |
+   |                                        | VDB file                 |
+   +----------------------------------------+--------------------------+
+   | :ref:`environment<node:environment>`   | Geometry type to define  |
+   |                                        | environment lighting     |
+   +----------------------------------------+--------------------------+
+   | :ref:`camera<node:camera>`             | Set of nodes to create   |
+   |                                        | viewing cameras          |
+   +----------------------------------------+--------------------------+
+   | :ref:`outputdriver<node:outputdriver>` | A target where to        |
+   |                                        | output rendered pixels   |
+   +----------------------------------------+--------------------------+
+   | :ref:`outputlayer<node:outputlayer>`   | Describes one render     |
+   |                                        | layer to be connected    |
+   |                                        | to an ``outputdriver``   |
+   |                                        | node                     |
+   +----------------------------------------+--------------------------+
+   | :ref:`screen<node:screen>`             | Describes how the view   |
+   |                                        | from acamera will be     |
+   |                                        | rasterized into an       |
+   |                                        | ``outputlayer`` node     |
+   +----------------------------------------+--------------------------+
 
 .. _node:root:
 
 The root node
 -------------
 
-The root node is much like a transform node with the particularity that
-it is the end connection for all renderable scene elements (see ). A
-node can exist in an nsi context without being connected to the root
-note but in that case it won’t affect the render in any way. The root
-node has the reserved handle name ``.root`` and doesn’t need to be
-created using ``NSICreate``. The root node has two defined attributes:
-``objects`` and ``geometryattributes``. Both are explained in .
+The root node is much like a transform node. With the particularity that
+it is the :ref:`end connection<section:basicscene>` for all renderable
+scene elements. A node can exist in an nsi context without being
+connected to the root note but in that case it won't affect the render
+in any way. The root node has the reserved handle name ``.root`` and
+doesn’t need to be created using ``NSICreate()``. The root node has two
+defined attributes: ``objects`` and ``geometryattributes``. Both are
+explained under the :ref:`transform node<node:transform>`.
 
 .. _node:global:
 
@@ -91,67 +92,112 @@ The global node
 
 This node contains various global settings for a particular nsi context.
 Note that these attributes are for the most case implementation
-specific. This node has the reserved handle name ``.global`` and doesn’t
-need to be created using ``NSICreate``. The following attributes are
+specific.
+
+This node has the reserved handle name ``.global`` and doesn't
+need to be created using ``NSICreate()``. The following attributes are
 recognized by *3Delight*:
 
-Specifies the total number of threads to use for a particular render:
+.. table:: global node optional parameters
+   :widths: 2 1 2 5
 
--  A value of zero lets the render engine choose an optimal thread
-   value. This is the default behaviour.
+   +---------------------------------+----------+--------------------------------------------+
+   | **Name**                        | **Type** | **Description/Values**                     |
+   +=================================+==========+============================================+
+   | ``numberofthreads``             | int      | Specifies the total number of threads to   |
+   | ``render.threads.number`` (!)   |          | use for a particular render:               |
+   |                                 |          +--------------------------------------------+
+   |                                 |          | -  A value of ``0`` lets the render engine |
+   |                                 |          |    choose an optimal thread value.         |
+   |                                 |          |    This is is the **default** behaviour.   |
+   |                                 |          | -  Any positive value directly sets the    |
+   |                                 |          |    total number of                         |
+   |                                 |          |    render threads.                         |
+   |                                 |          | -  A negative value will start as many     |
+   |                                 |          |    threads as optimal *plus* the specified |
+   |                                 |          |    value. This allows for an easy way to   |
+   |                                 |          |    to decrease the total number of render  |
+   |                                 |          |    threads.                                |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``renderatlowpriority``         | int      | If set to 1, start the render with a lower |
+   | ``render.priority.low`` (!)     |          | process priority. This can be useful if    |
+   |                                 |          | there are other applications that must run |
+   |                                 |          | during rendering.                          |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``texturememory``               | int      | Specifies the approximate maximum memory   |
+   | ``texture.memory`` (!)          |          | size, in megabytes, the renderer will      |
+   |                                 |          | allocate to accelerate texture access.     |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``networkcache.size``           | int      | Specifies the maximum network cache size,  |
+   |                                 |          | in gigabytes (*GB*, not *GiB*), the        |
+   |                                 |          | renderer will use to cache textures on a   |
+   |                                 |          | local drive to accelerate data access.     |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``networkcache.directory``      | string   | Specifies the directory in which textures  |
+   |                                 |          | will be cached. A good default value is    |
+   |                                 |          | ``/var/tmp/3DelightCache`` on Linux        |
+   |                                 |          | systems.                                   |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``networkcache.write``          | int      | Enables caching for image write            |
+   |                                 |          | operations. This alleviates pressure on    |
+   |                                 |          | networks by first rendering images to a    |
+   |                                 |          | local temporary location and copying them  |
+   |                                 |          | to their final destination at the end of   |
+   |                                 |          | the render. This replaces many small       |
+   |                                 |          | network writes by more efficient larger    |
+   |                                 |          | operations.                                |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``license.server``              | string   | Specifies the name or IP address of the    |
+   |                                 |          | license server to be used.                 |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``license.wait``                | int      | When no license is available for           |
+   |                                 |          | rendering, the renderer will wait until a  |
+   |                                 |          | license is available if this attribute is  |
+   |                                 |          | set to ``1``, but will stop immediately if |
+   |                                 |          | it is set to ``0``.                        |
+   |                                 |          | The latter setting is useful when managing |
+   |                                 |          | a renderfarm and other work could be       |
+   |                                 |          | scheduled instead.                         |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``license.hold``                | int      | By default, the renderer will get new      |
+   |                                 |          | licenses for every render and release them |
+   |                                 |          | once it is done. This can be undesirable   |
+   |                                 |          | if several frames are rendered in sequence |
+   |                                 |          | from the same process process. If this     |
+   |                                 |          | option is set to ``1``, the licenses       |
+   |                                 |          | obtained for the first frame are held      |
+   |                                 |          | until the last frame is finished.          |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``bucketorder``                 | string   | Specifies in what order the buckets are    |
+   | ``bucket.order``                |          | rendered. The available values are:        |
+   |                                 |          +----------------+---------------------------+
+   |                                 |          | ``horizontal`` | Row by row, left to right |
+   |                                 |          |                | and top to bottom. This   |
+   |                                 |          |                | is the **default**.       |
+   |                                 |          +----------------+---------------------------+
+   |                                 |          | ``vertical``   | Column by column, top to  |
+   |                                 |          |                | bottom and left to right. |
+   |                                 |          +----------------+---------------------------+
+   |                                 |          | ``zigzag``     | Row by row, left to right |
+   |                                 |          |                | on even rows and right to |
+   |                                 |          |                | left on odd rows.         |
+   |                                 |          +----------------+---------------------------+
+   |                                 |          | ``spiral``     | In a clockwise spiral     |
+   |                                 |          |                | from the centre of the    |
+   |                                 |          |                | image.                    |
+   |                                 |          +----------------+---------------------------+
+   |                                 |          | ``circle``     | In concentric circles     |
+   |                                 |          |                | from the centre of the    |
+   |                                 |          |                | image.                    |
+   +---------------------------------+----------+----------------+---------------------------+
 
--  Any positive value directly sets the total number of render threads.
 
--  A negative value will start as many threads as optimal *plus* the
-   specified value. This allows for an easy way to decrease the total
-   number of render threads.
 
-Specifies the approximate maximum memory size, in megabytes, the
-renderer will allocate to accelerate texture access.
-
-Specifies the maximum network cache size, in gigabytes, the renderer
-will use to cache textures on a local drive to accelerate data access.
-
-Specifies the directory in which textures will be cached. A good default
-value is /var/tmp/3DelightCache on Linux systems.
-
-Enables caching for image write operations. This alleviates pressure on
-networks by first rendering images to a local temporary location and
-copying them to their final destination at the end of the render. This
-replaces many small network writes by more efficient larger operations.
-
-Specifies the name or address of the license server to be used.
-
-When no license is available for rendering, the renderer will wait until
-a license is available if this attribute is set to ``1``, but will stop
-immediately if it’s set to ``0``. The latter setting is useful when
-managing a renderfarm and other work could be scheduled instead.
-
-By default, the renderer will get new licenses for every render and
-release them once it’s done. This can be undesirable if several frames
-are rendered in sequence from the same process. If this option is set to
-``1``, the licenses obtained for the first frame are held until the last
-frame is finished.
-
-If set to 1, start the render with a lower process priority. This can be
-useful if there are other applications that must run during rendering.
-
-Specifies in what order the buckets are rendered. The available values
-are:
-
-:math:`\rightarrow` row by row, left to right and top to bottom.
-
-:math:`\rightarrow` column by column, top to bottom and left to right.
-
-:math:`\rightarrow` row by row, left to right on even rows and right to
-left on odd rows.
-
-:math:`\rightarrow` in a clockwise spiral from the centre of the image.
-
-:math:`\rightarrow` in concentric circles from the centre of the image.
-
+frame
 Provides a frame number to be used as a seed for the sampling pattern.
-See the .
+See the :ref:`screen node<node:screen>`.
+
+
 
 Specifies the maximum bounce depth a diffuse ray can reach. A depth of 1
 specifies one additional bounce compared to purely local illumination.
@@ -159,6 +205,7 @@ specifies one additional bounce compared to purely local illumination.
 Specifies the maximum bounce depth a hair ray can reach. Note that hair
 are akin to volumetric primitives and might need elevated ray depth to
 properly capture the illumination.
+
 
 Specifies the maximum bounce depth a reflection ray can reach. Setting
 the reflection depth to 0 will only compute local illumination meaning
@@ -179,8 +226,17 @@ a negative value disables the limitation.
 Limits the distance a ray emitted from a hair closure can travel.
 Setting it to a negative value disables the limitation.
 
-Limits the distance a ray emitted from a reflective material can travel.
-Setting it to a negative value disables the limitation.
+.. table:: global node optional parameters
+   :widths: 2 1 2 5
+
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.reflection`` | double   | Limits the distance a ray emitted from a   |
+   | ``reflection.ray.length.max``   |          | reflective material can travel. Setting    |
+   |                                 |          | this to a negative value disables the      |
+   |                                 |          | limitation.                                |
+   +---------------------------------+----------+--------------------------------------------+
+
+
 
 Limits the distance a ray emitted from a refractive material can travel.
 Setting it to a negative value disables the limitation.
@@ -243,7 +299,7 @@ It also has optional attributes:
 The number of holes in the polygons. When this attribute is defined, the
 total number of faces in the mesh is defined by the number of values for
 ``nholes`` rather than for ``nvertices``. For each face, there should be
-(``nholes``\ +1) values in ``nvertices``: the respective first value
+(``nholes``+1) values in ``nvertices``: the respective first value
 specifies the number of vertices on the outside perimeter of the face,
 while additional values describe the number of vertices on perimeters of
 holes in the face. shows the definition of a polygon mesh consisting of
@@ -269,7 +325,8 @@ pair of indices into the ``P`` attribute, like ``P.indices``.
 This attribute is the sharpness of each specified crease. It must have a
 value for each pair of values given in ``subdivision.creasevertices``.
 
-::
+.. code-block:: shell
+   :linenos:
 
    Create "holey" "mesh"
    SetAttribute "holey"
@@ -300,7 +357,8 @@ has the following attributes:
 This attribute is a list of indices of faces. It identifies which faces
 of the original geometry will be part of this face set.
 
-::
+.. code-block:: shell
+   :linenos:
 
    Create "subdiv" "mesh"
    SetAttribute "subdiv"
@@ -533,7 +591,7 @@ chained together to express transform concatenation, hierarchies and
 instances. Transform nodes also accept attributes to implement . It has
 the following attributes:
 
-This is a 4x4 matrix which describes the node’s transformation. Matrices
+This is a 4×4 matrix which describes the node’s transformation. Matrices
 in nsi post-multiply column vectors so are of the form:
 
 .. math::

@@ -26,7 +26,7 @@ What we refer to as the nsi has two major components:
 
 -  Methods to create nodes, attributes and their connections.
 
--  :ref:`Node types<section:nodes>` understood by the renderer.
+-  :ref:`Node types<chapter:nodes>` understood by the renderer.
 
 Much of the complexity and expressiveness of the interface comes from
 the supported nodes. The first part was kept deliberately simple to make
@@ -53,8 +53,8 @@ to break source compatibility of the C interface.
 
    #define NSI_SCENE_ROOT ".root"
 
-The ``NSI_SCENE_ROOT`` macro defines the handle of
-:ref:`root node<section:rootnode>`.
+The ``NSI_SCENE_ROOT`` macro defines the handle of the
+:ref:`root node<node:root>`.
 
 .. code-block:: c
 
@@ -102,53 +102,55 @@ which is defined in :doc:`nsi.h`:
 Optional parameters may be given to ``NSIBegin()`` to control the
 creation of the context:
 
-.. table::
+.. table:: NSIBegin() optional parameters
    :widths: 2 1 2 5
 
-   +------------------------+---------+-------------------------------------------------------+
-   | ``type``               | string  | Sets the type of context to create. The possible      |
-   |                        |         | types are:                                            |
-   +------------------------+---------+---------------+---------------------------------------+
-   |                        |         | ``render``    | Execute the calls directly in the     |
-   |                        |         |               | renderer.                             |
-   |                        |         +---------------+---------------------------------------+
-   |                        |         | ``apistream`` | To write the interface calls to a     |
-   |                        |         |               | stream, for later execution.          |
-   |                        |         |               | The target for writing the stream     |
-   |                        |         |               | must be specified in another          |
-   |                        |         |               | parameter.                            |
-   +------------------------+---------+---------------+---------------------------------------+
-   | ``streamfilename``     | string  | The file to which the stream is to be output, if the  |
-   |                        |         | context type is ``apistream``.                        |
-   |                        |         | Specify ``stdout`` to write to standard output and    |
-   |                        |         | ``stderr`` to write to standard error.                |
-   +------------------------+---------+-------------------------------------------------------+
-   | ``streamformat``       | string  | The format of the command stream to write. Possible   |
-   |                        |         | formats are:                                          |
-   +------------------------+---------+---------------+---------------------------------------+
-   |                        |         | ``nsi``       | Produces an                           |
-   |                        |         |               | :ref:`nsi stream<section:nsistream>`  |
-   |                        |         +---------------+---------------------------------------+
-   |                        |         | ``binarynsi`` | Produces a binary encoded             |
-   |                        |         |               | :ref:`nsi stream<section:nsistream>`  |
-   +------------------------+---------+---------------+---------------------------------------+
-   | ``streamcompression``  | string  | The type of compression to apply to the written       |
-   |                        |         | command stream.                                       |
-   +------------------------+---------+-------------------------------------------------------+
-   | ``errorhandler``       | pointer | A function which is to be called by the renderer to   |
-   |                        |         | report errors. The default handler will print         |
-   |                        |         | messages to the console.                              |
-   +------------------------+---------+-------------------------------------------------------+
-   | ``errorhandlerdata``   | pointer | The ``userdata`` parameter of the error reporting     |
-   |                        |         | function.                                             |
-   +------------------------+---------+-------------------------------------------------------+
-   | ``executeprocedurals`` | string  | A list of procedural types that should be executed    |
-   |                        |         | immediately when a call to or a procedural node is    |
-   |                        |         | encountered and ``NSIBegin()``'s output ``type`` is   |
-   |                        |         | ``apistream``. This will replace any matching call    |
-   |                        |         | to ``NSIEvaluate()`` with the results of the          |
-   |                        |         | procedural's execution.                               |
-   +------------------------+---------+-------------------------------------------------------+
+   +------------------------+----------+-------------------------------------------------------+
+   | **Name**               | **Type** | **Description/Values**                                |
+   +========================+==========+=======================================================+
+   | ``type``               | string   | Sets the type of context to create. The possible      |
+   |                        |          | types are:                                            |
+   |                        |          +---------------+---------------------------------------+
+   |                        |          | ``render``    | Execute the calls directly in the     |
+   |                        |          |               | renderer. This is the **default**.    |
+   |                        |          +---------------+---------------------------------------+
+   |                        |          | ``apistream`` | To write the interface calls to a     |
+   |                        |          |               | stream, for later execution.          |
+   |                        |          |               | The target for writing the stream     |
+   |                        |          |               | must be specified in another          |
+   |                        |          |               | parameter.                            |
+   +------------------------+----------+---------------+---------------------------------------+
+   | ``streamfilename``     | string   | The file to which the stream is to be output, if the  |
+   |                        |          | context type is ``apistream``.                        |
+   |                        |          | Specify ``stdout`` to write to standard output and    |
+   |                        |          | ``stderr`` to write to standard error.                |
+   +------------------------+----------+-------------------------------------------------------+
+   | ``streamformat``       | string   | The format of the command stream to write. Possible   |
+   |                        |          | formats are:                                          |
+   |                        |          +---------------+---------------------------------------+
+   |                        |          | ``nsi``       | Produces an                           |
+   |                        |          |               | :ref:`nsi stream<section:nsistream>`  |
+   |                        |          +---------------+---------------------------------------+
+   |                        |          | ``binarynsi`` | Produces a binary encoded             |
+   |                        |          |               | :ref:`nsi stream<section:nsistream>`  |
+   +------------------------+----------+---------------+---------------------------------------+
+   | ``streamcompression``  | string   | The type of compression to apply to the written       |
+   |                        |          | command stream.                                       |
+   +------------------------+----------+-------------------------------------------------------+
+   | ``errorhandler``       | pointer  | A function which is to be called by the renderer to   |
+   |                        |          | report errors. The default handler will print         |
+   |                        |          | messages to the console.                              |
+   +------------------------+----------+-------------------------------------------------------+
+   | ``errorhandlerdata``   | pointer  | The ``userdata`` parameter of the                     |
+   |                        |          | :ref:`error reporting function<CAPI:errorcallback>`.  |
+   +------------------------+----------+-------------------------------------------------------+
+   | ``executeprocedurals`` | string   | A list of procedural types that should be executed    |
+   |                        |          | immediately when a call to or a procedural node is    |
+   |                        |          | encountered and ``NSIBegin()``'s output ``type`` is   |
+   |                        |          | ``apistream``. This will replace any matching call    |
+   |                        |          | to ``NSIEvaluate()`` with the results of the          |
+   |                        |          | procedural's execution.                               |
+   +------------------------+----------+-------------------------------------------------------+
 
 .. _CAPI:optionalparam:
 
@@ -250,7 +252,6 @@ Node creation
 
 This function is used to create a new node. Its parameters are:
 
-
 ``context``
       The context returned by ``NSIBegin()``. See
       :ref:`context handling<CAPI:contexthandling>`.
@@ -272,7 +273,7 @@ This function is used to create a new node. Its parameters are:
       typedef const char* NSIHandle_t;
 
 ``type``
-   The type of :ref:`node<section:nodes>` to create.
+   The type of :ref:`node<chapter:nodes>` to create.
 
 ``nparams``, ``params``
    This pair describes a list of optional parameters. *There are no
@@ -480,7 +481,7 @@ some later time. This requires that further interface calls not directly
 reference objects defined in the included file. The only guarantee is
 that the file will be loaded before rendering begins.
 
-.. _subsection:errors:
+.. _CAPI:errorcallback:
 
 Error reporting
 ~~~~~~~~~~~~~~~
@@ -1051,33 +1052,33 @@ Preprocessor macros
 Some convenient C preprocessor macros are also defined in
 ``nsi_procedural.h`` :
 
--  ::
+.. code-block:: c
 
-      NSI_PROCEDURAL_UNLOAD(name)
+   NSI_PROCEDURAL_UNLOAD(name)
 
-   and
+and
 
-   ::
+.. code-block:: c
 
-      NSI_PROCEDURAL_EXECUTE(name)
+   NSI_PROCEDURAL_EXECUTE(name)
 
-   declare functions of the specified name that match
-   ``NSIProceduralUnload_t`` and ``NSIProceduralExecute_t``,
-   respectively.
+declare functions of the specified name that match
+``NSIProceduralUnload_t`` and ``NSIProceduralExecute_t``,
+respectively.
 
--  ::
+.. code-block:: c
 
       NSI_PROCEDURAL_LOAD
 
-   declares a ``NSIProceduralLoad`` function.
+declares a ``NSIProceduralLoad`` function.
 
--  ::
+.. code-block:: c
 
       NSI_PROCEDURAL_INIT(proc, unload_fct, execute_fct)
 
-   initializes a ``NSIProcedural_t`` (passed as ``proc``) using the
-   addresses of the procedural’s main functions. It also initializes
-   ``proc.nsi_version``.
+initializes a ``NSIProcedural_t`` (passed as ``proc``) using the
+addresses of the procedural’s main functions. It also initializes
+``proc.nsi_version``.
 
 So, a skeletal dynamic library procedural (that does nothing) could be
 implemented as in .
@@ -1092,7 +1093,8 @@ so the procedural could be loaded independently from multiple parallel
 renders, each using its own instance of the ``NSIProcedural_t``
 descriptor.
 
-::
+.. code-block:: c
+   :linenos:
 
    #include "nsi_procedural.h"
 
@@ -1110,5 +1112,3 @@ descriptor.
        NSI_PROCEDURAL_INIT(proc, min_unload, min_execute);
        return &proc;
    }
-
-.. _chapter:Nodes:
