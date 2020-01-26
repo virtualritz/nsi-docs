@@ -5,6 +5,8 @@
     /* !important prevents the common CSS stylesheets from
        overriding this as on RTD they are loaded after this stylesheet */
     white-space: normal !important;
+    text-align: left !important;
+    vertical-align: top !important;
   }
 
   .wy-table-responsive {
