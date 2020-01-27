@@ -190,68 +190,86 @@ recognized by *3Delight*:
    |                                 |          |                | from the centre of the    |
    |                                 |          |                | image.                    |
    +---------------------------------+----------+----------------+---------------------------+
-
-
-
-frame
-Provides a frame number to be used as a seed for the sampling pattern.
-See the :ref:`screen node<node:screen>`.
-
-
-
-Specifies the maximum bounce depth a diffuse ray can reach. A depth of 1
-specifies one additional bounce compared to purely local illumination.
-
-Specifies the maximum bounce depth a hair ray can reach. Note that hair
-are akin to volumetric primitives and might need elevated ray depth to
-properly capture the illumination.
-
-
-Specifies the maximum bounce depth a reflection ray can reach. Setting
-the reflection depth to 0 will only compute local illumination meaning
-that only emissive surfaces will appear in the reflections.
-
-Specifies the maximum bounce depth a refraction ray can reach. A value
-of 4 allows light to shine through a properly modeled object such as a
-glass.
-
-Specifies the maximum bounce depth a volume ray can reach.
-
-Limits the distance a ray emitted from a diffuse material can travel.
-Using a relatively low value for this attribute might improve
-performance without significantly affecting the look of the resulting
-image, as it restrains the extent of global illumination. Setting it to
-a negative value disables the limitation.
-
-Limits the distance a ray emitted from a hair closure can travel.
-Setting it to a negative value disables the limitation.
-
-.. table:: global node optional parameters
-   :widths: 2 1 2 5
-
+   | ``frame``                       | int      | Provides a frame number to be used as a    |
+   |                                 |          | seed for the sampling pattern.             |
+   |                                 |          | See the :ref:`screen node<node:screen>`.   |
    +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.reflection`` | double   | Limits the distance a ray emitted from a   |
-   | ``reflection.ray.length.max``   |          | reflective material can travel. Setting    |
-   |                                 |          | this to a negative value disables the      |
-   |                                 |          | limitation.                                |
+   | ``maximumraydepth.diffuse``     | int (1)  | Specifies the maximum bounce depth a ray   |
+   | ``diffuse.ray.depth.max``       |          | emitted from a diffuse |closure| can       |
+   |                                 |          | reach. A depth of ``1`` specifies one      |
+   |                                 |          | additional bounce compared to purely local |
+   |                                 |          | illumination.                              |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.diffuse``    | double   | Limits the distance a ray emitted from a   |
+   | ``diffuse.ray.length.max``      |          | diffuse |closure| can travel.              |
+   |                                 |          |                                            |
+   |                                 |          | Using a relatively low value for this      |
+   |                                 |          | attribute might improve performance        |
+   |                                 |          | without significantly affecting the look   |
+   |                                 |          | of the resulting image, as it restrains    |
+   |                                 |          | the extent of global illumination.         |
+   |                                 |          |                                            |
+   |                                 |          | Setting this to a negative value disables  |
+   |                                 |          | the limitation.                            |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraydepth.reflection``  | int (4)  | Specifies the maximum bounce depth a       |
+   | ``reflection.ray.depth.max``    |          | reflection ray can reach.                  |
+   |                                 |          |                                            |
+   |                                 |          |                                            |
+   |                                 |          | Setting reflection depth to 0 will only    |
+   |                                 |          | compute local illumination resulting in    |
+   |                                 |          | only surfaces with an emission |closure|   |
+   |                                 |          | to appear in reflections.                  |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.reflection`` | double   | Limits the distance a reflection ray can   |
+   | ``reflection.ray.length.max``   |          | travel. Setting this to a negative value   |
+   |                                 |          | disables the limitation.                   |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.specular``   | double   | Limits the distance a glossy ray can       |
+   | ``glossy.ray.length.max``       |          | travel. Setting this to a negative value   |
+   |                                 |          | disables the limitation.                   |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraydepth.refraction``  | int (4)  | Specifies the maximum bounce depth a       |
+   | ``volume.ray.depth.max``        |          | refraction ray can reach.                  |
+   |                                 |          |                                            |
+   |                                 |          | The default value of ``4`` allows light to |
+   |                                 |          | shine through a properly modeled object    |
+   |                                 |          | such as a glass.                           |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.refraction`` | double   | Limits the distance a refraction ray can   |
+   | ``refraction.ray.length.max``   |          | travel. Setting this to a negative value   |
+   |                                 |          | disables the limitation.                   |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraydepth.hair``        | int (4)  | Specifies the maximum bounce depth a hair  |
+   | ``hair.ray.depth.max``          |          | ray can reach.                             |
+   |                                 |          |                                            |
+   |                                 |          | Note that hair are akin to volumetric      |
+   |                                 |          | primitives and might need elevated ray     |
+   |                                 |          | depth to properly capture the              |
+   |                                 |          | illumination.                              |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can         |
+   | ``hair.ray.length.max``         |          | travel. Setting this to a negative value   |
+   |                                 |          | disables the limitation.                   |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraydepth.volume``      | int (0)  | Specifies the maximum bounce depth a       |
+   | ``volume.ray.depth.max``        |          | volume ray can reach.                      |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can travel. |
+   | ``hair.ray.length.max``         |          | Setting this to a negative value disables  |
+   |                                 |          | the limitation.                            |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``quality.shadingsamples``      | int      | Controls the quality of BSDF sampling.     |
+   | ``shading.quality.samples``     |          | Larger values give less visible noise.     |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``quality.volumesamples``       | int      | Controls the quality of volume sampling.   |
+   | ``volume.quality.samples``      |          | Larger values give less visible noise.     |
    +---------------------------------+----------+--------------------------------------------+
 
 
 
-Limits the distance a ray emitted from a refractive material can travel.
-Setting it to a negative value disables the limitation.
 
-Limits the distance a ray emitted from a specular (glossy) material can
-travel. Setting it to a negative value disables the limitation.
 
-Limits the distance a ray emitted from a volume can travel. Setting it
-to a negative value disables the limitation.
-
-Controls the quality of bsdf sampling. Larger values give less visible
-noise.
-
-Controls the quality of volume sampling. Larger values give less visible
-noise.
 
 When set to ``1``, enables displacement shading. Otherwise, it must be
 set to ``0``, which forces the renderer to ignore any displacement
