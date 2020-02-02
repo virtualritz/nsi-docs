@@ -1,3 +1,5 @@
+.. include:: definitions.rst
+
 .. _chapter:nodes:
 
 Nodes
@@ -98,35 +100,74 @@ This node has the reserved handle name ``.global`` and doesn't
 need to be created using ``NSICreate()``. The following attributes are
 recognized by *3Delight*:
 
-.. table:: global node optional parameters
-   :widths: 2 1 2 5
 
-   +---------------------------------+----------+--------------------------------------------+
-   | **Name**                        | **Type** | **Description/Values**                     |
-   +=================================+==========+============================================+
-   | ``numberofthreads``             | int      | Specifies the total number of threads to   |
-   | ``render.threads.number`` (!)   |          | use for a particular render:               |
-   |                                 |          +--------------------------------------------+
-   |                                 |          | -  A value of ``0`` lets the render engine |
-   |                                 |          |    choose an optimal thread value.         |
-   |                                 |          |    This is is the **default** behaviour.   |
-   |                                 |          | -  Any positive value directly sets the    |
-   |                                 |          |    total number of                         |
-   |                                 |          |    render threads.                         |
-   |                                 |          | -  A negative value will start as many     |
-   |                                 |          |    threads as optimal *plus* the specified |
-   |                                 |          |    value. This allows for an easy way to   |
-   |                                 |          |    to decrease the total number of render  |
-   |                                 |          |    threads.                                |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``renderatlowpriority``         | int      | If set to 1, start the render with a lower |
-   | ``render.priority.low`` (!)     |          | process priority. This can be useful if    |
-   |                                 |          | there are other applications that must run |
-   |                                 |          | during rendering.                          |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``texturememory``               | int      | Specifies the approximate maximum memory   |
-   | ``texture.memory`` (!)          |          | size, in megabytes, the renderer will      |
-   |                                 |          | allocate to accelerate texture access.     |
+.. table:: global node optional parameters
+    :widths: 2 1 2 5
+
+    +---------------------------------+----------+--------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                     |
+    +=================================+==========+============================================+
+    | ``numberofthreads``             | int      | Specifies the total number of threads to   |
+    | ``render.threads.number`` (!)   |          | use for a particular render:               |
+    |                                 |          +--------------------------------------------+
+    |                                 |          | -  A value of ``0`` lets the render engine |
+    |                                 |          |    choose an optimal thread value.         |
+    |                                 |          |    This is is the **default** behaviour.   |
+    |                                 |          | -  Any positive value directly sets the    |
+    |                                 |          |    total number of                         |
+    |                                 |          |    render threads.                         |
+    |                                 |          | -  A negative value will start as many     |
+    |                                 |          |    threads as optimal *plus* the specified |
+    |                                 |          |    value. This allows for an easy way to   |
+    |                                 |          |    to decrease the total number of render  |
+    |                                 |          |    threads.                                |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``renderatlowpriority``         | int      | If set to 1, start the render with a lower |
+    | ``render.priority.low`` (!)     |          | process priority. This can be useful if    |
+    |                                 |          | there are other applications that must run |
+    |                                 |          | during rendering.                          |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``texturememory``               | int      | Specifies the approximate maximum memory   |
+    | ``texture.memory`` (!)          |          | size, in megabytes, the renderer will      |
+    |                                 |          | allocate to accelerate texture access.     |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``bucketorder``                 | string   | Specifies in what order the buckets are    |
+    | ``bucket.order``                |          | rendered. The available values are:        |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``horizontal`` | Row by row, left to right |
+    |                                 |          |                | and top to bottom. This   |
+    |                                 |          |                | is the **default**.       |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``vertical``   | Column by column, top to  |
+    |                                 |          |                | bottom and left to right. |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``zigzag``     | Row by row, left to right |
+    |                                 |          |                | on even rows and right to |
+    |                                 |          |                | left on odd rows.         |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``spiral``     | In a clockwise spiral     |
+    |                                 |          |                | from the centre of the    |
+    |                                 |          |                | image.                    |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``circle``     | In concentric circles     |
+    |                                 |          |                | from the centre of the    |
+    |                                 |          |                | image.                    |
+    +---------------------------------+----------+----------------+---------------------------+
+    | ``frame``                       | int      | Provides a frame number to be used as a    |
+    |                                 |          | seed for the sampling pattern.             |
+    |                                 |          | See the :ref:`screen node<node:screen>`.   |
+    +---------------------------------+----------+--------------------------------------------+
+
+.. index::
+   caching
+   disk cache
+   disk usage
+   network cache
+   temporary files
+
+.. table:: global node optional network cache parameters
+   :widths: 2 1 7
+
    +---------------------------------+----------+--------------------------------------------+
    | ``networkcache.size``           | int      | Specifies the maximum network cache size,  |
    |                                 |          | in gigabytes (*GB*, not *GiB*), the        |
@@ -146,6 +187,15 @@ recognized by *3Delight*:
    |                                 |          | the render. This replaces many small       |
    |                                 |          | network writes by more efficient larger    |
    |                                 |          | operations.                                |
+   +---------------------------------+----------+--------------------------------------------+
+
+.. index::
+    license
+    server
+
+.. table:: global node optional parameters fpr licensing
+   :widths: 2 1 7
+
    +---------------------------------+----------+--------------------------------------------+
    | ``license.server``              | string   | Specifies the name or IP address of the    |
    |                                 |          | license server to be used.                 |
@@ -168,31 +218,24 @@ recognized by *3Delight*:
    |                                 |          | obtained for the first frame are held      |
    |                                 |          | until the last frame is finished.          |
    +---------------------------------+----------+--------------------------------------------+
-   | ``bucketorder``                 | string   | Specifies in what order the buckets are    |
-   | ``bucket.order``                |          | rendered. The available values are:        |
-   |                                 |          +----------------+---------------------------+
-   |                                 |          | ``horizontal`` | Row by row, left to right |
-   |                                 |          |                | and top to bottom. This   |
-   |                                 |          |                | is the **default**.       |
-   |                                 |          +----------------+---------------------------+
-   |                                 |          | ``vertical``   | Column by column, top to  |
-   |                                 |          |                | bottom and left to right. |
-   |                                 |          +----------------+---------------------------+
-   |                                 |          | ``zigzag``     | Row by row, left to right |
-   |                                 |          |                | on even rows and right to |
-   |                                 |          |                | left on odd rows.         |
-   |                                 |          +----------------+---------------------------+
-   |                                 |          | ``spiral``     | In a clockwise spiral     |
-   |                                 |          |                | from the centre of the    |
-   |                                 |          |                | image.                    |
-   |                                 |          +----------------+---------------------------+
-   |                                 |          | ``circle``     | In concentric circles     |
-   |                                 |          |                | from the centre of the    |
-   |                                 |          |                | image.                    |
-   +---------------------------------+----------+----------------+---------------------------+
-   | ``frame``                       | int      | Provides a frame number to be used as a    |
-   |                                 |          | seed for the sampling pattern.             |
-   |                                 |          | See the :ref:`screen node<node:screen>`.   |
+
+.. index::
+   diffuse ray depth
+   diffuse ray length
+   reflection ray depth
+   reflection ray length
+   refraction ray depth
+   refraction ray length
+   glossy ray length
+   specular ray length
+   volume ray depth
+   volume ray length
+   hair ray depth
+   hair ray length
+
+.. table:: global node optional parameters for ray tracing quality
+   :widths: 2 1 7
+
    +---------------------------------+----------+--------------------------------------------+
    | ``maximumraydepth.diffuse``     | int (1)  | Specifies the maximum bounce depth a ray   |
    | ``diffuse.ray.depth.max``       |          | emitted from a diffuse |closure| can       |
@@ -230,7 +273,7 @@ recognized by *3Delight*:
    |                                 |          | disables the limitation.                   |
    +---------------------------------+----------+--------------------------------------------+
    | ``maximumraydepth.refraction``  | int (4)  | Specifies the maximum bounce depth a       |
-   | ``volume.ray.depth.max``        |          | refraction ray can reach.                  |
+   | ``refraction.ray.depth.max``    |          | refraction ray can reach.                  |
    |                                 |          |                                            |
    |                                 |          | The default value of ``4`` allows light to |
    |                                 |          | shine through a properly modeled object    |
@@ -249,53 +292,97 @@ recognized by *3Delight*:
    |                                 |          | illumination.                              |
    +---------------------------------+----------+--------------------------------------------+
    | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can         |
-   | ``hair.ray.length.max``         |          | travel. Setting this to a negative value   |
+   | ``hair.ray.length.max`` (!)     |          | travel. Setting this to a negative value   |
    |                                 |          | disables the limitation.                   |
    +---------------------------------+----------+--------------------------------------------+
    | ``maximumraydepth.volume``      | int (0)  | Specifies the maximum bounce depth a       |
-   | ``volume.ray.depth.max``        |          | volume ray can reach.                      |
+   | ``volume.ray.depth.max`` (!)    |          | volume ray can reach.                      |
    +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can travel. |
-   | ``hair.ray.length.max``         |          | Setting this to a negative value disables  |
-   |                                 |          | the limitation.                            |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``quality.shadingsamples``      | int      | Controls the quality of BSDF sampling.     |
-   | ``shading.quality.samples``     |          | Larger values give less visible noise.     |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``quality.volumesamples``       | int      | Controls the quality of volume sampling.   |
-   | ``volume.quality.samples``      |          | Larger values give less visible noise.     |
+   | ``maximumraylength.volume``     | double   | Limits the distance a volume ray can       |
+   | ``volume.ray.length.max`` (!)   |          | travel. Setting this to a negative value   |
+   |                                 |          | disables the limitation.                   |
    +---------------------------------+----------+--------------------------------------------+
 
+.. index::
+   image quality
+   shading rate
+   shading samples
+   volume samples
+   displacement
+   subsurface
+
+.. table:: global node optional parameters controlling overall image quality
+    :widths: 2 1 7
+
+    +---------------------------------+----------+-------------------------------------------+
+    | ``quality.shadingsamples``      | int      | Controls the quality of BSDF sampling.    |
+    | ``shading.samples``             |          | Larger values give less visible noise.    |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``quality.volumesamples``       | int      | Controls the quality of volume sampling.  |
+    | ``volume.samples``              |          | Larger values give less visible noise.    |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``displacement.show``           | int      | When set to ``1``, enables displacement   |
+    | ``shading.displacement`` (!)    |          | shading. Otherwise, it must be set to     |
+    |                                 |          | ignore any displacement shader in the     |
+    |                                 |          | scene.                                    |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``subsurface.show``             | int      | When set to ``1``, enables the            |
+    | ``shading.subsurface`` (!)      |          | ``subsurface()`` osl |closure|.           |
+    |                                 |          | Otherwise, it must be set to ``0``, which |
+    |                                 |          | will ignore this |closure| in osl         |
+    |                                 |          | shaders.                                  |
+    +---------------------------------+----------+-------------------------------------------+
 
 
+.. index::
+   statistics
+   render time
+
+.. table:: global node optional parameters for statistics
+    :widths: 2 1 7
+
+    +---------------------------------+----------+-------------------------------------------+
+    | ``statistics.progress``         | int      | When set to ``1``, prints rendering       |
+    |                                 |          | progress as a percentage of completed     |
+    |                                 |          | pixels.                                   |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``statistics.filename``         | string   | Full path of the file where rendering     |
+    |                                 |          | statistics will be written. An empty      |
+    |                                 |          | string will write statistics to standard  |
+    |                                 |          | output. The name ``null`` will not output |
+    |                                 |          | statistics.                               |
+    +---------------------------------+----------+-------------------------------------------+
 
 
-
-When set to ``1``, enables displacement shading. Otherwise, it must be
-set to ``0``, which forces the renderer to ignore any displacement
-shader in the scene.
-
-When set to ``1``, enables the ``subsurface()`` osl closure. Otherwise,
-it must be set to ``0``, which will ignore this closure in osl shaders.
-
-When set to ``1``, prints rendering progress as a percentage of
-completed pixels.
-
-Full path of the file where rendering statistics will be written. An
-empty string will write statistics to standard output. The name ``null``
-will not output statistics.
+.. index::
+    light layer
+    light set
+    outputlayer
+    set
 
 .. _node:set:
 
 The set node
 ------------
 
-This node can be used to express relationships between objects. An
-example is to connect many lights to such a node to create a *light set*
-and then to connect this node to ``outputlayer.lightset`` ( and ). It
-has the following attributes:
+This node can be used to express relationships between objects.
 
-This connection accepts all nodes that are members of the set.
+An example is to connect many lights to such a node to create a *light
+set* and then to connect this node to ``outputlayer.lightset`` (see
+:ref:`outputlayer<node:outputlayer>` and
+:ref:`light layers<section:lightlayers>`).
+
+It has the following parameters:
+
+.. table:: global node optional parameters
+    :widths: 2 1 2 5
+
+    +---------------------------------+--------------+---------------------------------------+
+    | **Name**                        | **Type**     | **Description/Values**                |
+    +=================================+==============+=======================================+
+    | ``objects``                     | <connection> | This connection accepts all nodes     |
+    |                                 |              | that are members of the set.          |
+    +---------------------------------+--------------+---------------------------------------+
 
 .. _node:mesh:
 
@@ -303,45 +390,77 @@ The mesh node
 -------------
 
 This node represents a polygon mesh. It has the following required
-attributes:
+parameters:
 
-The positions of the object’s vertices. Typically, this attribute will
-be through a ``P.indices`` attribute.
+.. table:: mesh node required parameters
+   :widths: 3 1 6
 
-The number of vertices for each face of the mesh. The number of values
-for this attribute specifies total face number (unless ``nholes`` is
-defined).
+   +---------------------------------+----------+--------------------------------------------+
+   | **Name**                        | **Type** | **Description/Values**                     |
+   +=================================+==========+============================================+
+   | ``P``                           | point    | The positions of the object’s vertices.    |
+   |                                 |          | Typically, this attribute will be indexed  |
+   |                                 |          | through a ``P.indices`` attribute.         |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``nvertices``                   | int      | The number of vertices for each face of    |
+   | ``vertices.length`` (!)         |          | the mesh. The number of values for this    |
+   |                                 |          | attribute specifies total face number      |
+   |                                 |          | (unless ``nholes`` is defined).            |
+   +---------------------------------+----------+--------------------------------------------+
 
-It also has optional attributes:
+It also has these optional parameters:
 
-The number of holes in the polygons. When this attribute is defined, the
-total number of faces in the mesh is defined by the number of values for
-``nholes`` rather than for ``nvertices``. For each face, there should be
-(``nholes``+1) values in ``nvertices``: the respective first value
-specifies the number of vertices on the outside perimeter of the face,
-while additional values describe the number of vertices on perimeters of
-holes in the face. shows the definition of a polygon mesh consisting of
-3 square faces, with one triangular hole in the first one and square
-holes in the second one.
+.. table:: mesh node optional parameters
+   :widths: 3 1 6
 
-A value of 1 specifies that polygons with a clockwise winding order are
-front facing. The default is 0, making counterclockwise polygons front
-facing.
-
-A value of ``"catmull-clark"`` will cause the mesh to render as a
-Catmull-Clark subdivision surface.
-
-This attribute is a list of vertices which are sharp corners. The values
-are indices into the ``P`` attribute, like ``P.indices``.
-
-This attribute is the sharpness of each specified sharp corner. It must
-have a value for each value given in ``subdivision.cornervertices``.
-
-This attribute is a list of crease edges. Each edge is specified as a
-pair of indices into the ``P`` attribute, like ``P.indices``.
-
-This attribute is the sharpness of each specified crease. It must have a
-value for each pair of values given in ``subdivision.creasevertices``.
+   +---------------------------------+----------+--------------------------------------------+
+   | **Name**                        | **Type** | **Description/Values**                     |
+   +=================================+==========+============================================+
+   | ``P``                           | point    | The number of holes in the polygons.       |
+   |                                 |          | When this attribute is defined, the total  |
+   |                                 |          | number of faces in the mesh is defined by  |
+   |                                 |          | the number of values for ``nholes``        |
+   |                                 |          | rather than for ``nvertices``. For         |
+   |                                 |          | each face, there should be                 |
+   |                                 |          | (``holes.length``+1) values in             |
+   |                                 |          | ``vertices``: the respective first value   |
+   |                                 |          | specifies the number of vertices on the    |
+   |                                 |          | outside perimeter of the face, while       |
+   |                                 |          | additional values describe the number of   |
+   |                                 |          | vertices on perimeters of holes in the     |
+   |                                 |          | face. shows the definition of a polygon    |
+   |                                 |          | mesh consisting of 3 square faces, with    |
+   |                                 |          | one triangular hole in the first one and   |
+   |                                 |          | square holes in the second one.            |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``clockwisewinding``            | int      | A value of ``1`` specifies that polygons   |
+   |                                 |          | with clockwise winding order are front     |
+   |                                 |          | facing.                                    |
+   |                                 |          |                                            |
+   |                                 |          | The default is 0, making counterclockwise  |
+   |                                 |          | polygons front facing.                     |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``subdivision.scheme``          | string   | A value of ``"catmull-clark"`` will cause  |
+   |                                 |          | the mesh to render as a Catmull-Clark      |
+   |                                 |          | subdivision surface.                       |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``subdivision.cornervertices``  | int      | A list of vertices which are sharp         |
+   |                                 |          | corners. The values are indices into the   |
+   |                                 |          | ``P`` attribute, like ``P.indices``.       |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``subdivision.cornersharpness`` | float    | The sharpness of each specified sharp      |
+   |                                 |          | corner. It must have a value for each      |
+   |                                 |          | value given in                             |
+   |                                 |          | ``subdivision.cornervertices``.            |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``subdivision.creasevertices``  | int      | A list of crease edges. Each edge is       |
+   |                                 |          | specified as a pair of indices into the    |
+   |                                 |          | ``P`` attribute, like ``P.indices``.       |
+   +---------------------------------+----------+--------------------------------------------+
+   | ``subdivision.creasesharpness`` | float    | The sharpness of each specified crease. It |
+   |                                 |          | must have a value for each pair of values  |
+   |                                 |          | given in ``subdivision.creasevertices``.   |
+   +---------------------------------+----------+--------------------------------------------+
 
 .. code-block:: shell
    :linenos:
@@ -369,8 +488,29 @@ The faceset node
 ----------------
 
 This node is used to provide a way to attach attributes to some faces of
-another geometric primitive, such as the ``mesh`` node, as shown in . It
+another geometric primitive, such as the :ref:`mesh node<node:mesh>`. It
 has the following attributes:
+
+
+P..........................................................................point
+The positions of the object’s vertices. Typically, this attribute will be addressed
+indirectly through a P.indices attribute.
+nvertices...................................................................int
+The number of vertices for each face of the mesh. The number of values for this
+attribute specifies total face number (unless nholes is defined).
+It also has optional attributes:
+nholes ...................................................................... int
+The number of holes in the polygons. When this attribute is defined, the total
+number of faces in the mesh is defined by the number of values for nholes
+rather than for nvertices. For each face, there should be (nholes+1) values in
+nvertices: the respective first value specifies the number of vertices on the outside
+perimeter of the face, while additional values describe the number of vertices
+on perimeters of holes in the face. Listing 3.1 shows the definition of a polygon
+mesh consisting of 3 square faces, with one triangular hole in the first one and
+square holes in the second one.
+clockwisewinding.......................................................int (0)
+A value of 1 specifies that polygons with a clockwise winding order are front
+facing. The default is 0, making counterclockwise polygons front facing.
 
 This attribute is a list of indices of faces. It identifies which faces
 of the original geometry will be part of this face set.

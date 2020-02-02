@@ -23,9 +23,9 @@ Jump to
    script_objects
    guidelines
    acknowledgments
+   genindex
 
-.. Indices and tables
-    ==================
-    * :ref:`genindex`
-    * :ref:`modindex`
-    * :ref:`search`
+
+
+..    * :ref:`modindex`
+      * :ref:`search`

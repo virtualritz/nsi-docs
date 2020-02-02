@@ -172,8 +172,7 @@ Lighting in the nodal scene interface
 There are no special light source nodes in nsi (although the node, which
 defines a sphere of infinite radius, could be considered as a light in
 practice). Any scene geometry can become a light source if its surface
-shader produces an ``emission()`` `closure
-<https://3delight.atlassian.net/wiki/display/3DSP/General+Guidelines#GeneralGuidelines-SupportedClosures>`_.
+shader produces an ``emission()`` |closure|.
 Some operations on light sources, such as *light linking*, are done
 using more :ref:`general approaches<section:lightlinking>`.
 Following is a quick summary on how to create different kinds of light
