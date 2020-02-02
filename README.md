@@ -14,6 +14,15 @@ cd docs
 
 You need Python 3 to build this. Aka: running `pyton` should invoke a
 Python 3 interpreter.
+
+For example, on **macOS**, using **Homebrew**:
+
+```
+> brew install pyenv 
+> pyenv install 3.7.6
+> pyenv global 3.7.6
+```
+
 Requirements for a `pip` install are in `docs/requirements.txt`.
 ```
 pip install -r requirements.txt
@@ -71,18 +80,3 @@ The result will be in docs/_build/latex/nsi.pdf
 
 This currently looks a tad ugly and needs some love with custom Tex
 commands.
-
-### Troubelshooting
-
-If you get errors about requirements during building, make sure you have a Python 3.x environment properly configured.
-For example, on macOS:
-
-```
-> brew install pyenv 
-> pyenv install 3.7.6
-> pyenv global 3.7.6
-```
-
-After the above commands succeeded install the requirements (see above) & retry the build.
-
-
