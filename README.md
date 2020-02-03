@@ -71,7 +71,9 @@ This means you must have `inkscape` or `rsvg-convert` in your `PATH`.
 Note that *Inkscape 1.0beta* does not work with
 *sphinxcontrib-svg2pdfconverter*. You need an older 0.9x version.
 
-The default in the [`extensions` section of `docs/conf.py`](https://github.com/virtualritz/nsi-docs/blob/df238d06353cf915c8c1ea33e370e6ba9e81d6f9/docs/conf.py#L34) is for `rsvg-convert`:
+The default in the
+[`extensions` section of `docs/conf.py`](https://github.com/virtualritz/nsi-docs/blob/df238d06353cf915c8c1ea33e370e6ba9e81d6f9/docs/conf.py#L34)
+is for `rsvg-convert`.
 
 To build the PDF:
 ```
