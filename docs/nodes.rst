@@ -102,7 +102,7 @@ recognized by *3Delight*:
 
 
 .. table:: global node optional attributes
-    :widths: 2 1 2 5
+    :widths: 3 1 2 4
 
     +---------------------------------+----------+--------------------------------------------+
     | **Name**                        | **Type** | **Description/Values**                     |
@@ -166,7 +166,7 @@ recognized by *3Delight*:
    temporary files
 
 .. table:: global node optional network cache attributes
-   :widths: 2 1 7
+   :widths: 3 1 6
 
    +---------------------------------+----------+--------------------------------------------+
    | ``networkcache.size``           | int      | Specifies the maximum network cache size,  |
@@ -194,7 +194,7 @@ recognized by *3Delight*:
     server
 
 .. table:: global node optional attributes fpr licensing
-   :widths: 2 1 7
+   :widths: 3 1 6
 
    +---------------------------------+----------+--------------------------------------------+
    | ``license.server``              | string   | Specifies the name or IP address of the    |
@@ -234,74 +234,74 @@ recognized by *3Delight*:
    hair ray length
 
 .. table:: global node optional attributes governing ray tracing quality
-   :widths: 2 1 7
+    :widths: 3 1 6
 
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraydepth.diffuse``     | int (1)  | Specifies the maximum bounce depth a ray   |
-   | ``diffuse.ray.depth.max``       |          | emitted from a diffuse |closure| can       |
-   |                                 |          | reach. A depth of ``1`` specifies one      |
-   |                                 |          | additional bounce compared to purely local |
-   |                                 |          | illumination.                              |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.diffuse``    | double   | Limits the distance a ray emitted from a   |
-   | ``diffuse.ray.length.max``      |          | diffuse |closure| can travel.              |
-   |                                 |          |                                            |
-   |                                 |          | Using a relatively low value for this      |
-   |                                 |          | attribute might improve performance        |
-   |                                 |          | without significantly affecting the look   |
-   |                                 |          | of the resulting image, as it restrains    |
-   |                                 |          | the extent of global illumination.         |
-   |                                 |          |                                            |
-   |                                 |          | Setting this to a negative value disables  |
-   |                                 |          | the limitation.                            |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraydepth.reflection``  | int (4)  | Specifies the maximum bounce depth a       |
-   | ``reflection.ray.depth.max``    |          | reflection ray can reach.                  |
-   |                                 |          |                                            |
-   |                                 |          |                                            |
-   |                                 |          | Setting reflection depth to 0 will only    |
-   |                                 |          | compute local illumination resulting in    |
-   |                                 |          | only surfaces with an emission |closure|   |
-   |                                 |          | to appear in reflections.                  |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.reflection`` | double   | Limits the distance a reflection ray can   |
-   | ``reflection.ray.length.max``   |          | travel. Setting this to a negative value   |
-   |                                 |          | disables the limitation.                   |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.specular``   | double   | Limits the distance a glossy ray can       |
-   | ``glossy.ray.length.max``       |          | travel. Setting this to a negative value   |
-   |                                 |          | disables the limitation.                   |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraydepth.refraction``  | int (4)  | Specifies the maximum bounce depth a       |
-   | ``refraction.ray.depth.max``    |          | refraction ray can reach.                  |
-   |                                 |          |                                            |
-   |                                 |          | The default value of ``4`` allows light to |
-   |                                 |          | shine through a properly modeled object    |
-   |                                 |          | such as a glass.                           |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.refraction`` | double   | Limits the distance a refraction ray can   |
-   | ``refraction.ray.length.max``   |          | travel. Setting this to a negative value   |
-   |                                 |          | disables the limitation.                   |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraydepth.hair``        | int (4)  | Specifies the maximum bounce depth a hair  |
-   | ``hair.ray.depth.max``          |          | ray can reach.                             |
-   |                                 |          |                                            |
-   |                                 |          | Note that hair are akin to volumetric      |
-   |                                 |          | primitives and might need elevated ray     |
-   |                                 |          | depth to properly capture the              |
-   |                                 |          | illumination.                              |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can         |
-   | ``hair.ray.length.max`` (!)     |          | travel. Setting this to a negative value   |
-   |                                 |          | disables the limitation.                   |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraydepth.volume``      | int (0)  | Specifies the maximum bounce depth a       |
-   | ``volume.ray.depth.max`` (!)    |          | volume ray can reach.                      |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``maximumraylength.volume``     | double   | Limits the distance a volume ray can       |
-   | ``volume.ray.length.max`` (!)   |          | travel. Setting this to a negative value   |
-   |                                 |          | disables the limitation.                   |
-   +---------------------------------+----------+--------------------------------------------+
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraydepth.diffuse``     | int (1)  | Specifies the maximum bounce depth a ray   |
+    | ``diffuse.ray.depth.max``       |          | emitted from a diffuse |closure| can       |
+    |                                 |          | reach. A depth of ``1`` specifies one      |
+    |                                 |          | additional bounce compared to purely local |
+    |                                 |          | illumination.                              |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraylength.diffuse``    | double   | Limits the distance a ray emitted from a   |
+    | ``diffuse.ray.length.max``      |          | diffuse |closure| can travel.              |
+    |                                 |          |                                            |
+    |                                 |          | Using a relatively low value for this      |
+    |                                 |          | attribute might improve performance        |
+    |                                 |          | without significantly affecting the look   |
+    |                                 |          | of the resulting image, as it restrains    |
+    |                                 |          | the extent of global illumination.         |
+    |                                 |          |                                            |
+    |                                 |          | Setting this to a negative value disables  |
+    |                                 |          | the limitation.                            |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraydepth.reflection``  | int (4)  | Specifies the maximum bounce depth a       |
+    | ``reflection.ray.depth.max``    |          | reflection ray can reach.                  |
+    |                                 |          |                                            |
+    |                                 |          |                                            |
+    |                                 |          | Setting reflection depth to 0 will only    |
+    |                                 |          | compute local illumination resulting in    |
+    |                                 |          | only surfaces with an emission |closure|   |
+    |                                 |          | to appear in reflections.                  |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraylength.reflection`` | double   | Limits the distance a reflection ray can   |
+    | ``reflection.ray.length.max``   |          | travel. Setting this to a negative value   |
+    |                                 |          | disables the limitation.                   |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraylength.specular``   | double   | Limits the distance a glossy ray can       |
+    | ``glossy.ray.length.max``       |          | travel. Setting this to a negative value   |
+    |                                 |          | disables the limitation.                   |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraydepth.refraction``  | int (4)  | Specifies the maximum bounce depth a       |
+    | ``refraction.ray.depth.max``    |          | refraction ray can reach.                  |
+    |                                 |          |                                            |
+    |                                 |          | The default value of ``4`` allows light to |
+    |                                 |          | shine through a properly modeled object    |
+    |                                 |          | such as a glass.                           |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraylength.refraction`` | double   | Limits the distance a refraction ray can   |
+    | ``refraction.ray.length.max``   |          | travel. Setting this to a negative value   |
+    |                                 |          | disables the limitation.                   |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraydepth.hair``        | int (4)  | Specifies the maximum bounce depth a hair  |
+    | ``hair.ray.depth.max``          |          | ray can reach.                             |
+    |                                 |          |                                            |
+    |                                 |          | Note that hair are akin to volumetric      |
+    |                                 |          | primitives and might need elevated ray     |
+    |                                 |          | depth to properly capture the              |
+    |                                 |          | illumination.                              |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can         |
+    | ``hair.ray.length.max`` (!)     |          | travel. Setting this to a negative value   |
+    |                                 |          | disables the limitation.                   |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraydepth.volume``      | int (0)  | Specifies the maximum bounce depth a       |
+    | ``volume.ray.depth.max`` (!)    |          | volume ray can reach.                      |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``maximumraylength.volume``     | double   | Limits the distance a volume ray can       |
+    | ``volume.ray.length.max`` (!)   |          | travel. Setting this to a negative value   |
+    |                                 |          | disables the limitation.                   |
+    +---------------------------------+----------+--------------------------------------------+
 
 .. index::
    image quality
@@ -312,7 +312,7 @@ recognized by *3Delight*:
    subsurface
 
 .. table:: global node optional attributes controlling overall image quality
-    :widths: 2 1 7
+    :widths: 3 1 6
 
     +---------------------------------+----------+-------------------------------------------+
     | ``quality.shadingsamples``      | int      | Controls the quality of BSDF sampling.    |
@@ -340,7 +340,7 @@ For anti-aliasing quality see the :ref:`screen node<node:screen>`.
    render time
 
 .. table:: global node optional attributes for statistics
-    :widths: 2 1 7
+    :widths: 3 1 6
 
     +---------------------------------+----------+-------------------------------------------+
     | ``statistics.progress``         | int      | When set to ``1``, prints rendering       |
@@ -375,7 +375,7 @@ set* and then to connect this node to ``outputlayer.lightset`` (see
 It has the following attributes:
 
 .. table:: set node optional attributes
-    :widths: 2 1 2 5
+    :widths: 3 1 6
 
     +---------------------------------+--------------+---------------------------------------+
     | **Name**                        | **Type**     | **Description/Values**                |
@@ -406,7 +406,7 @@ attributes:
    |                                 |          | through a ``P.indices`` attribute.         |
    +---------------------------------+----------+--------------------------------------------+
    | ``nvertices``                   | int      | The number of vertices for each face of    |
-   | ``vertices.length`` (!)         |          | the mesh. The number of values for this    |
+   | ``vertices.size`` (!)           |          | the mesh. The number of values for this    |
    |                                 |          | attribute specifies total face number      |
    |                                 |          | (unless ``nholes`` is defined).            |
    +---------------------------------+----------+--------------------------------------------+
@@ -429,8 +429,8 @@ It also has these optional attributes:
    +---------------------------------+----------+--------------------------------------------+
    | **Name**                        | **Type** | **Description/Values**                     |
    +=================================+==========+============================================+
-   | ``P``                           | point    | The number of holes in the polygons.       |
-   |                                 |          | When this attribute is defined, the total  |
+   | ``nholes``                      | int      | The number of holes in the polygons.       |
+   | ``holes.length`` (1)            |          | When this attribute is defined, the total  |
    |                                 |          | number of faces in the mesh is defined by  |
    |                                 |          | the number of values for ``nholes``        |
    |                                 |          | rather than for ``nvertices``. For         |
@@ -515,7 +515,7 @@ another geometric primitive, such as the :ref:`mesh node<node:mesh>`. It
 has the following attributes:
 
 .. table:: set node optional attributes
-    :widths: 2 1 2 5
+    :widths: 3 1 6
 
     +---------------------------------+--------------+---------------------------------------+
     | **Name**                        | **Type**     | **Description/Values**                |
@@ -556,45 +556,67 @@ The curves node
 This node represents a group of curves. It has the following required
 attributes:
 
-.. table:: global node optional attributes
-    :widths: 2 1 2 5
+.. table:: curves node required attributes
+    :widths: 3 1 6
 
-    +---------------------------------+----------+--------------------------------------------+
-    | **Name**                        | **Type** | **Description/Values**                     |
-    +=================================+==========+============================================+
-    | ``nverts``                      | int      | The number of vertices for each curve.     |
-    | ``vertices.length`` (!)         |          | This must be at least ``4`` for cubic      |
-    |                                 |          | curves and ``2`` for linear curves. There  |
-    |                                 |          | can be either a single value or one value  |
-    |                                 |          | per curve.                                 |
-    +---------------------------------+----------+--------------------------------------------+
-    | ``P``                           | point    | The positions of the curve vertices. The   |
-    |                                 |          | number of values provided, divided by      |
-    |                                 |          | ``nvertices``, gives the number of         |
-    |                                 |          | curves which will be rendered.             |
-    +---------------------------------+----------+--------------------------------------------+
-    | ``width``                       | float    | The width of the curves.                   |
-    +---------------------------------+----------+--------------------------------------------+
-    | ``basis``                       | string   | The basis functions used for curve         |
-    |                                 |          | interpolation. Possible choices are:       |
-    |                                 |          +-----------------+--------------------------+
-    |                                 |          | ``b-spline``    | B-spline interpolation.  |
-    |                                 |          +-----------------+--------------------------+
-    |                                 |          | ``catmull-rom`` | Catmull-Rom              |
-    |                                 |          |                 | interpolation. This is   |
-    |                                 |          |                 | **the default** value.   |
-    |                                 |          +-----------------+--------------------------+
-    |                                 |          | ``linear``      | Linear interpolation.    |
-    +---------------------------------+----------+-----------------+--------------------------+
-    | ``extrapolate``                 | int      | By default, when this is set to ``0``,     |
-    |                                 |          | cubic curves will not be drawn to their    |
-    |                                 |          | end vertices as the basis functions        |
-    |                                 |          | require an extra vertex to define the      |
-    |                                 |          | curve. If this attribute is set to ``1``,  |
-    |                                 |          | an extra vertex is automatically           |
-    |                                 |          | extrapolated so the curves reach their end |
-    |                                 |          | vertices, as with linear interpolation.    |
-    +---------------------------------+----------+----------------+---------------------------+
+    +---------------------------------+----------+-------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                    |
+    +=================================+==========+===========================================+
+    | ``nverts``                      | int      | The number of vertices for each curve.    |
+    | ``vertices.size`` (!)           |          | This must be at least ``4`` for cubic     |
+    |                                 |          | curves and ``2`` for linear curves. There |
+    |                                 |          | can be either a single value or one value |
+    |                                 |          | per curve.                                |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``P``                           | point    | The positions of the curve vertices. The  |
+    |                                 |          | number of values provided, divided by     |
+    |                                 |          | ``nvertices``, gives the number of        |
+    |                                 |          | curves which will be rendered.            |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``width``                       | float    | The width of the curves.                  |
+    +---------------------------------+----------+-------------------------------------------+
+
+It also has these optional attributes:
+
+.. index::
+    basis
+    extrapolate
+    optional curve attributes
+
+.. table:: curves node optional attributes
+    :widths: 3 1 2 4
+
+    +---------------------------------+----------+-------------------------------------------+
+    | ``basis``                       | string   | The basis functions used for curve        |
+    |                                 |          | interpolation. Possible choices are:      |
+    |                                 |          +-----------------+-------------------------+
+    |                                 |          | ``b-spline``    | B-spline interpolation. |
+    |                                 |          +-----------------+-------------------------+
+    |                                 |          | ``catmull-rom`` | Catmull-Rom             |
+    |                                 |          |                 | interpolation. This is  |
+    |                                 |          |                 | **the default** value.  |
+    |                                 |          +-----------------+-------------------------+
+    |                                 |          | ``linear``      | Linear interpolation.   |
+    +---------------------------------+----------+-----------------+-------------------------+
+    | ``N``                           | normal   | The presence of a normal indicates that   |
+    |                                 |          | each curve is to be rendered as an        |
+    |                                 |          | oriented ribbon. The orientation of each  |
+    |                                 |          | ribbon is defined by the provided normal  |
+    |                                 |          | which can be constant, a per-curve or a   |
+    |                                 |          | per-vertex attribute.                     |
+    |                                 |          | Each ribbon is assumed to alwyas facing   |
+    |                                 |          | the camera if a normal is not provided.   |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``extrapolate``                 | int      | By default, when this is set to ``0``,    |
+    |                                 |          | cubic curves will not be drawn to their   |
+    |                                 |          | end vertices as the basis functions       |
+    |                                 |          | require an extra vertex to define the     |
+    |                                 |          | curve. If this attribute is set to ``1``, |
+    |                                 |          | an extra vertex is automatically          |
+    |                                 |          | extrapolated so the curves reach their    |
+    |                                 |          | end vertices, as with linear              |
+    |                                 |          | interpolation.                            |
+    +---------------------------------+----------+-------------------------------------------+
 
 Attributes may also have a single value, one value per curve, one value
 per vertex or one value per vertex of a single curve, reused for all
@@ -616,25 +638,59 @@ Particles are represented by either a disk or a sphere. This primitive
 is not suitable to render large particles as these should be represented
 by other means (e.g. instancing).
 
-A mandatory attribute that specifies the center of each particle.
+.. table:: particles node required attributes
+    :widths: 3 1 6
 
-A mandatory attribute that specifies the width of each particle. It can
-be specified for the entire particles node (only one value provided),
-per-particle or through a ``width.indices`` attribute.
+    +---------------------------------+----------+-------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                    |
+    +=================================+==========+===========================================+
+    | ``P``                           | point    | The center of each particle.              |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``width``                       | float    | The width of each particle. It can be     |
+    |                                 |          | specified for the entire particles node   |
+    |                                 |          | (only one value provided), per-particle   |
+    |                                 |          | or indirectly through a ``width.indices`` |
+    |                                 |          | attribute.                                |
+    +---------------------------------+----------+-------------------------------------------+
 
-The presence of a normal indicates that each particle is to be rendered
-as an oriented disk. The orientation of each disk is defined by the
-provided normal which can be constant or a per-particle attribute. Each
-particle is assumed to be a sphere if a normal is not provided.
+It also has these optional attributes:
 
-This attribute, of the same size as ``P``, assigns a unique identifier
-to each particle which must be constant throughout the entire shutter
-range. Its presence is necessary in the case where particles are motion
-blurred and some of them could appear or disappear during the motion
-interval. Having such identifiers allows the renderer to properly render
-such transient particles. This implies that the number of *id*\ s might
-vary for each time step of a motion-blurred particle cloud so the use of
-is mandatory by definition.
+.. index::
+    particle normals
+    particle id
+    motion blur
+    shutter
+    optional particle attributes
+
+.. table:: particles node optional attributes
+    :widths: 3 1 6
+
+    +---------------------------------+----------+-------------------------------------------+
+    | ``N``                           | normal   | The presence of a normal indicates that   |
+    |                                 |          | each particle is to be rendered as an     |
+    |                                 |          | oriented disk. The orientation of each    |
+    |                                 |          | disk is defined by the provided normal    |
+    |                                 |          | which can be constant or a per-particle   |
+    |                                 |          | attribute.                                |
+    |                                 |          | Each particle is assumed to be a sphere   |
+    |                                 |          | if a normal is not provided.              |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``id``                          | int      | This attribute has to be the same length  |
+    |                                 |          | as ``P``. It assigns a unique identifier  |
+    |                                 |          | to each particle which must be constant   |
+    |                                 |          | throughout the entire :ref:`shutter       |
+    |                                 |          | range<motionblur>`. Its presence is       |
+    |                                 |          | necessary in the case where particles are |
+    |                                 |          | motion blurred and some of them could     |
+    |                                 |          | appear or disappear during the motion     |
+    |                                 |          | interval. Having such identifiers allows  |
+    |                                 |          | the renderer to properly render such      |
+    |                                 |          | transient particles. This implies that    |
+    |                                 |          | the number of ``id``'s might vary for     |
+    |                                 |          | each time step of a motion-blurred        |
+    |                                 |          | particle cloud so the use of is mandatory |
+    |                                 |          | by definition.                            |
+    +---------------------------------+----------+-------------------------------------------+
 
 .. _node:procedural:
 
