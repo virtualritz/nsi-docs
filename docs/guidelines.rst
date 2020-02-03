@@ -316,9 +316,9 @@ to drive two file outputs, each having two layers (``Ci`` and
 
    nsi graph for a stereo image output
 
-[fig:output_layers_stereo]
 
-.. _section:guideline_lightsets:
+
+.. _section:lightlayers:
 
 Light layers
 ------------

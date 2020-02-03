@@ -199,6 +199,8 @@ The ``data`` member is a pointer to the data for the parameter.
 The ``flags`` member is a bit field with a number of constants defined
 to communicate more information about the parameter:
 
+.. _CAPI:paramflags:
+
 .. table:: flags for optional parameters
     :widths: 2 8
 

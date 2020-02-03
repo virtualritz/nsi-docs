@@ -101,7 +101,7 @@ need to be created using ``NSICreate()``. The following attributes are
 recognized by *3Delight*:
 
 
-.. table:: global node optional parameters
+.. table:: global node optional attributes
     :widths: 2 1 2 5
 
     +---------------------------------+----------+--------------------------------------------+
@@ -165,7 +165,7 @@ recognized by *3Delight*:
    network cache
    temporary files
 
-.. table:: global node optional network cache parameters
+.. table:: global node optional network cache attributes
    :widths: 2 1 7
 
    +---------------------------------+----------+--------------------------------------------+
@@ -193,7 +193,7 @@ recognized by *3Delight*:
     license
     server
 
-.. table:: global node optional parameters fpr licensing
+.. table:: global node optional attributes fpr licensing
    :widths: 2 1 7
 
    +---------------------------------+----------+--------------------------------------------+
@@ -233,7 +233,7 @@ recognized by *3Delight*:
    hair ray depth
    hair ray length
 
-.. table:: global node optional parameters for ray tracing quality
+.. table:: global node optional attributes governing ray tracing quality
    :widths: 2 1 7
 
    +---------------------------------+----------+--------------------------------------------+
@@ -311,7 +311,7 @@ recognized by *3Delight*:
    displacement
    subsurface
 
-.. table:: global node optional parameters controlling overall image quality
+.. table:: global node optional attributes controlling overall image quality
     :widths: 2 1 7
 
     +---------------------------------+----------+-------------------------------------------+
@@ -333,12 +333,13 @@ recognized by *3Delight*:
     |                                 |          | shaders.                                  |
     +---------------------------------+----------+-------------------------------------------+
 
+For anti-aliasing quality see the :ref:`screen node<node:screen>`.
 
 .. index::
    statistics
    render time
 
-.. table:: global node optional parameters for statistics
+.. table:: global node optional attributes for statistics
     :widths: 2 1 7
 
     +---------------------------------+----------+-------------------------------------------+
@@ -352,7 +353,6 @@ recognized by *3Delight*:
     |                                 |          | output. The name ``null`` will not output |
     |                                 |          | statistics.                               |
     +---------------------------------+----------+-------------------------------------------+
-
 
 .. index::
     light layer
@@ -370,11 +370,11 @@ This node can be used to express relationships between objects.
 An example is to connect many lights to such a node to create a *light
 set* and then to connect this node to ``outputlayer.lightset`` (see
 :ref:`outputlayer<node:outputlayer>` and
-:ref:`light layers<section:lightlayers>`).
+:ref:`light layers<section:lightlayers>` ).
 
-It has the following parameters:
+It has the following attributes:
 
-.. table:: global node optional parameters
+.. table:: set node optional attributes
     :widths: 2 1 2 5
 
     +---------------------------------+--------------+---------------------------------------+
@@ -386,13 +386,16 @@ It has the following parameters:
 
 .. _node:mesh:
 
+.. index::
+    mesh node
+
 The mesh node
 -------------
 
-This node represents a polygon mesh. It has the following required
-parameters:
+This node represents a polygon mesh or a subdivision surface. It has the following required
+attributes:
 
-.. table:: mesh node required parameters
+.. table:: mesh node required attributes
    :widths: 3 1 6
 
    +---------------------------------+----------+--------------------------------------------+
@@ -408,9 +411,19 @@ parameters:
    |                                 |          | (unless ``nholes`` is defined).            |
    +---------------------------------+----------+--------------------------------------------+
 
-It also has these optional parameters:
+It also has these optional attributes:
 
-.. table:: mesh node optional parameters
+.. index::
+    subdivision surface
+    Catmull-Clark
+    crease
+    corner
+    sharpness
+    winding order
+    clockwise winding
+    counterclockwise winding
+
+.. table:: mesh node optional attributes
    :widths: 3 1 6
 
    +---------------------------------+----------+--------------------------------------------+
@@ -437,8 +450,8 @@ It also has these optional parameters:
    |                                 |          | with clockwise winding order are front     |
    |                                 |          | facing.                                    |
    |                                 |          |                                            |
-   |                                 |          | The default is 0, making counterclockwise  |
-   |                                 |          | polygons front facing.                     |
+   |                                 |          | **The default** is ``0``, making           |
+   |                                 |          | counterclockwise polygons front facing.    |
    +---------------------------------+----------+--------------------------------------------+
    | ``subdivision.scheme``          | string   | A value of ``"catmull-clark"`` will cause  |
    |                                 |          | the mesh to render as a Catmull-Clark      |
@@ -462,6 +475,9 @@ It also has these optional parameters:
    |                                 |          | given in ``subdivision.creasevertices``.   |
    +---------------------------------+----------+--------------------------------------------+
 
+.. index::
+    mesh example
+
 .. code-block:: shell
    :linenos:
 
@@ -482,7 +498,14 @@ It also has these optional parameters:
 
        10 0 0   13 0 0   13 3 0   10 3 0 ]
 
+
 .. _node:faceset:
+
+.. index::
+    faceset node
+    tagging faces
+    shaders on faces
+    shaders on curves
 
 The faceset node
 ----------------
@@ -491,29 +514,17 @@ This node is used to provide a way to attach attributes to some faces of
 another geometric primitive, such as the :ref:`mesh node<node:mesh>`. It
 has the following attributes:
 
+.. table:: set node optional attributes
+    :widths: 2 1 2 5
 
-P..........................................................................point
-The positions of the object’s vertices. Typically, this attribute will be addressed
-indirectly through a P.indices attribute.
-nvertices...................................................................int
-The number of vertices for each face of the mesh. The number of values for this
-attribute specifies total face number (unless nholes is defined).
-It also has optional attributes:
-nholes ...................................................................... int
-The number of holes in the polygons. When this attribute is defined, the total
-number of faces in the mesh is defined by the number of values for nholes
-rather than for nvertices. For each face, there should be (nholes+1) values in
-nvertices: the respective first value specifies the number of vertices on the outside
-perimeter of the face, while additional values describe the number of vertices
-on perimeters of holes in the face. Listing 3.1 shows the definition of a polygon
-mesh consisting of 3 square faces, with one triangular hole in the first one and
-square holes in the second one.
-clockwisewinding.......................................................int (0)
-A value of 1 specifies that polygons with a clockwise winding order are front
-facing. The default is 0, making counterclockwise polygons front facing.
-
-This attribute is a list of indices of faces. It identifies which faces
-of the original geometry will be part of this face set.
+    +---------------------------------+--------------+---------------------------------------+
+    | **Name**                        | **Type**     | **Description/Values**                |
+    +=================================+==============+=======================================+
+    | ``faces``                       | int          | A list of indices of faces. It        |
+    |                                 |              | identifies which faces of the         |
+    |                                 |              | original geometry will be part of     |
+    |                                 |              | this face set.                        |
+    +---------------------------------+--------------+---------------------------------------+
 
 .. code-block:: shell
    :linenos:
@@ -545,34 +556,55 @@ The curves node
 This node represents a group of curves. It has the following required
 attributes:
 
-The number of vertices for each curve. This must be at least 4 for cubic
-curves and 2 for linear curves. There can be either a single value or
-one value per curve.
+.. table:: global node optional attributes
+    :widths: 2 1 2 5
 
-The positions of the curve vertices. The number of values provided,
-divided by ``nvertices``, gives the number of curves which will be
-rendered.
-
-The width of the curves.
-
-The basis functions used for curve interpolation. Possible choices are:
-
-:math:`\rightarrow` B-spline interpolation.
-
-:math:`\rightarrow` Catmull-Rom interpolation.
-
-:math:`\rightarrow` Linear interpolation.
-
-By default, cubic curves will not be drawn to their end vertices as the
-basis functions require an extra vertex to define the curve. If this
-attribute is set to 1, an extra vertex is automatically extrapolated so
-the curves reach their end vertices, as with linear interpolation.
+    +---------------------------------+----------+--------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                     |
+    +=================================+==========+============================================+
+    | ``nverts``                      | int      | The number of vertices for each curve.     |
+    | ``vertices.length`` (!)         |          | This must be at least ``4`` for cubic      |
+    |                                 |          | curves and ``2`` for linear curves. There  |
+    |                                 |          | can be either a single value or one value  |
+    |                                 |          | per curve.                                 |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``P``                           | point    | The positions of the curve vertices. The   |
+    |                                 |          | number of values provided, divided by      |
+    |                                 |          | ``nvertices``, gives the number of         |
+    |                                 |          | curves which will be rendered.             |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``width``                       | float    | The width of the curves.                   |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``basis``                       | string   | The basis functions used for curve         |
+    |                                 |          | interpolation. Possible choices are:       |
+    |                                 |          +-----------------+--------------------------+
+    |                                 |          | ``b-spline``    | B-spline interpolation.  |
+    |                                 |          +-----------------+--------------------------+
+    |                                 |          | ``catmull-rom`` | Catmull-Rom              |
+    |                                 |          |                 | interpolation. This is   |
+    |                                 |          |                 | **the default** value.   |
+    |                                 |          +-----------------+--------------------------+
+    |                                 |          | ``linear``      | Linear interpolation.    |
+    +---------------------------------+----------+-----------------+--------------------------+
+    | ``extrapolate``                 | int      | By default, when this is set to ``0``,     |
+    |                                 |          | cubic curves will not be drawn to their    |
+    |                                 |          | end vertices as the basis functions        |
+    |                                 |          | require an extra vertex to define the      |
+    |                                 |          | curve. If this attribute is set to ``1``,  |
+    |                                 |          | an extra vertex is automatically           |
+    |                                 |          | extrapolated so the curves reach their end |
+    |                                 |          | vertices, as with linear interpolation.    |
+    +---------------------------------+----------+----------------+---------------------------+
 
 Attributes may also have a single value, one value per curve, one value
 per vertex or one value per vertex of a single curve, reused for all
 curves. Attributes which fall in that last category must always specify
-. Note that a single curve is considered a face as far as use of is
-concerned.
+:ref:`NSIParamPerVertex<CAPI:paramflags>`.
+
+.. Note::
+    A single curve is considered a face as far as use of
+    :ref:`NSIParamPerFace<CAPI:paramflags>` is concerned. See also the
+    :ref:`faceset node<node:faceset>`.
 
 .. _node:particles:
 

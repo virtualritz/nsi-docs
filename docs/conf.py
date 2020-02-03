@@ -86,3 +86,14 @@ html_css_files = [
 #epub_css_files = [
 #    'theme_overrides.css',
 #]
+
+latex_elements = {
+    'papersize': 'a4paper',
+}
+
+#    'inputenc': '\\usepackage[utf8x]{inputenc}',
+#    'preamble': r'''
+#    \usepackage[none]{hyphenat}
+#    \usepackage[document]{ragged2e}
+#    '''
+
