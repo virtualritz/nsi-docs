@@ -5,7 +5,9 @@ Documentation for Illumination Research’s Nodal Scene Interface – nsi.
 
 ## Building
 
-First, change into the `docs` folder. This contains the [Sphinx project](https://www.sphinx-doc.org/).
+Change into the `docs` folder. This contains the
+[Sphinx](https://www.sphinx-doc.org/) project.
+
 The root folder of the repository only contains the YML configuration
 for [ReadTheDocs](https://nsi.readthedocs.io/) and this readme.
 ```
@@ -70,13 +72,8 @@ Note that *Inkscape 1.0beta* does not work with
 *sphinxcontrib-svg2pdfconverter*. You need an older 0.9x version.
 
 The default in the [`extensions` section of `docs/conf.py`](https://github.com/virtualritz/nsi-docs/blob/df238d06353cf915c8c1ea33e370e6ba9e81d6f9/docs/conf.py#L34) is for `rsvg-convert`:
-```python
-extensions = [
-    'sphinxcontrib.rsvgconverter'
-    #'sphinxcontrib.inkscapeconverter'
-]
-```
-Finally, to build the PDF:
+
+To build the PDF:
 ```
 make latexpdf
 ```
