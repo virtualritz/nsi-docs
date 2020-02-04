@@ -5,7 +5,9 @@ Documentation for Illumination Research’s Nodal Scene Interface – nsi.
 
 ## Building
 
-First, change into the `docs` folder. This contains the Sphinx project.
+Change into the `docs` folder. This contains the
+[Sphinx](https://www.sphinx-doc.org/) project.
+
 The root folder of the repository only contains the YML configuration
 for [ReadTheDocs](https://nsi.readthedocs.io/) and this readme.
 ```
@@ -47,12 +49,16 @@ format, conversion of the EPUB to this format is best done with
 Amazon’s native tool,
 [kindlegen](https://www.amazon.com/gp/feature.html?docId=1000765211).
 
-This can be ran from the command line directly, e.g.:
+This can be ran from the command line directly, e.g. on macOS:
 ```
 /Applications/KindleGen/kindlegen _build/epub/NSI.epub
 ```
 will generate `NSI.mobi`.
 
+If you are on macOS Catalina or later kindlegen will not work since
+it’s 32bit only. In this case use Amazon’s 
+[Kindle Previewer](https://www.amazon.com/gp/feature.html?docId=1000765261)
+tool which, too, can convert from EPUB to Mobipocket format.
 
 ### LaTex/LaTexPDF target
 
@@ -65,14 +71,11 @@ This means you must have `inkscape` or `rsvg-convert` in your `PATH`.
 Note that *Inkscape 1.0beta* does not work with
 *sphinxcontrib-svg2pdfconverter*. You need an older 0.9x version.
 
-The default in the `extensions` section of `docs/conf.py` is for `rsvg-convert`:
-```python
-extensions = [
-    'sphinxcontrib.rsvgconverter'
-    #'sphinxcontrib.inkscapeconverter'
-]
-```
-Finally, to build the PDF:
+The default in the
+[`extensions` section of `docs/conf.py`](https://github.com/virtualritz/nsi-docs/blob/df238d06353cf915c8c1ea33e370e6ba9e81d6f9/docs/conf.py#L34)
+is for `rsvg-convert`.
+
+To build the PDF:
 ```
 make latexpdf
 ```
