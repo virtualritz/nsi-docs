@@ -1,5 +1,8 @@
 .. include:: definitions.rst
 
+.. index::
+    C API
+
 .. _section:capi:
 
 The C API
@@ -31,6 +34,9 @@ The ``NSI_ALL_NODES`` macro defines a special handle to refer to all
 nodes in some contexts, such as when
 :ref:`removing connections<CAPI:nsiconnect>`.
 
+.. index::
+    context handling
+
 .. _CAPI:contexthandling:
 
 Context handling
@@ -50,10 +56,11 @@ Context handling
     )
 
 These two functions control creation and destruction of a |nsi| context,
-identified by a handle of type ``NSIContext_t``. A context must be given
-explicitly when calling all other functions of the interface. Contexts
-may be used in multiple threads at once. The ``NSIContext_t`` is a
-convenience typedef and is defined as:
+identified by a handle of type ``NSIContext_t``.
+
+A context must be given explicitly when calling all other functions of
+the interface. Contexts may be used in multiple threads at once. The
+``NSIContext_t`` is a convenience typedef and is defined as:
 
 .. code-block:: c
 
@@ -66,60 +73,61 @@ which is defined in :doc:`nsi.h`:
 
     #define NSI_BAD_CONTEXT ((NSIContext_t)0)
 
-Optional parameters may be given to ``NSIBegin()`` to control the
-creation of the context:
+:ref:`Optional parameters<CAPI:optionalparameters>` may be given to
+``NSIBegin()`` to control the creation of the context:
 
 .. table:: NSIBegin() optional parameters
-    :widths: 2 1 2 5
+    :widths: 3 1 2 4
 
-    +------------------------+----------+-------------------------------------------------------+
-    | **Name**               | **Type** | **Description/Values**                                |
-    +========================+==========+=======================================================+
-    | ``type``               | string   | Sets the type of context to create. The possible      |
-    |                        |          | types are:                                            |
-    |                        |          +---------------+---------------------------------------+
-    |                        |          | ``render``    | Execute the calls directly in the     |
-    |                        |          |               | renderer. This is the **default**.    |
-    |                        |          +---------------+---------------------------------------+
-    |                        |          | ``apistream`` | To write the interface calls to a     |
-    |                        |          |               | stream, for later execution.          |
-    |                        |          |               | The target for writing the stream     |
-    |                        |          |               | must be specified in another          |
-    |                        |          |               | parameter.                            |
-    +------------------------+----------+---------------+---------------------------------------+
-    | ``streamfilename``     | string   | The file to which the stream is to be output, if the  |
-    |                        |          | context type is ``apistream``.                        |
-    |                        |          | Specify ``stdout`` to write to standard output and    |
-    |                        |          | ``stderr`` to write to standard error.                |
-    +------------------------+----------+-------------------------------------------------------+
-    | ``streamformat``       | string   | The format of the command stream to write. Possible   |
-    |                        |          | formats are:                                          |
-    |                        |          +---------------+---------------------------------------+
-    |                        |          | ``nsi``       | Produces an                           |
-    |                        |          |               | :ref:`nsi stream<section:nsistream>`  |
-    |                        |          +---------------+---------------------------------------+
-    |                        |          | ``binarynsi`` | Produces a binary encoded             |
-    |                        |          |               | :ref:`nsi stream<section:nsistream>`  |
-    +------------------------+----------+---------------+---------------------------------------+
-    | ``streamcompression``  | string   | The type of compression to apply to the written       |
-    |                        |          | command stream.                                       |
-    +------------------------+----------+-------------------------------------------------------+
-    | ``errorhandler``       | pointer  | A function which is to be called by the renderer to   |
-    |                        |          | report errors. The default handler will print         |
-    |                        |          | messages to the console.                              |
-    +------------------------+----------+-------------------------------------------------------+
-    | ``errorhandlerdata``   | pointer  | The ``userdata`` parameter of the                     |
-    |                        |          | :ref:`error reporting function<CAPI:errorcallback>`.  |
-    +------------------------+----------+-------------------------------------------------------+
-    | ``executeprocedurals`` | string   | A list of procedural types that should be executed    |
-    |                        |          | immediately when a call to or a procedural node is    |
-    |                        |          | encountered and ``NSIBegin()``'s output ``type`` is   |
-    |                        |          | ``apistream``. This will replace any matching call    |
-    |                        |          | to ``NSIEvaluate()`` with the results of the          |
-    |                        |          | procedural's execution.                               |
-    +------------------------+----------+-------------------------------------------------------+
+    +------------------------+----------+----------------------------------------------------+
+    | **Name**               | **Type** | **Description/Values**                             |
+    +========================+==========+====================================================+
+    | ``type``               | string   | Sets the type of context to create. The possible   |
+    |                        |          | types are:                                         |
+    |                        |          +---------------+------------------------------------+
+    |                        |          | ``render``    | Execute the calls directly in the  |
+    |                        |          |               | renderer. This is the **default**. |
+    |                        |          +---------------+------------------------------------+
+    |                        |          | ``apistream`` | To write the interface calls to a  |
+    |                        |          |               | stream, for later execution.       |
+    |                        |          |               | The target for writing the stream  |
+    |                        |          |               | must be specified in another       |
+    |                        |          |               | parameter.                         |
+    +------------------------+----------+---------------+------------------------------------+
+    | ``stream.filename``    | string   | The file to which the stream is to be output, if   |
+    |                        |          | the context type is ``apistream``.                 |
+    |                        |          | Specify ``stdout`` to write to standard output and |
+    |                        |          | ``stderr`` to write to standard error.             |
+    +------------------------+----------+----------------------------------------------------+
+    | ``stream.format``      | string   | The format of the command stream to write.         |
+    |                        |          | Possible formats are:                              |
+    |                        |          +---------------+------------------------------------+
+    |                        |          | ``nsi``       | Produces an :ref:`nsi              |
+    |                        |          |               | stream<section:nsistream>`         |
+    |                        |          +---------------+------------------------------------+
+    |                        |          | ``binarynsi`` | Produces a binary encoded          |
+    |                        |          |               | :ref:`nsi                          |
+    |                        |          |               | stream<section:nsistream>`         |
+    +------------------------+----------+---------------+------------------------------------+
+    | ``stream.compression`` | string   | The type of compression to apply to the written    |
+    |                        |          | command stream.                                    |
+    +------------------------+----------+----------------------------------------------------+
+    | ``errorhandler``       | pointer  | A function which is to be called by the renderer   |
+    |                        |          | to report errors. The default handler will print   |
+    |                        |          | messages to the console.                           |
+    +------------------------+----------+----------------------------------------------------+
+    | ``errorhandler.data``  | pointer  | The ``userdata`` parameter of the :ref:`error      |
+    |                        |          | reporting function<CAPI:errorcallback>`.           |
+    +------------------------+----------+----------------------------------------------------+
+    | ``executeprocedurals`` | string   | A list of procedural types that should be executed |
+    |                        |          | immediately when a call to or a procedural node is |
+    |                        |          | encountered and ``NSIBegin()``'s output ``type``   |
+    |                        |          | is ``apistream``. This will replace any matching   |
+    |                        |          | call to ``NSIEvaluate()`` with the results of the  |
+    |                        |          | procedural's execution.                            |
+    +------------------------+----------+----------------------------------------------------+
 
-.. _CAPI:optionalparam:
+.. _CAPI:optionalparameters:
 
 Passing optional parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -189,7 +197,7 @@ Array types are specified by setting the bit defined by the
 the array in the ``arraylength`` member.
 
 .. Tip::
-    It helps to view the array length as a part of the data type.
+    It helps to view ``arraylength`` as a part of the data type.
 
 The ``count`` member gives the number of data items given as the value
 of the parameter.
@@ -229,9 +237,29 @@ Indirect lookup of parameters is achieved by giving an integer parameter
 of the same name, with the ``.indices`` suffix added. This is read to
 know which values of the other parameter to use.
 
-.. Attention::
+.. index::
+    P.indices example
+    indexing example
 
-    TODO: ``.indices`` example.
+.. code-block:: shell
+   :caption: A subdivision mesh using ``P.indices`` to reference the ``P`` parameter
+   :linenos:
+
+   Create "subdiv" "mesh"
+   SetAttribute "subdiv"
+     "nvertices" "int" 4 [ 4 4 4 4 ]
+     "P" "point" 9 [
+       0 0 0    1 0 0    2 0 0
+       0 1 0    1 1 0    2 1 0
+       0 2 0    1 2 0    2 2 2 ]
+     "P.indices" "int" 16 [
+       0 1 4 3    2 3 5 4    3 4 7 6    4 5 8 7 ]
+     "subdivision.scheme" "string" 1 "catmull-clark"
+
+.. index::
+    NSICreate()
+    creating nodes
+    node creation
 
 .. _CAPI:nsicreate:
 
@@ -276,9 +304,14 @@ This function is used to create a new node. Its parameters are:
 | ``nparams``, ``params``
     This pair describes a list of optional parameters. *There are no
     optional parameters defined as of now*. The ``NSIParam_t`` type is
-    described in :ref:`this section<CAPI:optionalparam>`.
+    described in :ref:`this section<CAPI:optionalparameters>`.
 
 --------------
+
+.. index::
+    NSIDelete()
+    deleting nodes
+    node deletion
 
 .. code-block:: c
 
@@ -290,22 +323,37 @@ This function is used to create a new node. Its parameters are:
    )
 
 This function deletes a node from the scene. All connections to and from
-the node are also deleted. Note that it is not possible to delete the or
-the node. Its parameters are:
+the node are also deleted. Note that it is not possible to delete the
+:ref:`root<node:root>` or the :ref:`global<node:global>` node.
+Its parameters are:
 
-The context returned by ``NSIBegin()``. See
-:ref:`context handling<CAPI:contexthandling>`.
+| ``context``
+|   The context returned by ``NSIBegin()``. See
+    :ref:`context handling<CAPI:contexthandling>`.
 
-A node handle. It identifies the node to be deleted.
+| ``handle``
+|   A node handle. It identifies the node to be deleted.
 
 It accepts the following optional parameters:
 
-Specifies whether deletion is recursive. By default, only the specified
-node is deleted. If a value of 1 is given, then nodes which connect to
-the specified node are recursively removed, unless they also have
-connections which do not eventually lead to the specified node. This
-allows, for example, deletion of an entire shader network in a single
-call.
+.. index::
+    recursive node deletetion
+
+.. table:: NSIDelete() optional parameters
+    :widths: 3 1 2 4
+
+    +------------------------+----------+----------------------------------------------------+
+    | **Name**               | **Type** | **Description/Values**                             |
+    +========================+==========+====================================================+
+    | ``recursive``          | int      | Specifies whether deletion is recursive. By        |
+    |                        |          | default, only the specified node is deleted.       |
+    |                        |          | If a value of 1 is given, then nodes which connect |
+    |                        |          | to the specified node are recursively removed,     |
+    |                        |          | unless they also have connections which do not     |
+    |                        |          | eventually lead to the specified node. This        |
+    |                        |          | allows, for example, deletion of an entire shader  |
+    |                        |          | network in a single call.                          |
+    +------------------------+----------+---------------+------------------------------------+
 
 Setting attributes
 ~~~~~~~~~~~~~~~~~~
@@ -454,30 +502,53 @@ The ability to load |nsi| command straight from memory is also provided.
 
 The optional parameters accepted by this function are:
 
-The type of file which will generate the interface calls. This can be
-one of:
+.. table:: NSIEvaluate() optional parameters
+    :widths: 3 1 2 4
 
-:math:`\rightarrow` To read in a . This requires either ``filename``,
-``script`` or\ ``buffer/size`` to be provided as source for nsi
-commands.
-
-:math:`\rightarrow` To execute a Lua script, either from file or inline.
-See and more specifically .
-
-:math:`\rightarrow` To execute native compiled code in a loadable
-library. See for about the implementation of such a library.
-
-The name of the file which contains the interface calls to include.
-
-A valid Lua script to execute when ``type`` is set to ``"lua"``.
-
-These two parameters define a memory block that contain nsi commands to
-execute.
-
-If this is nonzero, the object may be loaded in a separate thread, at
-some later time. This requires that further interface calls not directly
-reference objects defined in the included file. The only guarantee is
-that the file will be loaded before rendering begins.
+    +------------------------+----------+----------------------------------------------------+
+    | **Name**               | **Type** | **Description/Values**                             |
+    +========================+==========+====================================================+
+    | ``type``               | string   | The type of file which will generate the interface |
+    |                        |          | calls. This can be one of:                         |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``apistream``      | Read in an :ref:`nsi          |
+    |                        |          |                    | stream<section:nsistream>`.   |
+    |                        |          |                    | This requires either          |
+    |                        |          |                    | ``stream.filename`` or        |
+    |                        |          |                    | ``buffer``/``size``           |
+    |                        |          |                    | parameters to be specified    |
+    |                        |          |                    | too.                          |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``lua``            | Execute a                     |
+    |                        |          |                    | :ref:`Lua<section:Lua>`       |
+    |                        |          |                    | script, either from file or   |
+    |                        |          |                    | inline. See also              |
+    |                        |          |                    | :ref:`how to evaluate a Lua   |
+    |                        |          |                    | script<luaapi:evaluation>`.   |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``dynamiclibrary`` | Execute native compiled code  |
+    |                        |          |                    | in a loadable library. See    |
+    |                        |          |                    | :ref:`dynamic library         |
+    |                        |          |                    | procedurals                   |
+    |                        |          |                    | <section:procedurals>` for    |
+    |                        |          |                    | an implementation example.    |
+    +------------------------+----------+--------------------+-------------------------------+
+    | ``stream.filename``    | string   | The file from which to read the interface stream.  |
+    +------------------------+----------+----------------------------------------------------+
+    | ``script``             | string   | A valid :ref:`Lua<section:Lua>` script to execute  |
+    |                        |          | when ``type`` is set to ``lua``.                   |
+    +------------------------+----------+----------------------------------------------------+
+    | ``buffer``             | pointer  | These two parameters define a memory block that    |
+    |                        |          | contains |nsi| commands to execute.                |
+    | ``size``               | int      |                                                    |
+    +------------------------+----------+----------------------------------------------------+
+    | ``backgroundload``     | int      | If this is nonzero, the object may be loaded       |
+    |                        |          | in a separate thread, at some later time.          |
+    |                        |          | This requires that further interface calls not     |
+    |                        |          | directly reference objects defined in the included |
+    |                        |          | file. The only guarantee is that the the file will |
+    |                        |          | be loaded before rendering begins.                 |
+    +------------------------+----------+----------------------------------------------------+
 
 .. _CAPI:errorcallback:
 

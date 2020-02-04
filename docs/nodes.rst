@@ -406,8 +406,8 @@ attributes:
    |                                 |          | through a ``P.indices`` attribute.         |
    +---------------------------------+----------+--------------------------------------------+
    | ``nvertices``                   | int      | The number of vertices for each face of    |
-   | ``vertices.size`` (!)           |          | the mesh. The number of values for this    |
-   |                                 |          | attribute specifies total face number      |
+   |                                 |          | the mesh. The number of values for this    |
+   | ``vertices.size`` (!)           |          | attribute specifies total face number      |
    |                                 |          | (unless ``nholes`` is defined).            |
    +---------------------------------+----------+--------------------------------------------+
 
@@ -430,8 +430,8 @@ It also has these optional attributes:
    | **Name**                        | **Type** | **Description/Values**                     |
    +=================================+==========+============================================+
    | ``nholes``                      | int      | The number of holes in the polygons.       |
-   | ``holes.length`` (1)            |          | When this attribute is defined, the total  |
-   |                                 |          | number of faces in the mesh is defined by  |
+   |                                 |          | When this attribute is defined, the total  |
+   | ``holes.length`` (1)            |          | number of faces in the mesh is defined by  |
    |                                 |          | the number of values for ``nholes``        |
    |                                 |          | rather than for ``nvertices``. For         |
    |                                 |          | each face, there should be                 |
@@ -532,7 +532,7 @@ has the following attributes:
    Create "subdiv" "mesh"
    SetAttribute "subdiv"
      "nvertices" "int" 4 [ 4 4 4 4 ]
-     "P" "i point" 9 [
+     "P" "point" 9 [
        0 0 0    1 0 0    2 0 0
        0 1 0    1 1 0    2 1 0
        0 2 0    1 2 0    2 2 2 ]
@@ -628,6 +628,10 @@ curves. Attributes which fall in that last category must always specify
     :ref:`NSIParamPerFace<CAPI:paramflags>` is concerned. See also the
     :ref:`faceset node<node:faceset>`.
 
+
+.. index::
+    particles
+
 .. _node:particles:
 
 The particles node
@@ -637,6 +641,9 @@ This geometry node represents a collection of *tiny* particles.
 Particles are represented by either a disk or a sphere. This primitive
 is not suitable to render large particles as these should be represented
 by other means (e.g. instancing).
+
+.. index::
+    particle size
 
 .. table:: particles node required attributes
     :widths: 3 1 6
