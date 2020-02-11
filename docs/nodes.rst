@@ -910,92 +910,142 @@ This node describes one specific layer of render output data. It can be
 connected to the ``outputlayers`` attribute of a screen node. It has the
 following attributes:
 
-This is the name of a variable to output.
+.. table:: outputlayer node attributes
+    :widths: 3 1 2 4
 
-Indicates where the variable to be output is read from. Possible values
-are:
-
-:math:`\rightarrow` computed by a shader and output through an osl
-closure (such as ``outputvariable()`` or ``debug()``) or the ``Ci``
-global variable.
-
-:math:`\rightarrow` retrieved directly from an attribute with a matching
-name attached to a geometric primitive.
-
-:math:`\rightarrow` generated automatically by the renderer (e.g. "z",
-"alpha", "N.camera", "P.world").
-
-This will be name of the layer as written by the output driver. For
-example, if the output driver writes to an EXR file then this will be
-the name of the layer inside that file.
-
-Specifies the format in which data will be encoded (quantized) prior to
-passing it to the output driver. Possible values are:
-
-:math:`\rightarrow` signed 8-bit integer
-
-:math:`\rightarrow` unsigned 8-bit integer
-
-:math:`\rightarrow` signed 16-bit integer
-
-:math:`\rightarrow` unsigned 16-bit integer
-
-:math:`\rightarrow` signed 32-bit integer
-
-:math:`\rightarrow` unsigned 32-bit integer
-
-:math:`\rightarrow` ieee 754 half-precision binary floating point
-(binary16)
-
-:math:`\rightarrow` ieee 754 single-precision binary floating point
-(binary32)
-
-Specifies the type of data that will be written to the layer. Possible
-values are:
-
-:math:`\rightarrow` A single quantity. Useful for opacity ("alpha") or
-depth ("Z") information.
-
-:math:`\rightarrow` A 3-component color.
-
-:math:`\rightarrow` A 3D point or vector. This will help differentiate
-the data from a color in further processing.
-
-:math:`\rightarrow` A sequence of 4 values, where the fourth value is
-not an alpha channel.
-
-Each component of those types is stored according to the
-``scalarformat`` attribute set on the same ``outputlayer`` node.
-
-The name of an ocio color profile to apply to rendered image data prior
-to quantization.
-
-If set to 1, dithering is applied to integer scalars [#]_. Otherwise, it
-must be set to 0.
-
-If set to 1, an alpha channel is included in the output layer.
-Otherwise, it must be set to 0.
-
-This attribute is used as a sorting key when ordering multiple output
-layer nodes connected to the same node. Layers with the lowest
-``sortkey`` attribute appear first.
-
-This connection accepts either or nodes to which lights are connected.
-In this case only listed lights will affect the render of the output
-layer. If nothing is connected to this attribute then all lights are
-rendered.
-
-This connection accepts nodes to which the layer’s image will be sent.
-
-The type of filter to use when reconstructing the final image from
-sub-pixel samples. Possible values are: "box", "triangle",
-"catmull-rom", "bessel", "gaussian", "sinc", "mitchell",
-"blackman-harris", "zmin" and "zmax".
-
-Diameter in pixels of the reconstruction filter. It is not applied when
-filter is "box" or "zmin".
-
-The value given to pixels where nothing is rendered.
+    +---------------------------------+--------------+-------------------------------------------+
+    | **Name**                        | **Type**     | **Description/Values**                    |
+    +=================================+==============+===========================================+
+    | ``variablename``                | string       | This is the name of a variable to output. |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``variablesource``              | string       | Indicates where the variable to be output |
+    |                                 |              | is read from. Possible values are:        |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``shader``     | computed by a shader     |
+    |                                 |              |                | and output through an    |
+    |                                 |              |                | |osl| closure (such as   |
+    |                                 |              |                | ``outputvariable()``     |
+    |                                 |              |                | or ``debug()``) or the   |
+    |                                 |              |                | ``Ci`` global variable.  |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``attribute``  | retrieved directly from  |
+    |                                 |              |                | an attribute with a      |
+    |                                 |              |                | matching name attached   |
+    |                                 |              |                | to a geometric           |
+    |                                 |              |                | primitive.               |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``builtin``    | generated automatically  |
+    |                                 |              |                | by the renderer (e.g.    |
+    |                                 |              |                | ``z``, ``alpha``         |
+    |                                 |              |                | ``N.camera``,            |
+    |                                 |              |                | ``P.world``).            |
+    +---------------------------------+--------------+----------------+--------------------------+
+    | ``layername``                   | string       | This will be name of the layer as written |
+    |                                 |              | by the output driver. For example, if the |
+    |                                 |              | output driver writes to an EXR file then  |
+    |                                 |              | this will be the name of the layer inside |
+    |                                 |              | that file.                                |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``scalarformat``                | string       | Specifies the format in which data will   |
+    |                                 |              | be encoded (quantized) prior to passing   |
+    |                                 |              | it to the output driver. Possible values  |
+    |                                 |              | are:                                      |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``int8``       | Signed 8-bit integer.    |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``uint8``      | Unsigned 8-bit integer.  |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``int16``      | Signed 16-bit integer.   |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``uint16``     | Unsigned 16-bit integer. |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``int32``      | Signed 32-bit integer.   |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``half``       | IEEE 754 half-precision  |
+    |                                 |              |                | binary floating point    |
+    |                                 |              |                | (binary16).              |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``float``      | IEEE 754                 |
+    |                                 |              |                | single-precision binary  |
+    |                                 |              |                | floating point           |
+    |                                 |              |                | (binary32).              |
+    +---------------------------------+--------------+----------------+--------------------------+
+    | ``layertype``                   | string       | Specifies the type of data that will be   |
+    |                                 |              | written to the layer. Possible values     |
+    |                                 |              | are:                                      |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``scalar``     | A single quantity.       |
+    |                                 |              |                | Useful for opacity       |
+    |                                 |              |                | (``alpha``) or depth     |
+    |                                 |              |                | (``Z``) information.     |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``color``      | A 3-component color.     |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``vector``     | A 3D point or vector.    |
+    |                                 |              |                | This will help           |
+    |                                 |              |                | differentiate the data   |
+    |                                 |              |                | from a color in further  |
+    |                                 |              |                | processing.              |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | ``quad``       | A sequence of 4 values,  |
+    |                                 |              |                | where the fourth value   |
+    |                                 |              |                | is *not* an alpha        |
+    |                                 |              |                | channel.                 |
+    |                                 |              +----------------+--------------------------+
+    |                                 |              | Each component of those types is stored   |
+    |                                 |              | according to the ``scalarformat``         |
+    |                                 |              | attribute set on the same ``outputlayer`` |
+    |                                 |              | node.                                     |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``colorprofile``                | string       | The name of an OCIO color profile to      |
+    |                                 |              | apply to rendered image data prior to     |
+    |                                 |              | quantization.                             |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``dithering``                   | integer      | If set to 1, dithering is applied to      |
+    |                                 |              | integer scalars [#]_.                     |
+    |                                 |              | Otherwise, it must  be set to 0.          |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``withalpha``                   | integer      | If set to 1, an alpha channel is included |
+    |                                 |              | in the output layer.                      |
+    |                                 |              | Otherwise, it must be set to 0.           |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``sortkey``                     | integer      | This attribute is used as a sorting key   |
+    |                                 |              | when ordering multiple output layer nodes |
+    |                                 |              | connected to the same node.               |
+    |                                 |              | Layers with the lowest ``sortkey``        |
+    |                                 |              | attribute appear first.                   |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``lightset``                    | <connection> | This connection accepts either or nodes   |
+    |                                 |              | to which lights are connected. In this    |
+    |                                 |              | case only listed lights will affect the   |
+    |                                 |              | crender of the output layer. If nothing   |
+    |                                 |              | is connected to this attribute then all   |
+    |                                 |              | lights are rendered.                      |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``outputdrivers``               | <connection> | This connection accepts nodes to which    |
+    |                                 |              | the layer’s image will be sent.           |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``filter``                      | string       | The type of filter to use when            |
+    |                                 |              | reconstructing the final image from       |
+    |                                 |              | sub-pixel samples. Possible values are:   |
+    |                                 |              | * ``box``                                 |
+    |                                 |              | * ``triangle``                            |
+    |                                 |              | * ``catmull-rom``                         |
+    |                                 |              | * ``bessel``                              |
+    |                                 |              | * ``gaussian``                            |
+    |                                 |              | * ``sinc``                                |
+    |                                 |              | * ``mitchell`                             |
+    |                                 |              | * ``blackman-harris`` **(default)**       |
+    |                                 |              | * ``zmin``                                |
+    |                                 |              | * ``zmax``                                |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``filterwidth``                 | double       | Diameter in pixels of the reconstruction  |
+    |                                 |              | filter. It ignored when filter is ``box`` |
+    |                                 |              | or ``zmin``.                              |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``backgroundvalue``             | float        | The value given to pixels where nothing   |
+    |                                 |              | is rendered.                              |
+    +---------------------------------+--------------+-------------------------------------------+
 
 Any extra attributes are also forwarded to the output driver which may
 interpret them however it wishes.

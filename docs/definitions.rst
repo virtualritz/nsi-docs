@@ -1,5 +1,7 @@
 .. |nsi| replace:: ɴsɪ
 
+.. |osl| replace:: osl
+
 .. |nbsp| unicode:: 0xA0
     :trim:
 
