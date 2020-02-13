@@ -473,6 +473,11 @@ parameters. For example, to disconnect everything from the :
 
 .. _CAPI:nsievaluate:
 
+.. index::
+    archive
+    evaluating Lua scripts
+    inline archive
+
 Evaluating procedurals
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -489,7 +494,8 @@ source into the current scene. It blends together the concepts of a
 straight file include, commonly known as an archive, with that of
 procedural include which is traditionally a compiled executable. Both
 are really the same idea expressed in a different language (note that
-for delayed procedural evaluation one should use the node).
+for delayed procedural evaluation one should use the :ref:`procedural
+node<node:procedural>`).
 
 The |nsi| adds a third option which sits in-between—Lua scripts (). They
 are much more powerful than a simple included file yet they are also
@@ -551,6 +557,10 @@ The optional parameters accepted by this function are:
     +------------------------+----------+----------------------------------------------------+
 
 .. _CAPI:errorcallback:
+
+.. index::
+    error reporting
+    enum error levels
 
 Error reporting
 ~~~~~~~~~~~~~~~
@@ -619,59 +629,81 @@ of starting, suspending and stopping the render. It also allows for
 synchronizing the render with interactive calls that might have been
 issued. The function accepts :
 
-Specifies the operation to be performed, which should be one of the
-following:
+.. table:: NSIEvaluate() optional parameters
+    :widths: 3 1 2 4
 
-:math:`\rightarrow` This starts rendering the scene in the provided
-context. The render starts in parallel and the control flow is not
-blocked.
-
-:math:`\rightarrow` Wait for a render to finish.
-
-:math:`\rightarrow` For an interactive render, apply all the buffered
-calls to scene’s state.
-
-:math:`\rightarrow` Suspends render in the provided context.
-
-:math:`\rightarrow` Resumes a previously suspended render.
-
-:math:`\rightarrow` Stops rendering in the provided context without
-destroying the scene
-
-If set to 1, render the image in a progressive fashion.
-
-[interactive render] If set to 1, the renderer will accept commands to
-edit scene’s state while rendering. The difference with a normal render
-is that the render task will not exit even if rendering is finished.
-Interactive renders are by definition progressive.
-
-Specifies the frame number of this render.
-
-A pointer to a user function that should be called on rendering status
-changes. This function must have no return value and accept a pointer
-argument, a |nsi| context argument and an integer argument :
-
-.. code-block:: c
-
-   void StoppedCallback(
-       void* stoppedcallbackdata,
-       NSIContext_t ctx,
-       int status
-   )
-
-The third parameter is an integer which can take the following values:
-
--  ``NSIRenderCompleted`` indicates that rendering has completed
-   normally.
-
--  ``NSIRenderAborted`` indicates that rendering was interrupted before
-   completion.
-
--  ``NSIRenderSynchronized`` indicates that an interactive render has
-   produced an image which reflects all changes to the scene.
-
--  ``NSIRenderRestarted`` indicates that an interactive render has
-   received new changes to the scene and no longer has an up to date
-   image.
-
-A pointer that will be passed back to the ``stoppedcallback`` function.
+    +------------------------+----------+----------------------------------------------------+
+    | **Name**               | **Type** | **Description/Values**                             |
+    +========================+==========+====================================================+
+    | ``action``             | string   | Specifies the operation to be performed, which     |
+    |                        |          | should be one of the following:                    |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``start``          | This starts rendering the     |
+    |                        |          |                    | scene in the provided         |
+    |                        |          |                    | context. The render starts in |
+    |                        |          |                    | parallel and the control flow |
+    |                        |          |                    | is not blocked.               |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``wait``           | Wait for a render to finish.  |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``synchronize``    | For an interactive render,    |
+    |                        |          |                    | apply all the buffered calls  |
+    |                        |          |                    | to scene’s state.             |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``suspend``        | Suspends render in the        |
+    |                        |          |                    | provided context.             |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``resume``         | Resumes a previously          |
+    |                        |          |                    | suspended render.             |
+    |                        |          +--------------------+-------------------------------+
+    |                        |          | ``stop``           | Stops rendering in the        |
+    |                        |          |                    | provided context without      |
+    |                        |          |                    | destroying the scene.         |
+    +------------------------+----------+--------------------+-------------------------------+
+    | ``progressive``        | integer  | If set to ``1``, render the image in a progressive |
+    |                        |          | fashion.                                           |
+    +------------------------+----------+----------------------------------------------------+
+    | ``interactive``        | integer  | If set to ``1``, the renderer will accept commands |
+    |                        |          | to edit scene’s state while rendering.             |
+    |                        |          | The difference with a normal render is that the    |
+    |                        |          | render task will not exit even if rendering is     |
+    |                        |          | finished. Interactive renders are by definition    |
+    |                        |          | progressive.                                       |
+    +------------------------+----------+----------------------------------------------------+
+    | ``frame``              |          | Specifies the frame number of this render.         |
+    +------------------------+----------+----------------------------------------------------+
+    | ``stoppedcallback``    | pointer  | A pointer to a user function that should be        |
+    |                        |          | called on rendering status changes. This function  |
+    | ``callback`` (!)       |          | must have no return value and accept a pointer     |
+    |                        |          | argument, a |nsi| context argument and an integer  |
+    |                        |          | argument:                                          |
+    |                        |          |                                                    |
+    |                        |          | .. code-block:: c                                  |
+    |                        |          |                                                    |
+    |                        |          |     void StoppedCallback(                          |
+    |                        |          |         void* stoppedcallbackdata,                 |
+    |                        |          |         NSIContext_t ctx,                          |
+    |                        |          |         int status                                 |
+    |                        |          |     )                                              |
+    |                        |          |                                                    |
+    |                        |          | The third parameter is an integer which can take   |
+    |                        |          | the following values:                              |
+    |                        |          |                                                    |
+    |                        |          | *  ``NSIRenderCompleted`` indicates that           |
+    |                        |          |    rendering has completed normally.               |
+    |                        |          |                                                    |
+    |                        |          | *  ``NSIRenderAborted`` indicates that rendering   |
+    |                        |          |    was interrupted before completion.              |
+    |                        |          |                                                    |
+    |                        |          | *  ``NSIRenderSynchronized`` indicates that an     |
+    |                        |          |    interactive render has produced an image which  |
+    |                        |          |    reflects all changes to the scene.              |
+    |                        |          |                                                    |
+    |                        |          | *  ``NSIRenderRestarted`` indicates that an        |
+    |                        |          |    interactive render has received new changes to  |
+    |                        |          |    the scene and no longer has an up to date       |
+    |                        |          |    image.                                          |
+    +------------------------+----------+----------------------------------------------------+
+    | callback.data          | pointer  | A pointer that will be passed back to the          |
+    |                        |          | ``stoppedcallback`` function.                      |
+    +------------------------+----------+----------------------------------------------------+

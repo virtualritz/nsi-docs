@@ -40,6 +40,10 @@ definition and will be ignored.
 
 .. _section:attributes:
 
+.. index::
+    .root node
+    root node
+
 A word – or two – about attributes
 ----------------------------------
 

@@ -75,6 +75,10 @@ details.
 
 .. _node:root:
 
+.. index::
+    .root node
+    root node
+
 The root node
 -------------
 
@@ -430,6 +434,8 @@ subdvision surface, the mesh node accepts these optionalattributes:
     crease
     corner
     sharpness
+    subdivision crease
+    subdivision corner
     smooth corners
 
 .. table:: mesh node as subdivision surface optional attributes
@@ -576,6 +582,9 @@ has the following attributes:
     |                                 |              | this face set.                        |
     +---------------------------------+--------------+---------------------------------------+
 
+.. index::
+    subdivision mesh example
+
 .. code-block:: shell
    :linenos:
 
@@ -600,11 +609,19 @@ has the following attributes:
 
 .. _node:curves:
 
+.. index::
+    curves
+
 The curves node
 ---------------
 
 This node represents a group of curves. It has the following required
 attributes:
+
+.. index::
+    curve width
+    width of curve
+    diameter of curve
 
 .. table:: curves node required attributes
     :widths: 3 1 6
@@ -629,9 +646,11 @@ attributes:
 It also has these optional attributes:
 
 .. index::
-    basis
-    extrapolate
-    optional curve attributes
+    curve basis
+    curve normal
+    extrapolate curves
+    optional curves attributes
+    curves optional attributes
 
 .. table:: curves node optional attributes
     :widths: 3 1 2 4
@@ -697,7 +716,10 @@ is not suitable to render large particles as these should be represented
 by other means (e.g. instancing).
 
 .. index::
-    particle size
+    particle width
+    size of particles
+    width of particles
+    diameter of particles
 
 .. table:: particles node required attributes
     :widths: 3 1 6
@@ -717,11 +739,12 @@ by other means (e.g. instancing).
 It also has these optional attributes:
 
 .. index::
-    particle normals
+    particle normal
     particle id
     motion blur
     shutter
-    optional particle attributes
+    optional particles attributes
+    particles optional attributes
 
 .. table:: particles node optional attributes
     :widths: 3 1 6
