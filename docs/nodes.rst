@@ -348,6 +348,8 @@ For anti-aliasing quality see the :ref:`screen node<node:screen>`.
     :widths: 3 1 6
 
     +---------------------------------+----------+-------------------------------------------+
+    | **Name**                         | **Type** | **Description/Values**                   |
+    +=================================+==========+===========================================+
     | ``statistics.progress``         | integer  | When set to ``1``, prints rendering       |
     |                                 |          | progress as a percentage of completed     |
     |                                 |          | pixels.                                   |
@@ -402,58 +404,25 @@ This node represents a polygon mesh or a subdivision surface. It has the followi
 attributes:
 
 .. table:: mesh node required attributes
-   :widths: 3 1 6
+    :widths: 3 1 6
 
-   +---------------------------------+----------+--------------------------------------------+
-   | **Name**                        | **Type** | **Description/Values**                     |
-   +=================================+==========+============================================+
-   | ``P``                           | point    | The positions of the object’s vertices.    |
-   |                                 |          | Typically, this attribute will be indexed  |
-   |                                 |          | through a ``P.indices`` attribute.         |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``nvertices``                   | integer  | The number of vertices for each face of    |
-   |                                 |          | the mesh. The number of values for this    |
-   | ``vertex.size`` (!)             |          | attribute specifies total face number      |
-   |                                 |          | (unless ``nholes`` is defined).            |
-   +---------------------------------+----------+--------------------------------------------+
+    +---------------------------------+----------+-------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                    |
+    +=================================+==========+===========================================+
+    | ``P``                           | point    | The positions of the object’s vertices.   |
+    |                                 |          | Typically, this attribute will be indexed |
+    |                                 |          | through a ``P.indices`` attribute.        |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``nvertices``                   | integer  | The number of vertices for each face of   |
+    |                                 |          | the mesh. The number of values for this   |
+    | ``vertex.size`` (!)             |          | attribute specifies total face number     |
+    |                                 |          | (unless ``nholes`` is defined).           |
+    +---------------------------------+----------+-------------------------------------------+
 
-It also has these optional attributes:
 
-.. index::
-    winding order
-    clockwise winding
-    counterclockwise winding
-
-.. table:: mesh node optional attributes
-   :widths: 3 1 6
-
-   +----------------------------------+----------+-------------------------------------------+
-   | **Name**                         | **Type** | **Description/Values**                    |
-   +==================================+==========+===========================================+
-   | ``nholes``                       | integer  | The number of holes in the polygons.      |
-   |                                  |          | When this attribute is defined, the total |
-   | ``holes.length`` (!)             |          | number of faces in the mesh is defined by |
-   |                                  |          | the number of values for ``nholes``       |
-   |                                  |          | rather than for ``nvertices``. For        |
-   |                                  |          | each face, there should be                |
-   |                                  |          | (``holes.length``+1) values in            |
-   |                                  |          | ``vertices``: the respective first value  |
-   |                                  |          | specifies the number of vertices on the   |
-   |                                  |          | outside perimeter of the face, while      |
-   |                                  |          | additional values describe the number of  |
-   |                                  |          | vertices on perimeters of holes in the    |
-   |                                  |          | face. shows the definition of a polygon   |
-   |                                  |          | mesh consisting of 3 square faces, with   |
-   |                                  |          | one triangular hole in the first one and  |
-   |                                  |          | square holes in the second one.           |
-   +----------------------------------+----------+-------------------------------------------+
-   | ``clockwisewinding``             | integer  | A value of ``1`` specifies that polygons  |
-   |                                  |          | with clockwise winding order are front    |
-   | ``clockwise`` (!)                |          | facing.                                   |
-   |                                  |          |                                           |
-   |                                  |          | **The default** is ``0``, making          |
-   |                                  |          | counterclockwise polygons front facing.   |
-   +----------------------------------+----------+-------------------------------------------+
+To render a mesh as a subdivision surface, at least the
+``subdivision.scheme`` parameter must be set. When rendering as a
+subdvision surface, the mesh node accepts these optionalattributes:
 
 .. index::
     subdivision surface
@@ -464,59 +433,100 @@ It also has these optional attributes:
     smooth corners
 
 .. table:: mesh node as subdivision surface optional attributes
-   :widths: 3 1 6
+    :widths: 3 1 6
 
-   +----------------------------------+----------+-------------------------------------------+
-   | ``subdivision.scheme``           | string   | A value of ``"catmull-clark"`` will cause |
-   |                                  |          | the mesh to render as a Catmull-Clark     |
-   |                                  |          | subdivision surface.                      |
-   +----------------------------------+----------+-------------------------------------------+
-   | ``subdivision.cornervertices``   | integer  | A list of vertices which are sharp        |
-   |                                  |          | corners. The values are indices into the  |
-   | ``subdivision.corner.index``     |          | ``P`` attribute, like ``P.indices``.      |
-   | (!)                              |          |                                           |
-   +----------------------------------+----------+-------------------------------------------+
-   | ``subdivision.cornersharpness``  | float    | The sharpness of each specified sharp     |
-   |                                  |          | corner. It must have a value for each     |
-   | ``subdivision.corner.sharpness`` |          | value given in                            |
-   | (!)                              |          | ``subdivision.cornervertices``.           |
-   +----------------------------------+----------+-------------------------------------------+
-   | ``subdivision.corner.automatic`` | integer  | This tag requires a single integer        |
-   |                                  |          | parameter with a value of ``0`` or ``1``  |
-   |                                  |          | indicating whether or not the surface     |
-   |                                  |          | uses enhanced subdivision rules on        |
-   |                                  |          | vertices where *more than two* creased    |
-   |                                  |          | edges meet.                               |
-   |                                  |          |                                           |
-   |                                  |          | With a value of ``1`` (**the default**),  |
-   |                                  |          | such a configuration uses the             |
-   |                                  |          | conventional rules which treat the vertex |
-   |                                  |          | as a sharp corner when it has *two or     |
-   |                                  |          | more* incoming creased edges. With a      |
-   |                                  |          | value of ``0``, the vertex is subdivided  |
-   |                                  |          | using an extended crease vertex           |
-   |                                  |          | subdivision rule which yields a smooth    |
-   |                                  |          | crease.                                   |
-   |                                  |          |                                           |
-   |                                  |          | Note that sharp corners can still be      |
-   |                                  |          | explicitly requested using the            |
-   |                                  |          | ``subdivision.corner.index`` &            |
-   |                                  |          | ``subdivision.corner.sharpness`` tags.    |
-   +----------------------------------+----------+-------------------------------------------+
-   | ``subdivision.creasevertices``   | integer  | A list of crease edges. Each edge is      |
-   |                                  |          | specified as a pair of indices into the   |
-   | ``subdivision.crease.index``     |          | ``P`` attribute, like ``P.indices``.      |
-   | (!)                              |          |                                           |
-   +----------------------------------+----------+-------------------------------------------+
-   | ``subdivision.creasesharpness``  | float    | The sharpness of each specified crease.   |
-   |                                  |          | It must have a value for each pair of     |
-   | ``subdivision.crease.sharpness`` |          | values given in                           |
-   | (!)                              |          | ``subdivision.creasevertices``.           |
-   +----------------------------------+----------+-------------------------------------------+
+    +----------------------------------+----------+------------------------------------------+
+    | **Name**                         | **Type** | **Description/Values**                   |
+    +==================================+==========+==========================================+
+    | ``subdivision.scheme``           | string   | A value of ``"catmull-clark"`` will      |
+    |                                  |          | cause the mesh to render as a            |
+    |                                  |          | Catmull-Clark subdivision surface.       |
+    +----------------------------------+----------+------------------------------------------+
+    | ``subdivision.cornervertices``   | integer  | A list of vertices which are sharp       |
+    |                                  |          | corners. The values are indices into the |
+    | ``subdivision.corner.index``     |          | ``P`` attribute, like ``P.indices``.     |
+    | (!)                              |          |                                          |
+    +----------------------------------+----------+------------------------------------------+
+    | ``subdivision.cornersharpness``  | float    | The sharpness of each specified sharp    |
+    |                                  |          | corner. It must have a value for each    |
+    | ``subdivision.corner.sharpness`` |          | value given in                           |
+    | (!)                              |          | ``subdivision.cornervertices``.          |
+    +----------------------------------+----------+------------------------------------------+
+    | ``subdivision.corner.automatic`` | integer  | This tag requires a single integer       |
+    |                                  |          | parameter with a value of ``0`` or ``1`` |
+    |                                  |          | indicating whether or not the surface    |
+    |                                  |          | uses enhanced subdivision rules on       |
+    |                                  |          | vertices where *more than two* creased   |
+    |                                  |          | edges meet.                              |
+    |                                  |          |                                          |
+    |                                  |          | With a value of ``1`` (**the default**), |
+    |                                  |          | such a configuration uses the            |
+    |                                  |          | conventional rules which treat the       |
+    |                                  |          | vertex as a sharp corner when it has     |
+    |                                  |          | *two or more* incoming creased edges.    |
+    |                                  |          | With a value of ``0``, the vertex is     |
+    |                                  |          | subdivided using an extended crease      |
+    |                                  |          | vertex subdivision rule which yields a   |
+    |                                  |          | smooth crease.                           |
+    |                                  |          |                                          |
+    |                                  |          | Note that sharp corners can still be     |
+    |                                  |          | explicitly requested using the           |
+    |                                  |          | ``subdivision.corner.index`` &           |
+    |                                  |          | ``subdivision.corner.sharpness`` tags.   |
+    +----------------------------------+----------+------------------------------------------+
+    | ``subdivision.creasevertices``   | integer  | A list of crease edges. Each edge is     |
+    |                                  |          | specified as a pair of indices into the  |
+    | ``subdivision.crease.index``     |          | ``P`` attribute, like ``P.indices``.     |
+    | (!)                              |          |                                          |
+    +----------------------------------+----------+------------------------------------------+
+    | ``subdivision.creasesharpness``  | float    | The sharpness of each specified crease.  |
+    |                                  |          | It must have a value for each pair of    |
+    | ``subdivision.crease.sharpness`` |          | values given in                          |
+    | (!)                              |          | ``subdivision.creasevertices``.          |
+    +----------------------------------+----------+------------------------------------------+
 
+The mesh node also has these optional attributes:
+
+.. index::
+    winding order
+    clockwise winding
+    counterclockwise winding
+
+.. table:: mesh node optional attributes
+    :widths: 3 1 6
+
+    +----------------------------------+----------+------------------------------------------+
+    | **Name**                         | **Type** | **Description/Values**                   |
+    +==================================+==========+==========================================+
+    | ``nholes``                       | integer  | The number of holes in the polygons.     |
+    |                                  |          | When this attribute is defined, the      |
+    | ``hole.size`` (!)                |          | total number of faces in the mesh is     |
+    |                                  |          | defined by the number of values for      |
+    |                                  |          | ``nnholes`` rather than for              |
+    |                                  |          | ``nvertices``. For each face, there      |
+    |                                  |          | should be (``nholes``+1) values in       |
+    |                                  |          | ``vertices``: the respective first value |
+    |                                  |          | specifies the number of vertices on the  |
+    |                                  |          | outside perimeter of the face, while     |
+    |                                  |          | additional values describe the number of |
+    |                                  |          | vertices on perimeters of holes in the   |
+    |                                  |          | face. shows the definition of a polygon  |
+    |                                  |          | mesh consisting of 3 square faces, with  |
+    |                                  |          | one triangular hole in the first one and |
+    |                                  |          | square holes in the second one.          |
+    +----------------------------------+----------+------------------------------------------+
+    | ``clockwisewinding``             | integer  | A value of ``1`` specifies that polygons |
+    |                                  |          | with clockwise winding order are front   |
+    | ``clockwise`` (!)                |          | facing.                                  |
+    |                                  |          |                                          |
+    |                                  |          | **The default** is ``0``, making         |
+    |                                  |          | counterclockwise polygons front facing.  |
+    +----------------------------------+----------+------------------------------------------+
 
 .. index::
     mesh example
+
+Below is a sample |nsi| stream snippet showing the definition of a mesh with holes.
 
 .. code-block:: shell
    :linenos:
@@ -554,7 +564,7 @@ This node is used to provide a way to attach attributes to some faces of
 another geometric primitive, such as the :ref:`mesh node<node:mesh>`. It
 has the following attributes:
 
-.. table:: set node optional attributes
+.. table:: faceset node optional attributes
     :widths: 3 1 6
 
     +---------------------------------+--------------+---------------------------------------+
@@ -627,6 +637,8 @@ It also has these optional attributes:
     :widths: 3 1 2 4
 
     +---------------------------------+----------+-------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                    |
+    +=================================+==========+===========================================+
     | ``basis``                       | string   | The basis functions used for curve        |
     |                                 |          | interpolation. Possible choices are:      |
     |                                 |          +-----------------+-------------------------+
