@@ -867,12 +867,12 @@ It has the following attributes:
     |                              |              |    w_{3_1} & w_{3_2} & w_{3_3} & 0  \\   |
     |                              |              |    Tx & Ty & Tz & 1 \end{array} \right]  |
     +------------------------------+--------------+------------------------------------------+
-    | ``objects``                  | <connection> | This is where the transformed objects    |
+    | ``objects``                  | «connection» | This is where the transformed objects    |
     |                              |              | are connected to. This includes          |
     |                              |              | geometry nodes, other transform nodes    |
     |                              |              | and camera nodes.                        |
     +------------------------------+--------------+------------------------------------------+
-    | ``geometryattributes``       | <connection> | This is where                            |
+    | ``geometryattributes``       | «connection» | This is where                            |
     |                              |              | :ref:`attributes nodes<node:attributes>` |
     |                              |              | may be connected to affect any geometry  |
     |                              |              | transformed by this node.                |
@@ -893,15 +893,32 @@ The instances nodes
 This node is an efficient way to specify a large number of instances. It
 has the following attributes:
 
-The instanced models should connect to this attribute. Connections must
-have an integer ``index`` attribute if there are several, so the models
-effectively form an ordered list.
+.. table:: instances node attributes
+    :widths: 3 1 6
 
-A transformation matrix for each instance.
+    +-----------------------------+--------------+-------------------------------------------+
+    | **Name**                    | **Type**     | **Description/Values**                    |
+    +=============================+==============+===========================================+
+    | ``sourcemodels``            | «connection» | The instanced models should connect to    |
+    |                             |              | this attribute.                           |
+    | ``object`` (!)              |              |                                           |
+    |                             |              | Connections must have an integer          |
+    |                             |              | ``index`` attribute if there are several, |
+    |                             |              | so the models effectively form an ordered |
+    |                             |              | list.                                     |
+    +-----------------------------+--------------+-------------------------------------------+
+    | ``transformationmatrices``  | doublematrix | A transformation matrix for each          |
+    |                             |              | instance.                                 |
+    | ``matrix`` (!)              |              |                                           |
+    +-----------------------------+--------------+-------------------------------------------+
+    | ``modelindices``            | integer      | An optional model selector for each       |
+    |                             |              | instance.                                 |
+    | ``object.index`` (!)        |              |                                           |
+    +-----------------------------+--------------+-------------------------------------------+
+    | ``disabledinstances``       | integer      | An optional list of indices of instances  |
+    |                             |              | which are not to be rendered.             |
+    +-----------------------------+--------------+-------------------------------------------+
 
-An optional model selector for each instance.
-
-An optional list of indices of instances which are not to be rendered.
 
 .. _node:outputdriver:
 
@@ -1050,14 +1067,14 @@ following attributes:
     |                                 |              | Layers with the lowest ``sortkey``        |
     |                                 |              | attribute appear first.                   |
     +---------------------------------+--------------+-------------------------------------------+
-    | ``lightset``                    | <connection> | This connection accepts either or nodes   |
+    | ``lightset``                    | «connection» | This connection accepts either or nodes   |
     |                                 |              | to which lights are connected. In this    |
     |                                 |              | case only listed lights will affect the   |
     |                                 |              | crender of the output layer. If nothing   |
     |                                 |              | is connected to this attribute then all   |
     |                                 |              | lights are rendered.                      |
     +---------------------------------+--------------+-------------------------------------------+
-    | ``outputdrivers``               | <connection> | This connection accepts nodes to which    |
+    | ``outputdrivers``               | «connection» | This connection accepts nodes to which    |
     |                                 |              | the layer’s image will be sent.           |
     +---------------------------------+--------------+-------------------------------------------+
     | ``filter``                      | string       | The type of filter to use when            |
