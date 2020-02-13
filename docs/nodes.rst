@@ -843,43 +843,47 @@ This node represents a geometric transformation. Transform nodes can be
 chained together to express transform concatenation, hierarchies and
 instances.
 
-   \left[ \begin{array}{cccc}
-         w_{1_1} & w_{1_2} & w_{1_3} & 0  \\
-         w_{2_1} & w_{2_2} & w_{2_3} & 0  \\
-         w_{3_1} & w_{3_2} & w_{3_3} & 0  \\
-         Tx & Ty & Tz & 1 \end{array} \right]
-
-
-Transform nodes also accept attributes to implement
+A transform node also accepts attributes to implement
 :ref:`hierarchical attribute assignment and overrides<section:attributes>`.
+
 It has the following attributes:
-
-
 
 .. table:: transform node attributes
     :widths: 3 1 6
 
-    +---------------------------------+--------------+---------------------------------------+
-    | **Name**                        | **Type**     | **Description/Values**                |
-    +=================================+==============+=======================================+
-    | ``tranformationmatrix``         | string       | This is a 4×4 matrix which describes  |
-    |                                 |              | the node's transformation. Matrices   |
-    |                                 |              | in |nsi| post-multiply so column      |
-    | ``matrix`` (!)                  |              | vectors are of the form:              |
-    |                                 |              |                                       |
-    +---------------------------------+--------------+---------------------------------------+
-    | ``objects``                     | <connection> | This is where the transformed objects |
-    |                                 |              | are connected to. This includes       |
-    |                                 |              | geometry nodes, other transform nodes |
-    |                                 |              | and camera nodes.                     |
-    +---------------------------------+--------------+---------------------------------------+
-    | ``geometryattributes``          | <connection> | This is where may be connected to     |
-    |                                 |              | affect any geometry transformed by    |
-    |                                 |              | this node. Refer to and for           |
-    |                                 |              | explanation on how this connection is |
-    |                                 |              | used.                                 |
-    +---------------------------------+--------------+---------------------------------------+
-
+    +------------------------------+--------------+------------------------------------------+
+    | **Name**                     | **Type**     | **Description/Values**                   |
+    +==============================+==============+==========================================+
+    | ``tranformationmatrix``      | string       | This is a 4×4 matrix which describes     |
+    |                              |              | the node's transformation. Matrices      |
+    |                              |              | in |nsi| post-multiply so column         |
+    | ``matrix`` (!)               |              | vectors are of the form:                 |
+    |                              |              |                                          |
+    |                              |              | .. math::                                |
+    |                              |              |                                          |
+    |                              |              |    \left[ \begin{array}{cccc}            |
+    |                              |              |    w_{1_1} & w_{1_2} & w_{1_3} & 0  \\   |
+    |                              |              |    w_{2_1} & w_{2_2} & w_{2_3} & 0  \\   |
+    |                              |              |    w_{3_1} & w_{3_2} & w_{3_3} & 0  \\   |
+    |                              |              |    Tx & Ty & Tz & 1 \end{array} \right]  |
+    +------------------------------+--------------+------------------------------------------+
+    | ``objects``                  | <connection> | This is where the transformed objects    |
+    |                              |              | are connected to. This includes          |
+    |                              |              | geometry nodes, other transform nodes    |
+    |                              |              | and camera nodes.                        |
+    +------------------------------+--------------+------------------------------------------+
+    | ``geometryattributes``       | <connection> | This is where                            |
+    |                              |              | :ref:`attributes nodes<node:attributes>` |
+    |                              |              | may be connected to affect any geometry  |
+    |                              |              | transformed by this node.                |
+    |                              |              |                                          |
+    |                              |              | See the guidelines on                    |
+    |                              |              | :ref:`attributes<section:attributes>`    |
+    |                              |              | and                                      |
+    |                              |              | :ref:`instancing<section:instancing>`    |
+    |                              |              | for explanations on how this connection  |
+    |                              |              | is used.                                 |
+    +------------------------------+--------------+------------------------------------------+
 
 .. _node:instances:
 
