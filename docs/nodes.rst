@@ -22,8 +22,8 @@ details.
    | :ref:`set<node:set>`                   | Expresses relationships  |
    |                                        | of groups of nodes       |
    +----------------------------------------+--------------------------+
-   | :ref:`shader<node:shader>`             | osl shader or layer in a |
-   |                                        | shader group             |
+   | :ref:`shader<node:shader>`             | |osl| shader or layer in |
+   |                                        | a shader group           |
    +----------------------------------------+--------------------------+
    | :ref:`attributes<node:attributes>`     | Container for generic    |
    |                                        | attributes (e.g.         |
@@ -83,7 +83,7 @@ it is the :ref:`end connection<section:basicscene>` for all renderable
 scene elements. A node can exist in an nsi context without being
 connected to the root note but in that case it won't affect the render
 in any way. The root node has the reserved handle name ``.root`` and
-doesn’t need to be created using ``NSICreate()``. The root node has two
+doesn’t need to be created using :ref:`NSICreate<CAPI:nsicreate>`. The root node has two
 defined attributes: ``objects`` and ``geometryattributes``. Both are
 explained under the :ref:`transform node<node:transform>`.
 
@@ -96,8 +96,8 @@ This node contains various global settings for a particular nsi context.
 Note that these attributes are for the most case implementation
 specific.
 
-This node has the reserved handle name ``.global`` and doesn't
-need to be created using ``NSICreate()``. The following attributes are
+This node has the reserved handle name ``.global`` and does *not*
+need to be created using :ref:`NSICreate<CAPI:nsicreate>`. The following attributes are
 recognized by *3Delight*:
 
 
@@ -108,8 +108,8 @@ recognized by *3Delight*:
     | **Name**                        | **Type** | **Description/Values**                     |
     +=================================+==========+============================================+
     | ``numberofthreads``             | integer  | Specifies the total number of threads to   |
-    | ``render.threads.number`` (!)   |          | use for a particular render:               |
-    |                                 |          +--------------------------------------------+
+    |                                 |          | use for a particular render:               |
+    | ``threads.number`` (!)          |          +--------------------------------------------+
     |                                 |          | -  A value of ``0`` lets the render engine |
     |                                 |          |    choose an optimal thread value.         |
     |                                 |          |    This is is the **default** behaviour.   |
@@ -123,17 +123,17 @@ recognized by *3Delight*:
     |                                 |          |    threads.                                |
     +---------------------------------+----------+--------------------------------------------+
     | ``renderatlowpriority``         | integer  | If set to 1, start the render with a lower |
-    | ``render.priority.low`` (!)     |          | process priority. This can be useful if    |
-    |                                 |          | there are other applications that must run |
+    |                                 |          | process priority. This can be useful if    |
+    | ``priority.low`` (!)            |          | there are other applications that must run |
     |                                 |          | during rendering.                          |
     +---------------------------------+----------+--------------------------------------------+
     | ``texturememory``               | integer  | Specifies the approximate maximum memory   |
-    | ``texture.memory`` (!)          |          | size, in megabytes, the renderer will      |
-    |                                 |          | allocate to accelerate texture access.     |
+    |                                 |          | size, in megabytes, the renderer will      |
+    | ``texture.memory`` (!)          |          | allocate to accelerate texture access.     |
     +---------------------------------+----------+--------------------------------------------+
     | ``bucketorder``                 | string   | Specifies in what order the buckets are    |
-    | ``bucket.order``                |          | rendered. The available values are:        |
-    |                                 |          +----------------+---------------------------+
+    |                                 |          | rendered. The available values are:        |
+    | ``bucket.order`` (!)            |          +----------------+---------------------------+
     |                                 |          | ``horizontal`` | Row by row, left to right |
     |                                 |          |                | and top to bottom. This   |
     |                                 |          |                | is the **default**.       |
@@ -238,14 +238,14 @@ recognized by *3Delight*:
 
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.diffuse``     | integer  | Specifies the maximum bounce depth a ray   |
-    | ``diffuse.ray.depth.max``       |          | emitted from a diffuse |closure| can       |
-    |                                 |          | reach. A depth of ``1`` specifies one      |
+    |                                 |          | emitted from a diffuse |closure| can       |
+    | ``diffuse.ray.depth.max`` (!)   |          | reach. A depth of ``1`` specifies one      |
     |                                 |          | additional bounce compared to purely local |
     |                                 |          | illumination.                              |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.diffuse``    | double   | Limits the distance a ray emitted from a   |
-    | ``diffuse.ray.length.max``      |          | diffuse |closure| can travel.              |
-    |                                 |          |                                            |
+    |                                 |          | diffuse |closure| can travel.              |
+    | ``diffuse.ray.length.max`` (!)  |          |                                            |
     |                                 |          | Using a relatively low value for this      |
     |                                 |          | attribute might improve performance        |
     |                                 |          | without significantly affecting the look   |
@@ -256,51 +256,54 @@ recognized by *3Delight*:
     |                                 |          | the limitation.                            |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.reflection``  | integer  | Specifies the maximum bounce depth a       |
-    | ``reflection.ray.depth.max``    |          | reflection ray can reach.                  |
-    |                                 |          |                                            |
-    |                                 |          |                                            |
+    |                                 |          | reflection ray can reach.                  |
+    | ``reflection.ray.depth.max``    |          |                                            |
+    | (!)                             |          |                                            |
     |                                 |          | Setting reflection depth to 0 will only    |
     |                                 |          | compute local illumination resulting in    |
     |                                 |          | only surfaces with an emission |closure|   |
     |                                 |          | to appear in reflections.                  |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.reflection`` | double   | Limits the distance a reflection ray can   |
-    | ``reflection.ray.length.max``   |          | travel. Setting this to a negative value   |
-    |                                 |          | disables the limitation.                   |
+    |                                 |          | travel. Setting this to a negative value   |
+    | ``reflection.ray.length.max``   |          | disables the limitation.                   |
+    | (!)                             |          |                                            |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.specular``   | double   | Limits the distance a glossy ray can       |
-    | ``glossy.ray.length.max``       |          | travel. Setting this to a negative value   |
-    |                                 |          | disables the limitation.                   |
+    |                                 |          | travel. Setting this to a negative value   |
+    | ``glossy.ray.length.max`` (!)   |          | disables the limitation.                   |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.refraction``  | integer  | Specifies the maximum bounce depth a       |
-    | ``refraction.ray.depth.max``    |          | refraction ray can reach.                  |
-    |                                 |          |                                            |
-    |                                 |          | The default value of ``4`` allows light to |
+    |                                 |          | refraction ray can reach.                  |
+    | ``refraction.ray.depth.max``    |          |                                            |
+    | (!)                             |          | The default value of ``4`` allows light to |
     |                                 |          | shine through a properly modeled object    |
     |                                 |          | such as a glass.                           |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.refraction`` | double   | Limits the distance a refraction ray can   |
-    | ``refraction.ray.length.max``   |          | travel. Setting this to a negative value   |
-    |                                 |          | disables the limitation.                   |
+    |                                 |          | travel. Setting this to a negative value   |
+    | ``refraction.ray.length.max``   |          | disables the limitation.                   |
+    | (!)                             |          |                                            |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.hair``        | integer  | Specifies the maximum bounce depth a hair  |
-    | ``hair.ray.depth.max``          |          | ray can reach.                             |
-    |                                 |          |                                            |
+    |                                 |          | ray can reach.                             |
+    | ``hair.ray.depth.max`` (!)      |          |                                            |
     |                                 |          | Note that hair are akin to volumetric      |
     |                                 |          | primitives and might need elevated ray     |
     |                                 |          | depth to properly capture the              |
     |                                 |          | illumination.                              |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.hair``       | double   | Limits the distance a hair ray can         |
-    | ``hair.ray.length.max`` (!)     |          | travel. Setting this to a negative value   |
-    |                                 |          | disables the limitation.                   |
+    |                                 |          | travel. Setting this to a negative value   |
+    | ``hair.ray.length.max`` (!)     |          | disables the limitation.                   |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.volume``      | integer  | Specifies the maximum bounce depth a       |
-    | ``volume.ray.depth.max`` (!)    |          | volume ray can reach.                      |
+    |                                 |          | volume ray can reach.                      |
+    | ``volume.ray.depth.max`` (!)    |          |                                            |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.volume``     | double   | Limits the distance a volume ray can       |
-    | ``volume.ray.length.max`` (!)   |          | travel. Setting this to a negative value   |
-    |                                 |          | disables the limitation.                   |
+    |                                 |          | travel. Setting this to a negative value   |
+    | ``volume.ray.length.max`` (!)   |          | disables the limitation.                   |
     +---------------------------------+----------+--------------------------------------------+
 
 .. index::
@@ -327,9 +330,9 @@ recognized by *3Delight*:
     |                                 |          | scene.                                    |
     +---------------------------------+----------+-------------------------------------------+
     | ``subsurface.show``             | integer  | When set to ``1``, enables the            |
-    | ``shading.subsurface`` (!)      |          | ``subsurface()`` osl |closure|.           |
+    | ``shading.subsurface`` (!)      |          | ``subsurface()`` |osl| |closure|.         |
     |                                 |          | Otherwise, it must be set to ``0``, which |
-    |                                 |          | will ignore this |closure| in osl         |
+    |                                 |          | will ignore this |closure| in |osl|       |
     |                                 |          | shaders.                                  |
     +---------------------------------+----------+-------------------------------------------+
 
@@ -380,8 +383,9 @@ It has the following attributes:
     +---------------------------------+--------------+---------------------------------------+
     | **Name**                        | **Type**     | **Description/Values**                |
     +=================================+==============+=======================================+
-    | ``objects``                     | <connection> | This connection accepts all nodes     |
+    | ``objects``                     | «connection» | This connection accepts all nodes     |
     |                                 |              | that are members of the set.          |
+    | ``object`` (!)                  |              |                                       |
     +---------------------------------+--------------+---------------------------------------+
 
 .. _node:mesh:
@@ -407,18 +411,13 @@ attributes:
    +---------------------------------+----------+--------------------------------------------+
    | ``nvertices``                   | integer  | The number of vertices for each face of    |
    |                                 |          | the mesh. The number of values for this    |
-   | ``vertices.size`` (!)           |          | attribute specifies total face number      |
+   | ``vertex.size`` (!)             |          | attribute specifies total face number      |
    |                                 |          | (unless ``nholes`` is defined).            |
    +---------------------------------+----------+--------------------------------------------+
 
 It also has these optional attributes:
 
 .. index::
-    subdivision surface
-    Catmull-Clark
-    crease
-    corner
-    sharpness
     winding order
     clockwise winding
     counterclockwise winding
@@ -426,54 +425,93 @@ It also has these optional attributes:
 .. table:: mesh node optional attributes
    :widths: 3 1 6
 
-   +---------------------------------+----------+--------------------------------------------+
-   | **Name**                        | **Type** | **Description/Values**                     |
-   +=================================+==========+============================================+
-   | ``nholes``                      | integer  | The number of holes in the polygons.       |
-   |                                 |          | When this attribute is defined, the total  |
-   | ``holes.length`` (1)            |          | number of faces in the mesh is defined by  |
-   |                                 |          | the number of values for ``nholes``        |
-   |                                 |          | rather than for ``nvertices``. For         |
-   |                                 |          | each face, there should be                 |
-   |                                 |          | (``holes.length``+1) values in             |
-   |                                 |          | ``vertices``: the respective first value   |
-   |                                 |          | specifies the number of vertices on the    |
-   |                                 |          | outside perimeter of the face, while       |
-   |                                 |          | additional values describe the number of   |
-   |                                 |          | vertices on perimeters of holes in the     |
-   |                                 |          | face. shows the definition of a polygon    |
-   |                                 |          | mesh consisting of 3 square faces, with    |
-   |                                 |          | one triangular hole in the first one and   |
-   |                                 |          | square holes in the second one.            |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``clockwisewinding``            | integer  | A value of ``1`` specifies that polygons   |
-   |                                 |          | with clockwise winding order are front     |
-   |                                 |          | facing.                                    |
-   |                                 |          |                                            |
-   |                                 |          | **The default** is ``0``, making           |
-   |                                 |          | counterclockwise polygons front facing.    |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.scheme``          | string   | A value of ``"catmull-clark"`` will cause  |
-   |                                 |          | the mesh to render as a Catmull-Clark      |
-   |                                 |          | subdivision surface.                       |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.cornervertices``  | integer  | A list of vertices which are sharp         |
-   |                                 |          | corners. The values are indices into the   |
-   |                                 |          | ``P`` attribute, like ``P.indices``.       |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.cornersharpness`` | float    | The sharpness of each specified sharp      |
-   |                                 |          | corner. It must have a value for each      |
-   |                                 |          | value given in                             |
-   |                                 |          | ``subdivision.cornervertices``.            |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.creasevertices``  | integer  | A list of crease edges. Each edge is       |
-   |                                 |          | specified as a pair of indices into the    |
-   |                                 |          | ``P`` attribute, like ``P.indices``.       |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.creasesharpness`` | float    | The sharpness of each specified crease. It |
-   |                                 |          | must have a value for each pair of values  |
-   |                                 |          | given in ``subdivision.creasevertices``.   |
-   +---------------------------------+----------+--------------------------------------------+
+   +----------------------------------+----------+-------------------------------------------+
+   | **Name**                         | **Type** | **Description/Values**                    |
+   +==================================+==========+===========================================+
+   | ``nholes``                       | integer  | The number of holes in the polygons.      |
+   |                                  |          | When this attribute is defined, the total |
+   | ``holes.length`` (!)             |          | number of faces in the mesh is defined by |
+   |                                  |          | the number of values for ``nholes``       |
+   |                                  |          | rather than for ``nvertices``. For        |
+   |                                  |          | each face, there should be                |
+   |                                  |          | (``holes.length``+1) values in            |
+   |                                  |          | ``vertices``: the respective first value  |
+   |                                  |          | specifies the number of vertices on the   |
+   |                                  |          | outside perimeter of the face, while      |
+   |                                  |          | additional values describe the number of  |
+   |                                  |          | vertices on perimeters of holes in the    |
+   |                                  |          | face. shows the definition of a polygon   |
+   |                                  |          | mesh consisting of 3 square faces, with   |
+   |                                  |          | one triangular hole in the first one and  |
+   |                                  |          | square holes in the second one.           |
+   +----------------------------------+----------+-------------------------------------------+
+   | ``clockwisewinding``             | integer  | A value of ``1`` specifies that polygons  |
+   |                                  |          | with clockwise winding order are front    |
+   | ``clockwise`` (!)                |          | facing.                                   |
+   |                                  |          |                                           |
+   |                                  |          | **The default** is ``0``, making          |
+   |                                  |          | counterclockwise polygons front facing.   |
+   +----------------------------------+----------+-------------------------------------------+
+
+.. index::
+    subdivision surface
+    Catmull-Clark
+    crease
+    corner
+    sharpness
+    smooth corners
+
+.. table:: mesh node as subdivision surface optional attributes
+   :widths: 3 1 6
+
+   +----------------------------------+----------+-------------------------------------------+
+   | ``subdivision.scheme``           | string   | A value of ``"catmull-clark"`` will cause |
+   |                                  |          | the mesh to render as a Catmull-Clark     |
+   |                                  |          | subdivision surface.                      |
+   +----------------------------------+----------+-------------------------------------------+
+   | ``subdivision.cornervertices``   | integer  | A list of vertices which are sharp        |
+   |                                  |          | corners. The values are indices into the  |
+   | ``subdivision.corner.index``     |          | ``P`` attribute, like ``P.indices``.      |
+   | (!)                              |          |                                           |
+   +----------------------------------+----------+-------------------------------------------+
+   | ``subdivision.cornersharpness``  | float    | The sharpness of each specified sharp     |
+   |                                  |          | corner. It must have a value for each     |
+   | ``subdivision.corner.sharpness`` |          | value given in                            |
+   | (!)                              |          | ``subdivision.cornervertices``.           |
+   +----------------------------------+----------+-------------------------------------------+
+   | ``subdivision.corner.automatic`` | integer  | This tag requires a single integer        |
+   |                                  |          | parameter with a value of ``0`` or ``1``  |
+   |                                  |          | indicating whether or not the surface     |
+   |                                  |          | uses enhanced subdivision rules on        |
+   |                                  |          | vertices where *more than two* creased    |
+   |                                  |          | edges meet.                               |
+   |                                  |          |                                           |
+   |                                  |          | With a value of ``1`` (**the default**),  |
+   |                                  |          | such a configuration uses the             |
+   |                                  |          | conventional rules which treat the vertex |
+   |                                  |          | as a sharp corner when it has *two or     |
+   |                                  |          | more* incoming creased edges. With a      |
+   |                                  |          | value of ``0``, the vertex is subdivided  |
+   |                                  |          | using an extended crease vertex           |
+   |                                  |          | subdivision rule which yields a smooth    |
+   |                                  |          | crease.                                   |
+   |                                  |          |                                           |
+   |                                  |          | Note that sharp corners can still be      |
+   |                                  |          | explicitly requested using the            |
+   |                                  |          | ``subdivision.corner.index`` &            |
+   |                                  |          | ``subdivision.corner.sharpness`` tags.    |
+   +----------------------------------+----------+-------------------------------------------+
+   | ``subdivision.creasevertices``   | integer  | A list of crease edges. Each edge is      |
+   |                                  |          | specified as a pair of indices into the   |
+   | ``subdivision.crease.index``     |          | ``P`` attribute, like ``P.indices``.      |
+   | (!)                              |          |                                           |
+   +----------------------------------+----------+-------------------------------------------+
+   | ``subdivision.creasesharpness``  | float    | The sharpness of each specified crease.   |
+   |                                  |          | It must have a value for each pair of     |
+   | ``subdivision.crease.sharpness`` |          | values given in                           |
+   | (!)                              |          | ``subdivision.creasevertices``.           |
+   +----------------------------------+----------+-------------------------------------------+
+
 
 .. index::
     mesh example
@@ -522,7 +560,7 @@ has the following attributes:
     +=================================+==============+=======================================+
     | ``faces``                       | integer      | A list of indices of faces. It        |
     |                                 |              | identifies which faces of the         |
-    |                                 |              | original geometry will be part of     |
+    | ``face`` (!)                    |              | original geometry will be part of     |
     |                                 |              | this face set.                        |
     +---------------------------------+--------------+---------------------------------------+
 
@@ -564,7 +602,7 @@ attributes:
     +=================================+==========+===========================================+
     | ``nverts``                      | integer  | The number of vertices for each curve.    |
     |                                 |          | This must be at least ``4`` for cubic     |
-    | ``vertices.size`` (!)           |          | curves and ``2`` for linear curves. There |
+    | ``vertex.size`` (!)             |          | curves and ``2`` for linear curves. There |
     |                                 |          | can be either a single value or one value |
     |                                 |          | per curve.                                |
     +---------------------------------+----------+-------------------------------------------+
@@ -597,6 +635,8 @@ It also has these optional attributes:
     |                                 |          |                 | **the default** value.  |
     |                                 |          +-----------------+-------------------------+
     |                                 |          | ``linear``      | Linear interpolation.   |
+    |                                 |          +-----------------+-------------------------+
+    |                                 |          | ``hobby`` (!)   | Hobby interpolation.    |
     +---------------------------------+----------+-----------------+-------------------------+
     | ``N``                           | normal   | The presence of a normal indicates that   |
     |                                 |          | each curve is to be rendered as an        |
@@ -604,8 +644,8 @@ It also has these optional attributes:
     |                                 |          | ribbon is defined by the provided normal  |
     |                                 |          | which can be constant, a per-curve or a   |
     |                                 |          | per-vertex attribute.                     |
-    |                                 |          | Each ribbon is assumed to alwyas facing   |
-    |                                 |          | the camera if a normal is not provided.   |
+    |                                 |          | Each ribbon is assumed to always face the |
+    |                                 |          | camera if a normal is not provided.       |
     +---------------------------------+----------+-------------------------------------------+
     | ``extrapolate``                 | integer  | By default, when this is set to ``0``,    |
     |                                 |          | cubic curves will not be drawn to their   |
@@ -711,7 +751,7 @@ scene, it can be done either lazily (depending on its ``boundingbox``
 attribute) or in parallel with other procedural nodes.
 
 The procedural node supports, as its attributes, all the parameters of
-the :ref:`NSIEvaluate()<CAPI:nsievaluate>` API call, meaning that
+the :ref:`NSIEvaluate<CAPI:nsievaluate>` API call, meaning that
 procedural types accepted by that api call (|nsi| archives, dynamic
 libraries, Lua scripts) are also supported by this node. Those
 attributes are used to call a procedural that is expected to define
@@ -785,7 +825,7 @@ following optional node attribute is recognized:
 The shader node
 ---------------
 
-This node represents an osl shader, also called layer when part of a
+This node represents an |osl| shader, also called layer when part of a
 shader group. It has the following required attribute:
 
 .. table:: shader node attributes
@@ -801,7 +841,7 @@ shader group. It has the following required attribute:
 
 All other attributes on this node are considered parameters of the
 shader. They may either be given values or connected to attributes of
-other shader nodes to build shader networks. osl shader networks must
+other shader nodes to build shader networks. |osl| shader networks must
 form acyclic graphs or they will be rejected. Refer to
 :ref:`the guidelines<section:creating_osl_networks>` for instructions
 on |osl| network creation and usage.
@@ -866,7 +906,7 @@ This node has the following attributes:
     |                              |              | hierarchy.                               |
     +------------------------------+--------------+------------------------------------------+
     | ``visibility.camera``        | integer      | These attributes set visibility for each |
-    | ``visibility.diffuse``       |              | ray type specified in osl. The same      |
+    | ``visibility.diffuse``       |              | ray type specified in |osl|. The same    |
     | ``visibility.hair``          |              | effect could be achieved using shader    |
     | ``visibility.reflection``    |              | code (using the ``raytype()`` function)  |
     | ``visibility.refraction``    |              | but it is much faster to filter          |
@@ -950,7 +990,7 @@ It has the following attributes:
     +------------------------------+--------------+------------------------------------------+
     | ``geometryattributes``       | «connection» | This is where                            |
     |                              |              | :ref:`attributes nodes<node:attributes>` |
-    | ``aatribute`` (!)            |              | may be connected to affect any geometry  |
+    | ``attribute`` (!)            |              | may be connected to affect any geometry  |
     |                              |              | transformed by this node.                |
     |                              |              |                                          |
     |                              |              | See the guidelines on                    |
@@ -1384,7 +1424,7 @@ specific attributes.
 Lens shaders
 ~~~~~~~~~~~~
 
-A lens shader is an osl network connected to a camera through the
+A lens shader is an |osl| network connected to a camera through the
 ``lensshader`` connection. Such shaders receive the position and the
 direction of each tracer ray and can either change or completely discard
 the traced ray. This allows to implement distortion maps and cut maps.
