@@ -1,5 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/nsi/badge/?version=latest)](https://nsi.readthedocs.io/en/latest/?badge=latest)
-# ɴsɪ Documentation I
+# ɴsɪ Documentation
 
 Documentation for Illumination Research’s Nodal Scene Interface – ɴsɪ.
 
@@ -59,6 +59,8 @@ If you are on macOS Catalina or later kindlegen will not work since
 it’s 32bit only. In this case use Amazon’s 
 [Kindle Previewer](https://www.amazon.com/gp/feature.html?docId=1000765261)
 tool which, too, can convert from EPUB to Mobipocket format.
+
+Lastly, there is always [calibre](https://calibre-ebook.com/).
 
 ### LaTex/LaTexPDF target
 
