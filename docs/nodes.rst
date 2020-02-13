@@ -563,8 +563,8 @@ attributes:
     | **Name**                        | **Type** | **Description/Values**                    |
     +=================================+==========+===========================================+
     | ``nverts``                      | integer  | The number of vertices for each curve.    |
-    | ``vertices.size`` (!)           |          | This must be at least ``4`` for cubic     |
-    |                                 |          | curves and ``2`` for linear curves. There |
+    |                                 |          | This must be at least ``4`` for cubic     |
+    | ``vertices.size`` (!)           |          | curves and ``2`` for linear curves. There |
     |                                 |          | can be either a single value or one value |
     |                                 |          | per curve.                                |
     +---------------------------------+----------+-------------------------------------------+
@@ -711,26 +711,36 @@ scene, it can be done either lazily (depending on its ``boundingbox``
 attribute) or in parallel with other procedural nodes.
 
 The procedural node supports, as its attributes, all the parameters of
-the api call, meaning that procedural types accepted by that api call
-(NSI archives, dynamic libraries, LUA scripts) are also supported by
-this node. Those attributes are used to call a procedural that is
-expected to define a sub-scene, which has to be independent from the
-other nodes in the scene. The procedural node will act as the
-sub-scene’s local root and, as such, also supports all the attributes of
-a regular node. In order to connect the nodes it creates to the
-sub-scene’s root, the procedural simply has to connect them to the
-regular "``.root``".
+the :ref:`NSIEvaluate()<CAPI:nsievaluate>` API call, meaning that
+procedural types accepted by that api call (|nsi| archives, dynamic
+libraries, Lua scripts) are also supported by this node. Those
+attributes are used to call a procedural that is expected to define
+a sub-scene, which has to be independent from the other nodes in the
+scene. The procedural node will act as the sub-scene’s local root and,
+as such, also supports all the attributes of a regular node. In order
+to connect the nodes it creates to the sub-scene’s root, the procedural
+simply has to connect them to the regular ``.root``.
 
-In the context of an , the procedural will be executed again after the
-node’s attributes have been edited. All nodes previously connected by
-the procedural to the sub-scene’s root will be deleted automatically
-before the procedural’s re-execution.
+In the context of an :ref:`interactive render`, the procedural will
+be executed again after the node's attributes have been edited. All
+nodes previously connected by the procedural to the sub-scene's root
+will be deleted automatically before the procedural’s re-execution.
 
 Additionally, this node has the following optional attribute :
 
-Specifies a bounding box for the geometry where ``boundingbox[0]`` and
-``boundingbox[1]`` correspond, respectively, to the "minimum" and the
-"maximum" corners of the box.
+
+.. table:: procedural node optional attribute
+    :widths: 3 1 6
+
+    +------------------------------+--------------+------------------------------------------+
+    | **Name**                     | **Type**     | **Description/Values**                   |
+    +==============================+==============+==========================================+
+    | ``boundingbox``              | point[2]     | Specifies a bounding box for the         |
+    |                              |              | geometry where ``boundingbox[0]`` and    |
+    |                              |              | ``boundingbox[1]`` correspond,           |
+    |                              |              | respectively, to the 'minimum' and the   |
+    |                              |              | 'maximum' corners of the box.            |
+    +------------------------------+--------------+------------------------------------------+
 
 .. _node:environment:
 
@@ -743,12 +753,32 @@ lights which cannot be efficiently modeled using area lights. In
 practical terms, this node is no different than a geometry node with the
 exception of shader execution semantics: there is no surface position
 ``P``, only a direction ``I`` (refer to for more practical details). The
-following node attribute is recognized:
+following optional node attribute is recognized:
 
-Specifies the cone angle representing the region of the sphere to be
-sampled. The angle is measured around the :math:`\mathrm{Z+}` axis [#]_.
-If the angle is set to :math:`0`, the environment describes a
-directional light. Refer to for more about how to specify light sources.
+.. table:: environment node optional attribute
+    :widths: 3 1 6
+
+    +------------------------------+--------------+------------------------------------------+
+    | **Name**                     | **Type**     | **Description/Values**                   |
+    +==============================+==============+==========================================+
+    | ``angle``                    | double       | Specifies the cone angle representing    |
+    |                              |              | the region of the sphere to be sampled.  |
+    |                              |              |                                          |
+    |                              |              | The angle is measured around the         |
+    |                              |              | :math:`\mathrm{Z+}` axis. If the angle   |
+    |                              |              | is set to :math:`0`, the environment     |
+    |                              |              | describes a directional light.           |
+    |                              |              |                                          |
+    |                              |              | See :ref:`the                            |
+    |                              |              | guidelines<section:specifyinglights>`    |
+    |                              |              | for more information on about how to     |
+    |                              |              | specify light sources.                   |
+    +------------------------------+--------------+------------------------------------------+
+
+.. Tip::
+    To position the environment dome one must connect the node to a :ref:`transform
+    node<node:transform>` and apply the desired rotation(s).
+
 
 .. _node:shader:
 
@@ -758,13 +788,23 @@ The shader node
 This node represents an osl shader, also called layer when part of a
 shader group. It has the following required attribute:
 
-This is the name of the file which contains the shader’s compiled code.
+.. table:: shader node attributes
+    :widths: 3 1 6
+
+    +------------------------------+--------------+------------------------------------------+
+    | **Name**                     | **Type**     | **Description/Values**                   |
+    +==============================+==============+==========================================+
+    | ``shaderfilename``           | string       | This is the name of the file which       |
+    |                              |              | contains the shader’s compiled code.     |
+    | ``filename`` (!)             |              |                                          |
+    +------------------------------+--------------+------------------------------------------+
 
 All other attributes on this node are considered parameters of the
 shader. They may either be given values or connected to attributes of
 other shader nodes to build shader networks. osl shader networks must
-form acyclic graphs or they will be rejected. Refer to for instructions
-on osl network creation and usage.
+form acyclic graphs or they will be rejected. Refer to
+:ref:`the guidelines<section:creating_osl_networks>` for instructions
+on |osl| network creation and usage.
 
 .. _node:attributes:
 
@@ -792,47 +832,83 @@ surface shader) and will all be considered.
 
 This node has the following attributes:
 
-The which will be used to shade the surface is connected to this
-attribute. A priority (useful for overriding a shader from higher in the
-scene graph) can be specified by setting the ``priority`` attribute of
-the connection itself.
 
-The which will be used to displace the surface is connected to this
-attribute. A priority (useful for overriding a shader from higher in the
-scene graph) can be specified by setting the ``priority`` attribute of
-the connection itself.
+.. table:: attributes node attributes
+    :widths: 3 1 6
 
-The which will be used to shade the volume inside the primitive is
-connected to this attribute.
-
-Sets the priority of attribute ``ATTR`` when gathering attributes in the
-scene hierarchy. [visibilityattributes]
-
-These attributes set visibility for each ray type specified in osl. The
-same effect could be achieved using shader code (using the ``raytype()``
-function) but it is much faster to filter intersections at trace time. A
-value of ``1`` makes the object visible to the corresponding ray type,
-while ``0`` makes it invisible.
-
-This attribute sets the default visibility for all ray types. When
-visibility is set both per ray type and with this default visibility,
-the attribute with the highest priority is used. If their priority is
-the same, the more specific attribute (i.e. per ray type) is used.
-
-If this attribute is set to 1, the object becomes a matte for camera
-rays. Its transparency is used to control the matte opacity and all
-other shading components are ignored.
-
-If this is set to 1, closures not used with ``quantize()`` will use
-emission from the objects affected by the attribute. If set to 0, they
-will not.
-
-If this is set to 1, quantized closures will use emission from the
-objects affected by the attribute. If set to 0, they will not.
-
-When a geometry node (usually a ) is connected to this attribute, it
-will be used to restrict the effect of the attributes node, which will
-apply only inside the volume defined by the connected geometry object.
+    +------------------------------+--------------+------------------------------------------+
+    | **Name**                     | **Type**     | **Description/Values**                   |
+    +==============================+==============+==========================================+
+    | ``surfaceshader``            | «connection» | The :ref:`shader node<node:shader>`      |
+    |                              |              | which will be used to shade the surface  |
+    | ``shader.surface`` (!)       |              | is connected to this attribute. A        |
+    |                              |              | priority (useful for overriding a shader |
+    |                              |              | from higher in the scene graph) can be   |
+    |                              |              | specified by setting the ``priority``    |
+    |                              |              | attribute of the connection itself.      |
+    +------------------------------+--------------+------------------------------------------+
+    | ``displacemenetshader``      | «connection» | The :ref:`shader node<node:shader>`      |
+    |                              |              | which will be used to displace the       |
+    | ``shader.displacement`` (!)  |              | surface is connected to this attribute.  |
+    |                              |              | A priority (useful for overriding a      |
+    |                              |              | shader from higher in the scene graph)   |
+    |                              |              | can be specified by setting the          |
+    |                              |              | ``priority`` attribute of the connection |
+    |                              |              | itself.                                  |
+    +------------------------------+--------------+------------------------------------------+
+    | ``volumeshader``             | «connection» | The :ref:`shader node<node:shader>`      |
+    |                              |              | which will be used to shade the volume   |
+    | ``shader.volume`` (!)        |              | inside the primitive is connected to     |
+    |                              |              | this attribute.                          |
+    +------------------------------+--------------+------------------------------------------+
+    | ``ATTR.priority``            | integer      | Sets the priority of attribute ``ATTR``  |
+    |                              |              | when gathering attributes in the scene   |
+    |                              |              | hierarchy.                               |
+    +------------------------------+--------------+------------------------------------------+
+    | ``visibility.camera``        | integer      | These attributes set visibility for each |
+    | ``visibility.diffuse``       |              | ray type specified in osl. The same      |
+    | ``visibility.hair``          |              | effect could be achieved using shader    |
+    | ``visibility.reflection``    |              | code (using the ``raytype()`` function)  |
+    | ``visibility.refraction``    |              | but it is much faster to filter          |
+    | ``visibility.shadow``        |              | intersections at trace time. A value of  |
+    | ``visibility.specular``      |              | ``1`` makes the object visible to the    |
+    | ``visibility.volume``        |              | corresponding ray type, while ``0``      |
+    |                              |              | makes it invisible.                      |
+    +------------------------------+--------------+------------------------------------------+
+    | ``visibility``               | integer      | This attribute sets the default          |
+    |                              |              | visibility for all ray types. When       |
+    |                              |              | visibility is set both per ray type and  |
+    |                              |              | with this default visibility, the        |
+    |                              |              | attribute with the highest priority is   |
+    |                              |              | used. If their priority is the same, the |
+    |                              |              | more specific attribute (i.e. per ray    |
+    |                              |              | type) is used.                           |
+    +------------------------------+--------------+------------------------------------------+
+    | ``matte``                    | integer      | If this attribute is set to 1, the       |
+    |                              |              | object becomes a matte for camera rays.  |
+    |                              |              | Its transparency is used to control the  |
+    |                              |              | matte opacity and all other shading      |
+    |                              |              | components are ignored.                  |
+    +------------------------------+--------------+------------------------------------------+
+    | ``regularemission``          | integer      | If this is set to ``1``, closures not    |
+    |                              |              | used with ``quantize()`` will use        |
+    | ``emission.regular`` (!)     |              | emission from the objects affected by    |
+    |                              |              | the attribute. If set to 0, they will    |
+    |                              |              | not.                                     |
+    +------------------------------+--------------+------------------------------------------+
+    | ``quantizedemission``        | integer      | If this is set to ``1``, quantized       |
+    |                              |              | closures will use emission from the      |
+    | ``emission.quantized`` (!)   |              | objects affected by the attribute. If    |
+    |                              |              | set to ``0``, they will not.             |
+    +------------------------------+--------------+------------------------------------------+
+    | ``bounds``                   | «connection» | When a geometry node (usually a          |
+    |                              |              | :ref:`mesh node<node:mesh>`) is          |
+    | ``boundary``                 |              | connected to this attribute, it will be  |
+    |                              |              | used to restrict the effect of the       |
+    |                              |              | attributes node, which will apply only   |
+    |                              |              | inside the volume defined by the         |
+    |                              |              | connected geometry object.               |
+    +------------------------------+--------------+------------------------------------------+
 
 .. _node:transform:
 
@@ -869,12 +945,12 @@ It has the following attributes:
     +------------------------------+--------------+------------------------------------------+
     | ``objects``                  | «connection» | This is where the transformed objects    |
     |                              |              | are connected to. This includes          |
-    |                              |              | geometry nodes, other transform nodes    |
+    | ``object`` (!)               |              | geometry nodes, other transform nodes    |
     |                              |              | and camera nodes.                        |
     +------------------------------+--------------+------------------------------------------+
     | ``geometryattributes``       | «connection» | This is where                            |
     |                              |              | :ref:`attributes nodes<node:attributes>` |
-    |                              |              | may be connected to affect any geometry  |
+    | ``aatribute`` (!)            |              | may be connected to affect any geometry  |
     |                              |              | transformed by this node.                |
     |                              |              |                                          |
     |                              |              | See the guidelines on                    |
@@ -1326,10 +1402,6 @@ instructs the renderer not to trace the corresponding ray sample.
 --------------
 
 .. rubric:: Footnotes
-
-.. [#]
-   To position the environment dome one must connect the node to a
-   :ref:`transform node<node:transform>` and apply the desired rotation.
 
 .. [#]
    It is sometimes desirable to turn off dithering, for example, when
