@@ -1,5 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/nsi/badge/?version=latest)](https://nsi.readthedocs.io/en/latest/?badge=latest)
-# nsi Documentation
+# ɴsɪ Documentation
 
 Documentation for Illumination Research’s Nodal Scene Interface – nsi.
 
