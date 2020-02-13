@@ -10,7 +10,7 @@ Background
 ==========
 
 The Nodal Scene Interface (|nsi|) was developed to replace existing
-APIs in our renderer which are showing their age.
+APIs in the |3delight| renderer which were showing their age.
 
 Having been designed in the 80s and extended several times since, they
 include features which are no longer relevant and design decisions
@@ -20,7 +20,7 @@ This makes some features more complex to use than they should be and
 prevents or greatly increases the complexity of implementing other
 features.
 
-The design of the nsi was shaped by multiple goals:
+The design of the |nsi| was shaped by multiple goals:
 
 | **Simplicity**
 |   The interface itself should be simple to understand and use, even

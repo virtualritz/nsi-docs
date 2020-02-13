@@ -319,19 +319,21 @@ recognized by *3Delight*:
 
     +---------------------------------+----------+-------------------------------------------+
     | ``quality.shadingsamples``      | integer  | Controls the quality of BSDF sampling.    |
-    | ``shading.samples``             |          | Larger values give less visible noise.    |
+    |                                 |          | Larger values give less visible noise.    |
+    | ``shading.samples`` (!)         |          |                                           |
     +---------------------------------+----------+-------------------------------------------+
     | ``quality.volumesamples``       | integer  | Controls the quality of volume sampling.  |
-    | ``volume.samples``              |          | Larger values give less visible noise.    |
+    |                                 |          | Larger values give less visible noise.    |
+    | ``volume.samples`` (!)          |          |                                           |
     +---------------------------------+----------+-------------------------------------------+
     | ``displacement.show``           | integer  | When set to ``1``, enables displacement   |
-    | ``shading.displacement`` (!)    |          | shading. Otherwise, it must be set to     |
-    |                                 |          | ignore any displacement shader in the     |
+    |                                 |          | shading. Otherwise, it must be set to     |
+    | ``shading.displacement`` (!)    |          | ignore any displacement shader in the     |
     |                                 |          | scene.                                    |
     +---------------------------------+----------+-------------------------------------------+
     | ``subsurface.show``             | integer  | When set to ``1``, enables the            |
-    | ``shading.subsurface`` (!)      |          | ``subsurface()`` |osl| |closure|.         |
-    |                                 |          | Otherwise, it must be set to ``0``, which |
+    |                                 |          | ``subsurface()`` |osl| |closure|.         |
+    | ``shading.subsurface`` (!)      |          | Otherwise, it must be set to ``0``, which |
     |                                 |          | will ignore this |closure| in |osl|       |
     |                                 |          | shaders.                                  |
     +---------------------------------+----------+-------------------------------------------+
