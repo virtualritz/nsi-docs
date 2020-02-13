@@ -60,6 +60,8 @@ it’s 32bit only. In this case use Amazon’s
 [Kindle Previewer](https://www.amazon.com/gp/feature.html?docId=1000765261)
 tool which, too, can convert from EPUB to Mobipocket format.
 
+Lastly, there is always [calibre](https://calibre-ebook.com/).
+
 ### LaTex/LaTexPDF target
 
 You need a Tex installation.
