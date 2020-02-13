@@ -107,7 +107,7 @@ recognized by *3Delight*:
     +---------------------------------+----------+--------------------------------------------+
     | **Name**                        | **Type** | **Description/Values**                     |
     +=================================+==========+============================================+
-    | ``numberofthreads``             | int      | Specifies the total number of threads to   |
+    | ``numberofthreads``             | integer  | Specifies the total number of threads to   |
     | ``render.threads.number`` (!)   |          | use for a particular render:               |
     |                                 |          +--------------------------------------------+
     |                                 |          | -  A value of ``0`` lets the render engine |
@@ -122,12 +122,12 @@ recognized by *3Delight*:
     |                                 |          |    to decrease the total number of render  |
     |                                 |          |    threads.                                |
     +---------------------------------+----------+--------------------------------------------+
-    | ``renderatlowpriority``         | int      | If set to 1, start the render with a lower |
+    | ``renderatlowpriority``         | integer  | If set to 1, start the render with a lower |
     | ``render.priority.low`` (!)     |          | process priority. This can be useful if    |
     |                                 |          | there are other applications that must run |
     |                                 |          | during rendering.                          |
     +---------------------------------+----------+--------------------------------------------+
-    | ``texturememory``               | int      | Specifies the approximate maximum memory   |
+    | ``texturememory``               | integer  | Specifies the approximate maximum memory   |
     | ``texture.memory`` (!)          |          | size, in megabytes, the renderer will      |
     |                                 |          | allocate to accelerate texture access.     |
     +---------------------------------+----------+--------------------------------------------+
@@ -153,7 +153,7 @@ recognized by *3Delight*:
     |                                 |          |                | from the centre of the    |
     |                                 |          |                | image.                    |
     +---------------------------------+----------+----------------+---------------------------+
-    | ``frame``                       | int      | Provides a frame number to be used as a    |
+    | ``frame``                       | integer  | Provides a frame number to be used as a    |
     |                                 |          | seed for the sampling pattern.             |
     |                                 |          | See the :ref:`screen node<node:screen>`.   |
     +---------------------------------+----------+--------------------------------------------+
@@ -169,7 +169,7 @@ recognized by *3Delight*:
    :widths: 3 1 6
 
    +---------------------------------+----------+--------------------------------------------+
-   | ``networkcache.size``           | int      | Specifies the maximum network cache size,  |
+   | ``networkcache.size``           | integer  | Specifies the maximum network cache size,  |
    |                                 |          | in gigabytes (*GB*, not *GiB*), the        |
    |                                 |          | renderer will use to cache textures on a   |
    |                                 |          | local drive to accelerate data access.     |
@@ -179,7 +179,7 @@ recognized by *3Delight*:
    |                                 |          | ``/var/tmp/3DelightCache`` on Linux        |
    |                                 |          | systems.                                   |
    +---------------------------------+----------+--------------------------------------------+
-   | ``networkcache.write``          | int      | Enables caching for image write            |
+   | ``networkcache.write``          | integer  | Enables caching for image write            |
    |                                 |          | operations. This alleviates pressure on    |
    |                                 |          | networks by first rendering images to a    |
    |                                 |          | local temporary location and copying them  |
@@ -200,7 +200,7 @@ recognized by *3Delight*:
    | ``license.server``              | string   | Specifies the name or IP address of the    |
    |                                 |          | license server to be used.                 |
    +---------------------------------+----------+--------------------------------------------+
-   | ``license.wait``                | int      | When no license is available for           |
+   | ``license.wait``                | integer  | When no license is available for           |
    |                                 |          | rendering, the renderer will wait until a  |
    |                                 |          | license is available if this attribute is  |
    |                                 |          | set to ``1``, but will stop immediately if |
@@ -209,7 +209,7 @@ recognized by *3Delight*:
    |                                 |          | a renderfarm and other work could be       |
    |                                 |          | scheduled instead.                         |
    +---------------------------------+----------+--------------------------------------------+
-   | ``license.hold``                | int      | By default, the renderer will get new      |
+   | ``license.hold``                | integer  | By default, the renderer will get new      |
    |                                 |          | licenses for every render and release them |
    |                                 |          | once it is done. This can be undesirable   |
    |                                 |          | if several frames are rendered in sequence |
@@ -237,7 +237,7 @@ recognized by *3Delight*:
     :widths: 3 1 6
 
     +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraydepth.diffuse``     | int (1)  | Specifies the maximum bounce depth a ray   |
+    | ``maximumraydepth.diffuse``     | integer  | Specifies the maximum bounce depth a ray   |
     | ``diffuse.ray.depth.max``       |          | emitted from a diffuse |closure| can       |
     |                                 |          | reach. A depth of ``1`` specifies one      |
     |                                 |          | additional bounce compared to purely local |
@@ -255,7 +255,7 @@ recognized by *3Delight*:
     |                                 |          | Setting this to a negative value disables  |
     |                                 |          | the limitation.                            |
     +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraydepth.reflection``  | int (4)  | Specifies the maximum bounce depth a       |
+    | ``maximumraydepth.reflection``  | integer  | Specifies the maximum bounce depth a       |
     | ``reflection.ray.depth.max``    |          | reflection ray can reach.                  |
     |                                 |          |                                            |
     |                                 |          |                                            |
@@ -272,7 +272,7 @@ recognized by *3Delight*:
     | ``glossy.ray.length.max``       |          | travel. Setting this to a negative value   |
     |                                 |          | disables the limitation.                   |
     +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraydepth.refraction``  | int (4)  | Specifies the maximum bounce depth a       |
+    | ``maximumraydepth.refraction``  | integer  | Specifies the maximum bounce depth a       |
     | ``refraction.ray.depth.max``    |          | refraction ray can reach.                  |
     |                                 |          |                                            |
     |                                 |          | The default value of ``4`` allows light to |
@@ -283,7 +283,7 @@ recognized by *3Delight*:
     | ``refraction.ray.length.max``   |          | travel. Setting this to a negative value   |
     |                                 |          | disables the limitation.                   |
     +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraydepth.hair``        | int (4)  | Specifies the maximum bounce depth a hair  |
+    | ``maximumraydepth.hair``        | integer  | Specifies the maximum bounce depth a hair  |
     | ``hair.ray.depth.max``          |          | ray can reach.                             |
     |                                 |          |                                            |
     |                                 |          | Note that hair are akin to volumetric      |
@@ -295,7 +295,7 @@ recognized by *3Delight*:
     | ``hair.ray.length.max`` (!)     |          | travel. Setting this to a negative value   |
     |                                 |          | disables the limitation.                   |
     +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraydepth.volume``      | int (0)  | Specifies the maximum bounce depth a       |
+    | ``maximumraydepth.volume``      | integer  | Specifies the maximum bounce depth a       |
     | ``volume.ray.depth.max`` (!)    |          | volume ray can reach.                      |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraylength.volume``     | double   | Limits the distance a volume ray can       |
@@ -315,18 +315,18 @@ recognized by *3Delight*:
     :widths: 3 1 6
 
     +---------------------------------+----------+-------------------------------------------+
-    | ``quality.shadingsamples``      | int      | Controls the quality of BSDF sampling.    |
+    | ``quality.shadingsamples``      | integer  | Controls the quality of BSDF sampling.    |
     | ``shading.samples``             |          | Larger values give less visible noise.    |
     +---------------------------------+----------+-------------------------------------------+
-    | ``quality.volumesamples``       | int      | Controls the quality of volume sampling.  |
+    | ``quality.volumesamples``       | integer  | Controls the quality of volume sampling.  |
     | ``volume.samples``              |          | Larger values give less visible noise.    |
     +---------------------------------+----------+-------------------------------------------+
-    | ``displacement.show``           | int      | When set to ``1``, enables displacement   |
+    | ``displacement.show``           | integer  | When set to ``1``, enables displacement   |
     | ``shading.displacement`` (!)    |          | shading. Otherwise, it must be set to     |
     |                                 |          | ignore any displacement shader in the     |
     |                                 |          | scene.                                    |
     +---------------------------------+----------+-------------------------------------------+
-    | ``subsurface.show``             | int      | When set to ``1``, enables the            |
+    | ``subsurface.show``             | integer  | When set to ``1``, enables the            |
     | ``shading.subsurface`` (!)      |          | ``subsurface()`` osl |closure|.           |
     |                                 |          | Otherwise, it must be set to ``0``, which |
     |                                 |          | will ignore this |closure| in osl         |
@@ -343,7 +343,7 @@ For anti-aliasing quality see the :ref:`screen node<node:screen>`.
     :widths: 3 1 6
 
     +---------------------------------+----------+-------------------------------------------+
-    | ``statistics.progress``         | int      | When set to ``1``, prints rendering       |
+    | ``statistics.progress``         | integer  | When set to ``1``, prints rendering       |
     |                                 |          | progress as a percentage of completed     |
     |                                 |          | pixels.                                   |
     +---------------------------------+----------+-------------------------------------------+
@@ -405,7 +405,7 @@ attributes:
    |                                 |          | Typically, this attribute will be indexed  |
    |                                 |          | through a ``P.indices`` attribute.         |
    +---------------------------------+----------+--------------------------------------------+
-   | ``nvertices``                   | int      | The number of vertices for each face of    |
+   | ``nvertices``                   | integer  | The number of vertices for each face of    |
    |                                 |          | the mesh. The number of values for this    |
    | ``vertices.size`` (!)           |          | attribute specifies total face number      |
    |                                 |          | (unless ``nholes`` is defined).            |
@@ -429,7 +429,7 @@ It also has these optional attributes:
    +---------------------------------+----------+--------------------------------------------+
    | **Name**                        | **Type** | **Description/Values**                     |
    +=================================+==========+============================================+
-   | ``nholes``                      | int      | The number of holes in the polygons.       |
+   | ``nholes``                      | integer  | The number of holes in the polygons.       |
    |                                 |          | When this attribute is defined, the total  |
    | ``holes.length`` (1)            |          | number of faces in the mesh is defined by  |
    |                                 |          | the number of values for ``nholes``        |
@@ -446,7 +446,7 @@ It also has these optional attributes:
    |                                 |          | one triangular hole in the first one and   |
    |                                 |          | square holes in the second one.            |
    +---------------------------------+----------+--------------------------------------------+
-   | ``clockwisewinding``            | int      | A value of ``1`` specifies that polygons   |
+   | ``clockwisewinding``            | integer  | A value of ``1`` specifies that polygons   |
    |                                 |          | with clockwise winding order are front     |
    |                                 |          | facing.                                    |
    |                                 |          |                                            |
@@ -457,7 +457,7 @@ It also has these optional attributes:
    |                                 |          | the mesh to render as a Catmull-Clark      |
    |                                 |          | subdivision surface.                       |
    +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.cornervertices``  | int      | A list of vertices which are sharp         |
+   | ``subdivision.cornervertices``  | integer  | A list of vertices which are sharp         |
    |                                 |          | corners. The values are indices into the   |
    |                                 |          | ``P`` attribute, like ``P.indices``.       |
    +---------------------------------+----------+--------------------------------------------+
@@ -466,7 +466,7 @@ It also has these optional attributes:
    |                                 |          | value given in                             |
    |                                 |          | ``subdivision.cornervertices``.            |
    +---------------------------------+----------+--------------------------------------------+
-   | ``subdivision.creasevertices``  | int      | A list of crease edges. Each edge is       |
+   | ``subdivision.creasevertices``  | integer  | A list of crease edges. Each edge is       |
    |                                 |          | specified as a pair of indices into the    |
    |                                 |          | ``P`` attribute, like ``P.indices``.       |
    +---------------------------------+----------+--------------------------------------------+
@@ -520,7 +520,7 @@ has the following attributes:
     +---------------------------------+--------------+---------------------------------------+
     | **Name**                        | **Type**     | **Description/Values**                |
     +=================================+==============+=======================================+
-    | ``faces``                       | int          | A list of indices of faces. It        |
+    | ``faces``                       | integer      | A list of indices of faces. It        |
     |                                 |              | identifies which faces of the         |
     |                                 |              | original geometry will be part of     |
     |                                 |              | this face set.                        |
@@ -562,7 +562,7 @@ attributes:
     +---------------------------------+----------+-------------------------------------------+
     | **Name**                        | **Type** | **Description/Values**                    |
     +=================================+==========+===========================================+
-    | ``nverts``                      | int      | The number of vertices for each curve.    |
+    | ``nverts``                      | integer  | The number of vertices for each curve.    |
     | ``vertices.size`` (!)           |          | This must be at least ``4`` for cubic     |
     |                                 |          | curves and ``2`` for linear curves. There |
     |                                 |          | can be either a single value or one value |
@@ -607,7 +607,7 @@ It also has these optional attributes:
     |                                 |          | Each ribbon is assumed to alwyas facing   |
     |                                 |          | the camera if a normal is not provided.   |
     +---------------------------------+----------+-------------------------------------------+
-    | ``extrapolate``                 | int      | By default, when this is set to ``0``,    |
+    | ``extrapolate``                 | integer  | By default, when this is set to ``0``,    |
     |                                 |          | cubic curves will not be drawn to their   |
     |                                 |          | end vertices as the basis functions       |
     |                                 |          | require an extra vertex to define the     |
@@ -682,7 +682,7 @@ It also has these optional attributes:
     |                                 |          | Each particle is assumed to be a sphere   |
     |                                 |          | if a normal is not provided.              |
     +---------------------------------+----------+-------------------------------------------+
-    | ``id``                          | int      | This attribute has to be the same length  |
+    | ``id``                          | integer  | This attribute has to be the same length  |
     |                                 |          | as ``P``. It assigns a unique identifier  |
     |                                 |          | to each particle which must be constant   |
     |                                 |          | throughout the entire :ref:`shutter       |
@@ -841,13 +841,7 @@ The transform node
 
 This node represents a geometric transformation. Transform nodes can be
 chained together to express transform concatenation, hierarchies and
-instances. Transform nodes also accept attributes to implement . It has
-the following attributes:
-
-This is a 4×4 matrix which describes the node’s transformation. Matrices
-in nsi post-multiply column vectors so are of the form:
-
-.. math::
+instances.
 
    \left[ \begin{array}{cccc}
          w_{1_1} & w_{1_2} & w_{1_3} & 0  \\
@@ -855,11 +849,37 @@ in nsi post-multiply column vectors so are of the form:
          w_{3_1} & w_{3_2} & w_{3_3} & 0  \\
          Tx & Ty & Tz & 1 \end{array} \right]
 
-This is where the transformed objects are connected to. This includes
-geometry nodes, other transform nodes and camera nodes.
 
-This is where may be connected to affect any geometry transformed by
-this node. Refer to and for explanation on how this connection is used.
+Transform nodes also accept attributes to implement
+:ref:`hierarchical attribute assignment and overrides<section:attributes>`.
+It has the following attributes:
+
+
+
+.. table:: transform node attributes
+    :widths: 3 1 6
+
+    +---------------------------------+--------------+---------------------------------------+
+    | **Name**                        | **Type**     | **Description/Values**                |
+    +=================================+==============+=======================================+
+    | ``tranformationmatrix``         | string       | This is a 4×4 matrix which describes  |
+    |                                 |              | the node's transformation. Matrices   |
+    |                                 |              | in |nsi| post-multiply so column      |
+    | ``matrix`` (!)                  |              | vectors are of the form:              |
+    |                                 |              |                                       |
+    +---------------------------------+--------------+---------------------------------------+
+    | ``objects``                     | <connection> | This is where the transformed objects |
+    |                                 |              | are connected to. This includes       |
+    |                                 |              | geometry nodes, other transform nodes |
+    |                                 |              | and camera nodes.                     |
+    +---------------------------------+--------------+---------------------------------------+
+    | ``geometryattributes``          | <connection> | This is where may be connected to     |
+    |                                 |              | affect any geometry transformed by    |
+    |                                 |              | this node. Refer to and for           |
+    |                                 |              | explanation on how this connection is |
+    |                                 |              | used.                                 |
+    +---------------------------------+--------------+---------------------------------------+
+
 
 .. _node:instances:
 
@@ -889,14 +909,25 @@ destination. The destination could be a file (e.g. “exr” output driver),
 frame buffer or a memory address. It can be connected to the
 ``outputdrivers`` attribute of an node. It has the following attributes:
 
-This is the name of the driver to use. The api of the driver is
-implementation specific and is not covered by this documentation.
+.. table:: outputdriver node attributes
+    :widths: 3 1 6
 
-Full path to a file for a file-based output driver or some meaningful
-identifier depending on the output driver.
-
-A value of 1 specifies that statistics will be embedded into the image
-file.
+    +---------------------------------+----------+-------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                    |
+    +=================================+==========+===========================================+
+    | ``drivername``                  | string   | This is the name of the driver to use.    |
+    |                                 |          | The api of the driver is implementation   |
+    |                                 |          | specific and is not covered by this       |
+    |                                 |          | documentation.                            |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``imagefilename``               | string   | Full path to a file for a file-based      |
+    |                                 |          | output driver or some meaningful          |
+    |                                 |          | identifier depending on the output        |
+    |                                 |          | driver.                                   |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``embedstatistics``             | integer  | A value of 1 specifies that statistics    |
+    |                                 |          | will be embedded into the image file.     |
+    +---------------------------------+----------+-------------------------------------------+
 
 Any extra attributes are also forwarded to the output driver which may
 interpret them however it wishes.
