@@ -79,7 +79,7 @@ details.
     .root node
     root node
 
-The root node
+The Root Node
 -------------
 
 The root node is much like a transform node. With the particularity that
@@ -93,7 +93,7 @@ explained under the :ref:`transform node<node:transform>`.
 
 .. _node:global:
 
-The global node
+The Global Node
 ---------------
 
 This node contains various global settings for a particular nsi context.
@@ -373,7 +373,7 @@ For anti-aliasing quality see the :ref:`screen node<node:screen>`.
 
 .. _node:set:
 
-The set node
+The Set Node
 ------------
 
 This node can be used to express relationships between objects.
@@ -401,7 +401,7 @@ It has the following attributes:
 .. index::
     mesh node
 
-The mesh node
+The Mesh Node
 -------------
 
 This node represents a polygon mesh or a subdivision surface. It has the following required
@@ -563,7 +563,7 @@ Below is a sample |nsi| stream snippet showing the definition of a mesh with hol
     shaders on faces
     shaders on curves
 
-The faceset node
+The Faceset Node
 ----------------
 
 This node is used to provide a way to attach attributes to some faces of
@@ -612,7 +612,7 @@ has the following attributes:
 .. index::
     curves
 
-The curves node
+The Curves Node
 ---------------
 
 This node represents a group of curves. It has the following required
@@ -707,7 +707,7 @@ curves. Attributes which fall in that last category must always specify
 
 .. _node:particles:
 
-The particles node
+The Particles Node
 ------------------
 
 This geometry node represents a collection of *tiny* particles.
@@ -778,7 +778,7 @@ It also has these optional attributes:
 
 .. _node:procedural:
 
-The procedural node
+The Procedural Node
 -------------------
 
 This node acts as a proxy for geometry that could be defined at a later
@@ -821,7 +821,7 @@ Additionally, this node has the following optional attribute :
 
 .. _node:environment:
 
-The environment node
+The Environment Node
 --------------------
 
 This geometry node defines a sphere of infinite radius. Its only purpose
@@ -859,7 +859,7 @@ following optional node attribute is recognized:
 
 .. _node:shader:
 
-The shader node
+The Shader Node
 ---------------
 
 This node represents an |osl| shader, also called layer when part of a
@@ -885,7 +885,7 @@ on |osl| network creation and usage.
 
 .. _node:attributes:
 
-The attributes node
+The Attributes Node
 -------------------
 
 This node is a container for various geometry related rendering
@@ -989,7 +989,7 @@ This node has the following attributes:
 
 .. _node:transform:
 
-The transform node
+The Transform Node
 ------------------
 
 This node represents a geometric transformation. Transform nodes can be
@@ -1040,7 +1040,7 @@ It has the following attributes:
 
 .. _node:instances:
 
-The instances nodes
+The Instances Nodes
 -------------------
 
 This node is an efficient way to specify a large number of instances. It
@@ -1075,7 +1075,7 @@ has the following attributes:
 
 .. _node:outputdriver:
 
-The outputdriver node
+The Outputdriver Node
 ---------------------
 
 An output driver defines how an image is transferred to an output
@@ -1108,7 +1108,7 @@ interpret them however it wishes.
 
 .. _node:outputlayer:
 
-The outputlayer node
+The Outputlayer Node
 --------------------
 
 This node describes one specific layer of render output data. It can be
@@ -1257,7 +1257,7 @@ interpret them however it wishes.
 
 .. _node:screen:
 
-The screen node
+The Screen Node
 ---------------
 
 This node describes how the view from a camera node will be rasterized
@@ -1311,7 +1311,7 @@ pattern to change with the frame attribute of the .
 
 .. _node:volume:
 
-The volume node
+The Volume Node
 ---------------
 
 This node represents a volumetric object defined by
@@ -1370,7 +1370,7 @@ defined by a list of exactly two values:
 
 .. _node:orthographiccamera:
 
-The orthographiccamera node
+The Orthographiccamera Node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This node defines an orthographic camera with a view direction towards
@@ -1378,7 +1378,7 @@ the :math:`\mathrm{Z-}` axis. This camera has no specific attributes.
 
 .. _node:perspectivecamera:
 
-The perspectivecamera node
+The Perspectivecamera Node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This node defines a perspective camera. The canonical camera is viewing
@@ -1410,7 +1410,7 @@ the image plane.
 
 .. _node:fisheyecamera:
 
-The fisheyecamera node
+The Fisheyecamera Node
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Fish eye cameras are useful for a multitude of applications
@@ -1435,7 +1435,7 @@ degrees.
 
 .. _node:cylindricalcamera:
 
-The cylindricalcamera node
+The Cylindricalcamera Node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This node specifies a cylindrical projection camera and has the
@@ -1452,13 +1452,13 @@ specifying an eye offset
 
 .. _node:sphericalcamera:
 
-The sphericalcamera node
+The Sphericalcamera Node
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 This node defines a spherical projection camera. This camera has no
 specific attributes.
 
-Lens shaders
+Lens Shaders
 ~~~~~~~~~~~~
 
 A lens shader is an |osl| network connected to a camera through the

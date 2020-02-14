@@ -7,7 +7,7 @@ Rendering Guidelines
 
 .. _section:basicscene:
 
-Basic scene anatomy
+Basic Scene Anatomy
 -------------------
 
 .. figure:: image/basic_scene_anatomy.svg
@@ -23,7 +23,7 @@ components:
 #. Geometry linked to the ``.root`` node, usually through a transform
    chain.
 
-#. OSL materials linked to scene geometry through an node.
+#. |osl| materials linked to scene geometry through an node.
 
 #. At least one *outputdriver* |nsp| → |nsp| *outputlayer* |nsp| → |nsp|
    *screen* |nsp| → |nsp| *camera* |nsp| → |nsp| ``.root`` chain to
@@ -44,7 +44,7 @@ definition and will be ignored.
     .root node
     root node
 
-A word – or two – about attributes
+A Word – or Two – About Attributes
 ----------------------------------
 
 Those familiar with the *RenderMan* standard will remember the various
@@ -62,7 +62,7 @@ through the ``SetAttribute()`` mechanism. The only distinction is that
 some attributes are required (*intrinsic attributes*) and some are
 optional: a :ref:`mesh node<node:mesh>` needs to have ``P``
 and ``nvertices`` defined — otherwise the geometry is invalid [#]_.
-In osl shaders, attributes are accessed using the ``getattribute()``
+In |osl| shaders, attributes are accessed using the ``getattribute()``
 function and *this is the only way to access attributes in nsi*. Having
 one way to set and to access attributes makes things simpler (a
 :ref:`design goal<chapter:background>`) and allows for extra flexibility
@@ -107,19 +107,19 @@ instances* using the same semantics.
 
 .. _section:creating_osl_networks:
 
-Creating OSL networks
----------------------
+Creating |osl| Networks
+-----------------------
 
 .. figure:: image/osl_network.svg
-   :alt: A simple osl network connected to an attributes node
+   :alt: A simple |osl| network connected to an attributes node
 
-   A simple osl network connected to an attributes node
+   A simple |osl| network connected to an attributes node
 
-The semantics used to create osl networks are the same as for scene
+The semantics used to create |osl| networks are the same as for scene
 creation. Each shader node in the network corresponds to a which must be
 created using . Each shader node has implicit attributes corresponding
 to shader’s parameters and connection between said parameters is done
-using . depicts a simple osl network connected to an attributes node.
+using . depicts a simple |osl| network connected to an attributes node.
 Some observations:
 
 -  Both the source and destination attributes (passed to ``NSIConnect``)
@@ -128,7 +128,7 @@ Some observations:
 
 -  There is no *symbolic linking* between shader parameters and geometry
    attributes (a.k.a. primvars). One has to explicitly use the
-   ``getattribute()`` osl function to read attributes attached to
+   ``getattribute()`` |osl| function to read attributes attached to
    geometry. In this is done in the ``read_attribute`` node (). More
    about this subject in .
 
@@ -164,7 +164,7 @@ Some observations:
 
 .. _section:specifyinglights:
 
-Lighting in the nodal scene interface
+Lighting in the Nodal Scene Interface
 -------------------------------------
 
 .. figure:: image/lights.svg
@@ -182,11 +182,11 @@ using more :ref:`general approaches<section:lightlinking>`.
 Following is a quick summary on how to create different kinds of light
 in nsi.
 
-Area lights
+Area Lights
 ~~~~~~~~~~~
 
 Area lights are created by attaching an emissive surface material to
-geometry. Below is a simple osl shader for such lights (standard osl
+geometry. Below is a simple |osl| shader for such lights (standard |osl|
 emitter).
 
 .. code-block:: c
@@ -206,7 +206,7 @@ emitter).
        Ci = (power / (M_PI * surfacearea())) * Cs * emission();
    }
 
-Spot and point lights
+Spot and Point Lights
 ~~~~~~~~~~~~~~~~~~~~~
 
 Such lights are created using an epsilon sized geometry (a small disk, a
@@ -214,7 +214,7 @@ particle, etc.) and optionally using extra parameters to the
 ``emission()`` closure.
 
 .. code-block:: c
-   :caption: An example osl spot light shader
+   :caption: An example OSL spot light shader
    :linenos:
 
    surface spotlight(
@@ -244,7 +244,7 @@ particle, etc.) and optionally using extra parameters to the
        Ci = result / surfacearea() * emission();
    }
 
-Directional and HDR lights
+Directional and HDR Lights
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Directional lights are created by using the node and setting the
@@ -260,7 +260,7 @@ shown in .
 
 .. code-block:: c
    :linenos:
-   :caption: An example osl shader to do HDR lighting
+   :caption: An example OSL shader to do HDR lighting
 
    shader hdrlight(
        string texturename = ""
@@ -284,7 +284,7 @@ shown in .
 
 .. _section:definingoutputdrivers:
 
-Defining output drivers and layers
+Defining Output Drivers and Layers
 ----------------------------------
 
 .. figure:: image/output_channels.svg
@@ -324,7 +324,7 @@ to drive two file outputs, each having two layers (``Ci`` and
 
 .. _section:lightlayers:
 
-Light layers
+Light Layers
 ------------
 
 .. figure:: image/multilight.svg
@@ -350,7 +350,7 @@ from the considered lights on the specific surface variable specified in
 
 .. _section:lightlinking:
 
-Inter-object visibility
+Inter-Object Visibility
 -----------------------
 
 Some common rendering features are difficult to achieve using attributes

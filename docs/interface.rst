@@ -5,7 +5,7 @@
 The Interface
 =============
 
-The interface abstraction
+The Interface Abstraction
 -------------------------
 
 The Nodal Scene Interface is built around the concept of nodes. Each
@@ -39,8 +39,10 @@ of those in the following sections but this list is not meant to be
 final. New languages and file formats will undoubtedly be supported in
 the future.
 
+APIs
+----
+
 .. toctree::
-    :caption: APIs
     :maxdepth: 2
 
     c-api
