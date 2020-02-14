@@ -19,12 +19,16 @@ interface in other languages as all concepts are the same.
 The ``NSI_VERSION`` macro exists in case there is a need at some point
 to break source compatibility of the C interface.
 
+.. _CAPI:dotroot:
+
 .. code-block:: c
 
     #define NSI_SCENE_ROOT ".root"
 
 The ``NSI_SCENE_ROOT`` macro defines the handle of the
 :ref:`root node<node:root>`.
+
+.. _CAPI:dotall:
 
 .. code-block:: c
 
@@ -447,24 +451,37 @@ two elements. It is not an error to create a connection which already
 exists or to remove a connection which does not exist but the nodes on
 which the connection is performed must exist. The parameters are:
 
-The handle of the node from which the connection is made.
+.. table:: NSIConnect()/NSIDisconnect() optional parameters
+    :widths: 3 1 6
 
-The name of the attribute from which the connection is made. If this is
-an empty string then the connection is made from the node instead of
-from a specific attribute of the node.
+    +------------------------+----------+----------------------------------------------------+
+    | **Name**               | **Type** | **Description/Values**                             |
+    +========================+==========+====================================================+
+    | ``from``               | string   | The handle of the node from which the connection   |
+    |                        |          | is made.                                           |
+    +------------------------+----------+----------------------------------------------------+
+    | ``from attr``          | string   | The name of the attribute from which the           |
+    |                        |          | connection is made. If this is an empty string     |
+    | ``from.attribute`` (!) |          | then the connection is made from the node instead  |
+    |                        |          | of from a specific attribute of the node.          |
+    +------------------------+----------+----------------------------------------------------+
+    | ``to``                 | string   | The handle of the node to which the connection is  |
+    |                        |          | made.                                              |
+    +------------------------+----------+----------------------------------------------------+
+    | ``to``                 | string   | The name of the attribute to which the connection  |
+    |                        |          | is made. If this is an empty string then the       |
+    | ``to.attribute`` (!)   |          | connection is made to the node instead of to a     |
+    |                        |          | specific attribute of the node.                    |
+    +------------------------+----------+----------------------------------------------------+
 
-The handle of the node to which the connection is made.
-
-The name of the attribute to which the connection is made. If this is an
-empty string then the connection is made to the node instead of to a
-specific attribute of the node.
-
-``NSIConnect()`` accepts additional optional parameters. Refer to for more
-about their utility.
+``NSIConnect()`` accepts additional optional parameters. Refer to the
+:ref:`guidelines on inter-object visibility<section:lightlinking>` for
+more information about their utility.
 
 With ``NSIDisconnect()``, the handle for either node may be the special
-value . This will remove all connections which match the other three
-parameters. For example, to disconnect everything from the :
+value :ref:`'.all'<CAPI:dotall>` . This will remove all connections
+which match the other three parameters. For example, to disconnect
+everything from :ref:`the scene's root<node:root>`:
 
 .. code-block:: c
    :linenos:
@@ -594,24 +611,47 @@ identifier exists to provide easy filtering of messages.
 
 The intended meaning of the error levels is as follows:
 
--  ``NSIErrMessage`` for general messages, such as may be produced by
-   printf in shaders. The default error handler will print this type of
-   messages without an eol terminator as it’s the duty of the caller to
-   format the message.
+.. table:: error levels
+    :widths: 2 8
 
--  ``NSIErrInfo`` for messages which give specific information. These
-   might simply inform about the state of the renderer, files being
-   read, settings being used and so on.
-
--  ``NSIErrWarning`` for messages warning about potential problems.
-   These will generally not prevent producing images and may not require
-   any corrective action. They can be seen as suggestions of what to
-   look into if the output is broken but no actual error is produced.
-
--  ``NSIErrError`` for error messages. These are for problems which will
-   usually break the output and need to be fixed.
+    +-------------------------+---------------------------------------------------+
+    | ``NSIErrMessage``       | For general messages, such as may be produced by  |
+    |                         | ``printf()`` in shaders. The default error        |
+    |                         | handler will print this type of messages without  |
+    |                         | an eol terminator as it’s the duty of the caller  |
+    |                         | to format the message.                            |
+    +-------------------------+---------------------------------------------------+
+    | ``NSIErrInfo``          | For messages which give specific information.     |
+    |                         | These might simply inform about the state of the  |
+    |                         | renderer, files being read, settings being used   |
+    |                         | and so on.                                        |
+    +-------------------------+---------------------------------------------------+
+    | ``NSIErrWarning``       | For messages warning about potential problems.    |
+    |                         | These will generally not prevent producing images |
+    |                         | and may not require any corrective action. They   |
+    |                         | can be seen as suggestions of what to look into   |
+    |                         | if the output is broken but no actual error is    |
+    |                         | produced.                                         |
+    +-------------------------+---------------------------------------------------+
+    | ``NSIErrError``         | For error messages. These are for problems which  |
+    |                         | will usually break the output and need to be      |
+    |                         | fixed.                                            |
+    +-------------------------+---------------------------------------------------+
 
 .. _section:rendering:
+
+.. index::
+    NSIRenderControl()
+    controlling rendering
+    rendering
+    starting a render
+    suspending a render
+    pausing a render
+    stopping a render
+    resuming a render
+    terminating a render
+    synchronizing a render
+    interactive rendering
 
 Rendering
 ~~~~~~~~~
@@ -624,12 +664,12 @@ Rendering
         const NSIParam_t *params
     )
 
-This function is the only control function of the api. It is responsible
+This function is the only control function of the API. It is responsible
 of starting, suspending and stopping the render. It also allows for
 synchronizing the render with interactive calls that might have been
 issued. The function accepts :
 
-.. table:: NSIEvaluate() optional parameters
+.. table:: NSIRenderControl() optional parameters
     :widths: 3 1 2 4
 
     +------------------------+----------+----------------------------------------------------+
