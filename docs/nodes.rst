@@ -1318,21 +1318,34 @@ This node represents a volumetric object defined by
 `OpenVDB <http:/www.openvdb.org>`__ data. It has the following
 attributes:
 
-The path to an OpenVDB file with the volumetric data.
 
-The name of the OpenVDB grid to use as volume density for the volume
-shader.
+.. table:: volume node attributes
+    :widths: 3 1 6
 
-The name of the OpenVDB grid to use as emission intensity for the volume
-shader.
-
-The name of the OpenVDB grid to use as temperature for the volume
-shader.
-
-The name of the OpenVDB grid to use as motion vectors. This can also
-name the first of three scalar grids (ie. "velocityX").
-
-A scaling factor applied to the motion vectors.
+    +---------------------------------+--------------+-------------------------------------------+
+    | **Name**                        | **Type**     | **Description/Values**                    |
+    +=================================+==============+===========================================+
+    | ``vdbfilename``                 | string       | The path to an OpenVDB file with the      |
+    |                                 |              | volumetric data.                          |
+    | ``vdb.filename`` (!)            |              |                                           |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``densitygrid``                 | string       | The name of the OpenVDB grid to use as    |
+    |                                 |              | volume density for the volume shader.     |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``emissionintensitygrid``       | string       | The name of the OpenVDB grid to use as    |
+    |                                 |              | emission intensity for the volume shader. |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``temperaturegrid``             | string       | The name of the OpenVDB grid to use as    |
+    |                                 |              | temperature for the volume shader.        |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``velocitygrid``                | double       | The name of the OpenVDB grid to use as    |
+    |                                 |              | motion vectors. This can also name the    |
+    |                                 |              | first of three scalar grids (i.e.         |
+    |                                 |              | "velocityX").                             |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``velocityscale``               | string       | A scaling factor applied to the motion    |
+    |                                 |              | vectors.                                  |
+    +---------------------------------+--------------+-------------------------------------------+
 
 .. _node:camera:
 
