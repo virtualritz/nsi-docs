@@ -1333,7 +1333,7 @@ The Volume Node
 ---------------
 
 This node represents a volumetric object defined by
-`OpenVDB <http:/www.openvdb.org>`__ data. It has the following
+`OpenVDB <https:/www.openvdb.org/>`__ data. It has the following
 attributes:
 
 

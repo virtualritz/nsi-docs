@@ -1,23 +1,22 @@
-.. NSI documentation master file, created by
-   sphinx-quickstart on Fri Jan 24 20:32:19 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. include:: definitions.rst
 
 .. image:: image/nsi_logo.svg
 
-A flexible, modern API for renderers
+|nsi| -- A Flexible, Modern API for Renderers
+=============================================
 
 | Authors
 | Olivier Paquet, Aghiles Kheffache, François Colbert, Berj Bannayan
 
 
-Jump to
+Jump To
 -------
 
 .. toctree::
    :maxdepth: 1
 
    background
+   wip
    interface
    nodes
    script_objects
