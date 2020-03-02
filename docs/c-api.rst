@@ -237,6 +237,13 @@ to communicate more information about the parameter:
     |                               | method.                          |
     +-------------------------------+----------------------------------+
 
+.. Tip::
+    ``NSIParamPerFace`` or ``NSIParamPerVertex`` are only strictly
+    needed in rare circumstances when a geometric primitive's number of
+    vertices matches the number of faces. The most simple case is a
+    tetrahedral mesh which has exactly four vertices and also four
+    faces.
+
 Indirect lookup of parameters is achieved by giving an integer parameter
 of the same name, with the ``.indices`` suffix added. This is read to
 know which values of the other parameter to use.

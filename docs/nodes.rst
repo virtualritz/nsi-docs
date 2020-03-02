@@ -388,13 +388,13 @@ It has the following attributes:
 .. table:: set node optional attributes
     :widths: 3 1 6
 
-    +---------------------------------+--------------+---------------------------------------+
-    | **Name**                        | **Type**     | **Description/Values**                |
-    +=================================+==============+=======================================+
-    | ``objects``                     | «connection» | This connection accepts all nodes     |
-    |                                 |              | that are members of the set.          |
-    | ``object`` (!)                  |              |                                       |
-    +---------------------------------+--------------+---------------------------------------+
+    +---------------------------------+-----------------+------------------------------------+
+    | **Name**                        | **Type**        | **Description/Values**             |
+    +=================================+=================+====================================+
+    | ``objects``                     | «connection(s)» | This connection accepts all nodes  |
+    |                                 |                 | that are members of the set.       |
+    | ``object`` (!)                  |                 |                                    |
+    +---------------------------------+-----------------+------------------------------------+
 
 .. _node:mesh:
 
@@ -1004,39 +1004,39 @@ It has the following attributes:
 .. table:: transform node attributes
     :widths: 3 1 6
 
-    +------------------------------+--------------+------------------------------------------+
-    | **Name**                     | **Type**     | **Description/Values**                   |
-    +==============================+==============+==========================================+
-    | ``tranformationmatrix``      | string       | This is a 4×4 matrix which describes     |
-    |                              |              | the node's transformation. Matrices      |
-    |                              |              | in |nsi| post-multiply so column         |
-    | ``matrix`` (!)               |              | vectors are of the form:                 |
-    |                              |              |                                          |
-    |                              |              | .. math::                                |
-    |                              |              |                                          |
-    |                              |              |    \left[ \begin{array}{cccc}            |
-    |                              |              |    w_{1_1} & w_{1_2} & w_{1_3} & 0  \\   |
-    |                              |              |    w_{2_1} & w_{2_2} & w_{2_3} & 0  \\   |
-    |                              |              |    w_{3_1} & w_{3_2} & w_{3_3} & 0  \\   |
-    |                              |              |    Tx & Ty & Tz & 1 \end{array} \right]  |
-    +------------------------------+--------------+------------------------------------------+
-    | ``objects``                  | «connection» | This is where the transformed objects    |
-    |                              |              | are connected to. This includes          |
-    | ``object`` (!)               |              | geometry nodes, other transform nodes    |
-    |                              |              | and camera nodes.                        |
-    +------------------------------+--------------+------------------------------------------+
-    | ``geometryattributes``       | «connection» | This is where                            |
-    |                              |              | :ref:`attributes nodes<node:attributes>` |
-    | ``attribute`` (!)            |              | may be connected to affect any geometry  |
-    |                              |              | transformed by this node.                |
-    |                              |              |                                          |
-    |                              |              | See the guidelines on                    |
-    |                              |              | :ref:`attributes<section:attributes>`    |
-    |                              |              | and                                      |
-    |                              |              | :ref:`instancing<section:instancing>`    |
-    |                              |              | for explanations on how this connection  |
-    |                              |              | is used.                                 |
-    +------------------------------+--------------+------------------------------------------+
+    +------------------------------+-----------------+------------------------------------------+
+    | **Name**                     | **Type**        | **Description/Values**                   |
+    +==============================+=================+==========================================+
+    | ``tranformationmatrix``      | string          | This is a 4×4 matrix which describes     |
+    |                              |                 | the node's transformation. Matrices      |
+    |                              |                 | in |nsi| post-multiply so column         |
+    | ``matrix`` (!)               |                 | vectors are of the form:                 |
+    |                              |                 |                                          |
+    |                              |                 | .. math::                                |
+    |                              |                 |                                          |
+    |                              |                 |    \left[ \begin{array}{cccc}            |
+    |                              |                 |    w_{1_1} & w_{1_2} & w_{1_3} & 0  \\   |
+    |                              |                 |    w_{2_1} & w_{2_2} & w_{2_3} & 0  \\   |
+    |                              |                 |    w_{3_1} & w_{3_2} & w_{3_3} & 0  \\   |
+    |                              |                 |    Tx & Ty & Tz & 1 \end{array} \right]  |
+    +------------------------------+-----------------+------------------------------------------+
+    | ``objects``                  | «connection(s)» | This is where the transformed objects    |
+    |                              |                 | are connected to. This includes          |
+    | ``object`` (!)               |                 | geometry nodes, other transform nodes    |
+    |                              |                 | and camera nodes.                        |
+    +------------------------------+-----------------+------------------------------------------+
+    | ``geometryattributes``       | «connection(s)» | This is where                            |
+    |                              |                 | :ref:`attributes nodes<node:attributes>` |
+    | ``attribute`` (!)            |                 | may be connected to affect any geometry  |
+    |                              |                 | transformed by this node.                |
+    |                              |                 |                                          |
+    |                              |                 | See the guidelines on                    |
+    |                              |                 | :ref:`attributes<section:attributes>`    |
+    |                              |                 | and                                      |
+    |                              |                 | :ref:`instancing<section:instancing>`    |
+    |                              |                 | for explanations on how this connection  |
+    |                              |                 | is used.                                 |
+    +------------------------------+-----------------+------------------------------------------+
 
 .. _node:instances:
 
@@ -1049,28 +1049,29 @@ has the following attributes:
 .. table:: instances node attributes
     :widths: 3 1 6
 
-    +-----------------------------+--------------+-------------------------------------------+
-    | **Name**                    | **Type**     | **Description/Values**                    |
-    +=============================+==============+===========================================+
-    | ``sourcemodels``            | «connection» | The instanced models should connect to    |
-    |                             |              | this attribute.                           |
-    | ``object`` (!)              |              |                                           |
-    |                             |              | Connections must have an integer          |
-    |                             |              | ``index`` attribute if there are several, |
-    |                             |              | so the models effectively form an ordered |
-    |                             |              | list.                                     |
-    +-----------------------------+--------------+-------------------------------------------+
-    | ``transformationmatrices``  | doublematrix | A transformation matrix for each          |
-    |                             |              | instance.                                 |
-    | ``matrix`` (!)              |              |                                           |
-    +-----------------------------+--------------+-------------------------------------------+
-    | ``modelindices``            | integer      | An optional model selector for each       |
-    |                             |              | instance.                                 |
-    | ``object.index`` (!)        |              |                                           |
-    +-----------------------------+--------------+-------------------------------------------+
-    | ``disabledinstances``       | integer      | An optional list of indices of instances  |
-    |                             |              | which are not to be rendered.             |
-    +-----------------------------+--------------+-------------------------------------------+
+    +-----------------------------+-----------------+----------------------------------------+
+    | **Name**                    | **Type**        | **Description/Values**                 |
+    +=============================+=================+========================================+
+    | ``sourcemodels``            | «connection(s)» | The instanced models should connect to |
+    |                             |                 | this attribute.                        |
+    | ``object`` (!)              |                 |                                        |
+    |                             |                 | Connections must have an integer       |
+    |                             |                 | ``index`` attribute if there are       |
+    |                             |                 | several, so the models effectively     |
+    |                             |                 | form an ordered list.                  |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``transformationmatrices``  | doublematrix    | A transformation matrix for each       |
+    |                             |                 | instance.                              |
+    | ``matrix`` (!)              |                 |                                        |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``modelindices``            | integer         | An optional model selector for each    |
+    |                             |                 | instance.                              |
+    | ``object.index`` (!)        |                 |                                        |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``disabledinstances``       | [integer; ...]  | An optional list of indices of         |
+    |                             |                 | instances which are not to be          |
+    | ``instance.disable`` (!)    |                 | rendered.                              |
+    +-----------------------------+-----------------+----------------------------------------+
 
 
 .. _node:outputdriver:
@@ -1118,139 +1119,156 @@ following attributes:
 .. table:: outputlayer node attributes
     :widths: 3 1 2 4
 
-    +---------------------------------+--------------+-------------------------------------------+
-    | **Name**                        | **Type**     | **Description/Values**                    |
-    +=================================+==============+===========================================+
-    | ``variablename``                | string       | This is the name of a variable to output. |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``variablesource``              | string       | Indicates where the variable to be output |
-    |                                 |              | is read from. Possible values are:        |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``shader``     | computed by a shader     |
-    |                                 |              |                | and output through an    |
-    |                                 |              |                | |osl| closure (such as   |
-    |                                 |              |                | ``outputvariable()``     |
-    |                                 |              |                | or ``debug()``) or the   |
-    |                                 |              |                | ``Ci`` global variable.  |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``attribute``  | retrieved directly from  |
-    |                                 |              |                | an attribute with a      |
-    |                                 |              |                | matching name attached   |
-    |                                 |              |                | to a geometric           |
-    |                                 |              |                | primitive.               |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``builtin``    | generated automatically  |
-    |                                 |              |                | by the renderer (e.g.    |
-    |                                 |              |                | ``z``, ``alpha``         |
-    |                                 |              |                | ``N.camera``,            |
-    |                                 |              |                | ``P.world``).            |
-    +---------------------------------+--------------+----------------+--------------------------+
-    | ``layername``                   | string       | This will be name of the layer as written |
-    |                                 |              | by the output driver. For example, if the |
-    |                                 |              | output driver writes to an EXR file then  |
-    |                                 |              | this will be the name of the layer inside |
-    |                                 |              | that file.                                |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``scalarformat``                | string       | Specifies the format in which data will   |
-    |                                 |              | be encoded (quantized) prior to passing   |
-    |                                 |              | it to the output driver. Possible values  |
-    |                                 |              | are:                                      |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``int8``       | Signed 8-bit integer.    |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``uint8``      | Unsigned 8-bit integer.  |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``int16``      | Signed 16-bit integer.   |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``uint16``     | Unsigned 16-bit integer. |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``int32``      | Signed 32-bit integer.   |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``half``       | IEEE 754 half-precision  |
-    |                                 |              |                | binary floating point    |
-    |                                 |              |                | (binary16).              |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``float``      | IEEE 754                 |
-    |                                 |              |                | single-precision binary  |
-    |                                 |              |                | floating point           |
-    |                                 |              |                | (binary32).              |
-    +---------------------------------+--------------+----------------+--------------------------+
-    | ``layertype``                   | string       | Specifies the type of data that will be   |
-    |                                 |              | written to the layer. Possible values     |
-    |                                 |              | are:                                      |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``scalar``     | A single quantity.       |
-    |                                 |              |                | Useful for opacity       |
-    |                                 |              |                | (``alpha``) or depth     |
-    |                                 |              |                | (``Z``) information.     |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``color``      | A 3-component color.     |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``vector``     | A 3D point or vector.    |
-    |                                 |              |                | This will help           |
-    |                                 |              |                | differentiate the data   |
-    |                                 |              |                | from a color in further  |
-    |                                 |              |                | processing.              |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | ``quad``       | A sequence of 4 values,  |
-    |                                 |              |                | where the fourth value   |
-    |                                 |              |                | is *not* an alpha        |
-    |                                 |              |                | channel.                 |
-    |                                 |              +----------------+--------------------------+
-    |                                 |              | Each component of those types is stored   |
-    |                                 |              | according to the ``scalarformat``         |
-    |                                 |              | attribute set on the same ``outputlayer`` |
-    |                                 |              | node.                                     |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``colorprofile``                | string       | The name of an OCIO color profile to      |
-    |                                 |              | apply to rendered image data prior to     |
-    |                                 |              | quantization.                             |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``dithering``                   | integer      | If set to 1, dithering is applied to      |
-    |                                 |              | integer scalars [#]_.                     |
-    |                                 |              | Otherwise, it must  be set to 0.          |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``withalpha``                   | integer      | If set to 1, an alpha channel is included |
-    |                                 |              | in the output layer.                      |
-    |                                 |              | Otherwise, it must be set to 0.           |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``sortkey``                     | integer      | This attribute is used as a sorting key   |
-    |                                 |              | when ordering multiple output layer nodes |
-    |                                 |              | connected to the same node.               |
-    |                                 |              | Layers with the lowest ``sortkey``        |
-    |                                 |              | attribute appear first.                   |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``lightset``                    | «connection» | This connection accepts either or nodes   |
-    |                                 |              | to which lights are connected. In this    |
-    |                                 |              | case only listed lights will affect the   |
-    |                                 |              | crender of the output layer. If nothing   |
-    |                                 |              | is connected to this attribute then all   |
-    |                                 |              | lights are rendered.                      |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``outputdrivers``               | «connection» | This connection accepts nodes to which    |
-    |                                 |              | the layer’s image will be sent.           |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``filter``                      | string       | The type of filter to use when            |
-    |                                 |              | reconstructing the final image from       |
-    |                                 |              | sub-pixel samples. Possible values are:   |
-    |                                 |              | * ``box``                                 |
-    |                                 |              | * ``triangle``                            |
-    |                                 |              | * ``catmull-rom``                         |
-    |                                 |              | * ``bessel``                              |
-    |                                 |              | * ``gaussian``                            |
-    |                                 |              | * ``sinc``                                |
-    |                                 |              | * ``mitchell`                             |
-    |                                 |              | * ``blackman-harris`` **(default)**       |
-    |                                 |              | * ``zmin``                                |
-    |                                 |              | * ``zmax``                                |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``filterwidth``                 | double       | Diameter in pixels of the reconstruction  |
-    |                                 |              | filter. It ignored when filter is ``box`` |
-    |                                 |              | or ``zmin``.                              |
-    +---------------------------------+--------------+-------------------------------------------+
-    | ``backgroundvalue``             | float        | The value given to pixels where nothing   |
-    |                                 |              | is rendered.                              |
-    +---------------------------------+--------------+-------------------------------------------+
+    +---------------------------------+-----------------+----------------------------------------+
+    | **Name**                        | **Type**        | **Description/Values**                 |
+    +=================================+=================+========================================+
+    | ``variablename``                | string          | This is the name of a variable to      |
+    |                                 |                 | output.                                |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``variablesource``              | string          | Indicates where the variable to be     |
+    |                                 |                 | output is read from. Possible values   |
+    |                                 |                 | are:                                   |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``shader``     | computed by a shader  |
+    |                                 |                 |                | and output through    |
+    |                                 |                 |                | an |osl| closure s    |
+    |                                 |                 |                | (such a               |
+    |                                 |                 |                | ``outputvariable()``  |
+    |                                 |                 |                | or ``debug()``) or    |
+    |                                 |                 |                | the ``Ci`` global     |
+    |                                 |                 |                | variable.             |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``attribute``  | retrieved directly    |
+    |                                 |                 |                | from an attribute     |
+    |                                 |                 |                | with a matching name  |
+    |                                 |                 |                | attached to a         |
+    |                                 |                 |                | geometric primitive.  |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``builtin``    | generated             |
+    |                                 |                 |                | automatically by the  |
+    |                                 |                 |                | renderer (e.g.        |
+    |                                 |                 |                | ``z``, ``alpha``      |
+    |                                 |                 |                | ``N.camera``,         |
+    |                                 |                 |                | ``P.world``).         |
+    +---------------------------------+-----------------+----------------+-----------------------+
+    | ``layername``                   | string          | This will be name of the layer as      |
+    |                                 |                 | written by the output driver. For      |
+    |                                 |                 | example, if the output driver writes   |
+    |                                 |                 | to an EXR file then this will be the   |
+    |                                 |                 | name of the layer inside that file.    |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``scalarformat``                | string          | Specifies the format in which data     |
+    |                                 |                 | will be encoded (quantized) prior to   |
+    |                                 |                 | passing it to the output driver.       |
+    |                                 |                 | Possible values are:                   |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``int8``       | Signed 8-bit integer. |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``uint8``      | Unsigned 8-bit        |
+    |                                 |                 |                | integer.              |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``int16``      | Signed 16-bit         |
+    |                                 |                 |                | integer.              |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``uint16``     | Unsigned 16-bit       |
+    |                                 |                 |                | integer.              |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``int32``      | Signed 32-bit         |
+    |                                 |                 |                | integer.              |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``half``       | IEEE 754              |
+    |                                 |                 |                | half-precision binary |
+    |                                 |                 |                | floating point        |
+    |                                 |                 |                | (binary16).           |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``float``      | IEEE 754              |
+    |                                 |                 |                | single-precision      |
+    |                                 |                 |                | binary floating point |
+    |                                 |                 |                | (binary32).           |
+    +---------------------------------+-----------------+----------------+-----------------------+
+    | ``layertype``                   | string          | Specifies the type of data that will   |
+    |                                 |                 | be written to the layer. Possible      |
+    |                                 |                 | values are:                            |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``scalar``     | A single quantity.    |
+    |                                 |                 |                | Useful for opacity    |
+    |                                 |                 |                | (``alpha``) or depth  |
+    |                                 |                 |                | (``Z``) information.  |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``color``      | A 3-component color.  |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``vector``     | A 3D point or vector. |
+    |                                 |                 |                | This will help        |
+    |                                 |                 |                | differentiate the     |
+    |                                 |                 |                | data from a color in  |
+    |                                 |                 |                | further processing.   |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | ``quad``       | A sequence of 4       |
+    |                                 |                 |                | values, where the     |
+    |                                 |                 |                | fourth value is *not* |
+    |                                 |                 |                | an alpha channel.     |
+    |                                 |                 +----------------+-----------------------+
+    |                                 |                 | Each component of those types is       |
+    |                                 |                 | stored according to the                |
+    |                                 |                 | ``scalarformat`` attribute set on the  |
+    |                                 |                 | same ``outputlayer`` node.             |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``colorprofile``                | string          | The name of an OCIO color profile to   |
+    |                                 |                 | apply to rendered image data prior to  |
+    |                                 |                 | quantization.                          |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``dithering``                   | integer         | If set to 1, dithering is applied to   |
+    |                                 |                 | integer scalars [#]_.                  |
+    |                                 |                 | Otherwise, it must be set to 0.        |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``withalpha``                   | integer         | If set to 1, an alpha channel is       |
+    |                                 |                 | included in the output layer.          |
+    |                                 |                 | Otherwise, it must be set to 0.        |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``sortkey``                     | integer         | This attribute is used as a sorting    |
+    |                                 |                 | key when ordering multiple output      |
+    |                                 |                 | layer nodes connected to the same      |
+    |                                 |                 | :ref:`output driver                    |
+    |                                 |                 | <node:outputdriver>` node.             |
+    |                                 |                 | Layers with the lowest ``sortkey``     |
+    |                                 |                 | attribute appear first.                |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``lightset``                    | «connection(s)» | This connection accepts either         |
+    |                                 |                 | :ref:`light sources                    |
+    |                                 |                 | <section:specifyinglights>` or         |
+    |                                 |                 | :ref:`set nodes <node:set>` to which   |
+    |                                 |                 | lights are connected. In this case     |
+    |                                 |                 | only listed lights will affect the     |
+    |                                 |                 | render of the output layer. If nothing |
+    |                                 |                 | is connected to this attribute then    |
+    |                                 |                 | all lights are rendered.               |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``outputdrivers``               | «connection(s)» | This connection accepts nodes to which |
+    |                                 |                 | the layer’s image will be sent.        |
+    |  ``outputdriver`` (!)           |                 |                                        |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``filter``                      | string          | The type of filter to use when         |
+    |                                 |                 | reconstructing the final image from    |
+    |                                 |                 | sub-pixel samples. Possible values     |
+    |                                 |                 | are:                                   |
+    |                                 |                 | *  ``box``                             |
+    |                                 |                 | *  ``triangle``                        |
+    |                                 |                 | *  ``catmull-rom``                     |
+    |                                 |                 | *  ``bessel``                          |
+    |                                 |                 | *  ``gaussian``                        |
+    |                                 |                 | *  ``sinc``                            |
+    |                                 |                 | *  ``mitchell``                        |
+    |                                 |                 | *  ``blackman-harris`` **(default)**   |
+    |                                 |                 | *  ``zmin``                            |
+    |                                 |                 | *  ``zmax``                            |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``filterwidth``                 | double          | Diameter in pixels of the              |
+    |                                 |                 | reconstruction filter. It is ignored   |
+    |                                 |                 | when filter is ``box`` or ``zmin``.    |
+    +---------------------------------+-----------------+----------------------------------------+
+    | ``backgroundvalue``             | float           | The value given to pixels where        |
+    |                                 |                 | nothing is rendered.                   |
+    +---------------------------------+-----------------+----------------------------------------+
 
 Any extra attributes are also forwarded to the output driver which may
 interpret them however it wishes.
@@ -1355,31 +1373,51 @@ Camera Nodes
 All camera nodes share a set of common attributes. These are listed
 below.
 
-This connection accepts nodes which will rasterize an image of the scene
-as seen by the camera. Refer to for more information.
+.. table:: camera nodes shared attributes
+    :widths: 3 1 6
 
-Time interval during which the camera shutter is at least partially
-open. It’s defined by a list of exactly two values:
+    +------------------------------+--------------+------------------------------------------+
+    | **Name**                     | **Type**     | **Description/Values**                   |
+    +==============================+==============+==========================================+
+    | ``screens``                  | «connection(s)» | This connection accepts nodes which   |
+    |                              |                 | will rasterize an image of the scene  |
+    | ``screen`` (!)               |                 | as seen by the camera. Refer to for   |
+    |                              |                 | more information.                     |
+    +------------------------------+-----------------+---------------------------------------+
+    | ``shutterrange``             | [double; 2]     | Time interval during which the camera |
+    |                              |                 | shutter is at least partially open.   |
+    |                              |                 | It is defined by a list of exactly    |
+    |                              |                 | two values:                           |
+    |                              |                 |                                       |
+    |                              |                 | -  Time at which the shutter starts   |
+    |                              |                 |    **opening**.                       |
+    |                              |                 | -  Time at which the shutter finishes |
+    |                              |                 |    **closing**.                       |
+    +------------------------------+-----------------+---------------------------------------+
+    | ``shutteropening``           | [double; 2]     | A *normalized* time interval          |
+    |                              |                 | indicating the time at which the      |
+    |                              |                 | shutter is fully open (a) and the     |
+    |                              |                 | time at which the shutter starts to   |
+    |                              |                 | close (b). These two  values define   |
+    |                              |                 | the top part of a trapezoid filter.   |
+    |                              |                 | The end goal of this feature it to    |
+    |                              |                 | simulate a mechanical shutter on      |
+    |                              |                 | which open and close movements are    |
+    |                              |                 | not instantaneous. shows the geometry |
+    |                              |                 | of such a trapezoid filter.           |
+    +------------------------------+-----------------+---------------------------------------+
+    | ``clippingrange``            | [double; 2]     | Distance of the near and far clipping |
+    |                              |                 | planes from the camera. It’s defined  |
+    |                              |                 | by a list of exactly two values:      |
+    |                              |                 |                                       |
+    |                              |                 | -  Distance to the **near** clipping  |
+    |                              |                 |    plane, in front of which scene     |
+    |                              |                 |    objects are clipped.               |
+    |                              |                 | -  Distance to the **far** clipping   |
+    |                              |                 |    plane, behind which scene objects  |
+    |                              |                 |    are clipped.                       |
+    +------------------------------+-----------------+---------------------------------------+
 
--  Time at which the shutter starts ``opening``.
-
--  Time at which the shutter finishes ``closing``.
-
-A *normalized* time interval indicating the time at which the shutter is
-fully open (a) and the time at which the shutter starts to close (b).
-These two values define the top part of a trapezoid filter. The end goal
-of this feature it to simulate a mechanical shutter on which open and
-close movements are not instantaneous. shows the geometry of such a
-trapezoid filter.
-
-Distance of the near and far clipping planes from the camera. It’s
-defined by a list of exactly two values:
-
--  Distance to the ``near`` clipping plane, in front of which scene
-   objects are clipped.
-
--  Distance to the ``far`` clipping plane, behind which scene objects
-   are clipped.
 
 .. _node:orthographiccamera:
 
@@ -1399,27 +1437,42 @@ in the direction of the :math:`\mathrm{Z-}` axis. The node is usually
 connected into a node for camera placement. It has the following
 attributes:
 
-The field of view angle, in degrees.
+.. table:: camera nodes shared attributes
+    :widths: 3 1 6
 
-Enables depth of field effect for this camera.
-
-Relative aperture of the camera.
-
-Focal length, in scene units, of the camera lens.
-
-Distance, in scene units, in front of the camera at which objects will
-be in focus.
-
-By default, the renderer simulates a circular aperture for depth of
-field. Enable this feature to simulate aperture “blades” as on a real
-camera. This feature affects the look in out-of-focus regions of the
-image.
-
-Number of sides of the camera’s aperture. The mininum number of sides is
-3.
-
-A rotation angle (in degrees) to be applied to the camera’s aperture, in
-the image plane.
+    +----------------------------------+--------------+--------------------------------------+
+    | **Name**                         | **Type**     | **Description/Values**               |
+    +==================================+==============+======================================+
+    | ``fov``                          | float        | The field of view angle, in degrees. |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.enable``          | integer (0)  | Enables depth of field effect for    |
+    |                                  |              | this camera.                         |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.fstop``           | double       | Relative aperture of the camera.     |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.focallength``     | double       | Focal length, in scene units, of the |
+    |                                  |              | camera lens.                         |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.focaldistance``   | double       | Distance, in scene units, in front   |
+    |                                  |              | of the camera at which objects will  |
+    |                                  |              | be in focus.                         |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.aperture.enable`` | integer (0)  | By default, the renderer simulates   |
+    |                                  |              | a circular aperture for depth of     |
+    |                                  |              | field. Enable this feature to        |
+    |                                  |              | simulate aperture “blades” as on a   |
+    |                                  |              | real camera. This feature affects    |
+    |                                  |              | the look in out-of-focus regions of  |
+    |                                  |              | the image.                           |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.aperture.sides``  | integer (5)  | Number of sides of the camera's      |
+    |                                  |              | aperture. The mininum number of      |
+    |                                  |              | sides is 3.                          |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``depthoffield.aperture.angle``  | double (0)   | A rotation angle (in degrees) to be  |
+    |                                  |              | applied to the camera’s aperture,    |
+    |                                  |              | in the image plane.                  |
+    +----------------------------------+--------------+--------------------------------------+
 
 .. _node:fisheyecamera:
 
