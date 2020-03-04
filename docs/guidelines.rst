@@ -293,7 +293,6 @@ Defining Output Drivers and Layers
 
    nsi graph showing the image output chain
 
-[fig:output_layers]
 
 nsi allows for a very flexible image output model. All the following
 operations are possible:

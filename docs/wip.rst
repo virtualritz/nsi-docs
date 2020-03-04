@@ -9,11 +9,11 @@ pipelines from using the *RenderMan Interface™* to |nsi|.
 
 Aka: this *is* being used in production.
 
-Nevertheless there are many things that lack coherence & stringency in
-naming of parts of the API.
-
 Naming
 ------
+
+There are many things that lack coherence & stringency in naming of
+parts of the API.
 
 The current documentation has new naming suggestions for some
 parameters, attributes and nodes that are marked with exclamation
@@ -34,7 +34,7 @@ If you find typos, grammar mistakes or think something should be changed
 or added to improve this documentation, do not hesitate to go ahead and
 open a pull request with your changes.
 
-Each page has an :menuitem:`Edit on GitHub` button on the top right
+Each page has an :guilabel:`Edit on GitHub` button on the top right
 corner to make this process as painless as possible.
 
 Language Bindings

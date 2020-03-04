@@ -387,6 +387,9 @@ attribute to its default value, use .
 
 --------------
 
+: _motionblur:
+: _CAPI:nsisetattributeattime:
+
 .. code-block:: c
 
    void NSISetAttributeAtTime(

@@ -578,7 +578,7 @@ has the following attributes:
     +=================================+==============+=======================================+
     | ``faces``                       | integer      | A list of indices of faces. It        |
     |                                 |              | identifies which faces of the         |
-    | ``face`` (!)                    |              | original geometry will be part of     |
+    | ``face.index`` (!)              |              | original geometry will be part of     |
     |                                 |              | this face set.                        |
     +---------------------------------+--------------+---------------------------------------+
 
@@ -1220,6 +1220,10 @@ following attributes:
     | ``dithering``                   | integer         | If set to 1, dithering is applied to   |
     |                                 |                 | integer scalars [#]_.                  |
     |                                 |                 | Otherwise, it must be set to 0.        |
+    |                                 |                 |                                        |
+    |                                 |                 | It is sometimes desirable to turn off  |
+    |                                 |                 | dithering, for example, when           |
+    |                                 |                 | outputting object IDs.                 |
     +---------------------------------+-----------------+----------------------------------------+
     | ``withalpha``                   | integer         | If set to 1, an alpha channel is       |
     |                                 |                 | included in the output layer.          |
@@ -1398,7 +1402,7 @@ below.
     |                              |                 | indicating the time at which the      |
     |                              |                 | shutter is fully open (a) and the     |
     |                              |                 | time at which the shutter starts to   |
-    |                              |                 | close (b). These two  values define   |
+    |                              |                 | close (b). These two values define    |
     |                              |                 | the top part of a trapezoid filter.   |
     |                              |                 | The end goal of this feature it to    |
     |                              |                 | simulate a mechanical shutter on      |
@@ -1482,22 +1486,44 @@ The Fisheyecamera Node
 Fish eye cameras are useful for a multitude of applications
 (e.g. virtual reality). This node accepts these attributes:
 
-Specifies the field of view for this camera node, in degrees.
+.. _WikipediaFisheyeLens: https://en.wikipedia.org/wiki/Fisheye_lens
 
-Defines one of the supported fisheye `mapping
-functions <https://en.wikipedia.org/wiki/Fisheye_lens>`__:
+.. table:: fisheye camera node attributes
+    :widths: 3 1 2 4
 
-:math:`\rightarrow` Maintains angular distances.
+    +--------------------------+-------------------+-----------------------------------------+
+    | **Name**                 | **Type**          | **Description/Values**                  |
+    +==========================+===================+=========================================+
+    | ``fov``                  | float             | The field of view angle, in degrees.    |
+    +--------------------------+-------------------+-----------------------------------------+
+    | ``mapping``              | string            | Defines one of the supported fisheye    |
+    |                          | (``equidistant``) | `mapping functions                      |
+    |                          |                   | <WikipediaFisheyeLens>`__.              |
+    |                          |                   | Possible values are:                    |
+    |                          |                   +--------------------+--------------------+
+    |                          |                   | ``equidistant``    | Maintains angular  |
+    |                          |                   |                    | distances.         |
+    |                          |                   +--------------------+--------------------+
+    |                          |                   | ``equisolidangle`` | Every pixel in the |
+    |                          |                   |                    | image covers the   |
+    |                          |                   |                    | same solid angle.  |
+    |                          |                   +--------------------+--------------------+
+    |                          |                   | ``orthographic``   | Maintains planar   |
+    |                          |                   |                    | illuminance. This  |
+    |                          |                   |                    | mapping is limited |
+    |                          |                   |                    | to a 180 field of  |
+    |                          |                   |                    | view.              |
+    |                          |                   +--------------------+--------------------+
+    |                          |                   | ``stereographic``  | Maintains angles   |
+    |                          |                   |                    | throughout the     |
+    |                          |                   |                    | image. Note that   |
+    |                          |                   |                    | stereographic      |
+    |                          |                   |                    | mapping fails to   |
+    |                          |                   |                    | work with field of |
+    |                          |                   |                    | views close to 360 |
+    |                          |                   |                    | degrees.           |
+    +--------------------------+-------------------+--------------------+--------------------+
 
-:math:`\rightarrow` Every pixel in the image covers the same solid
-angle.
-
-:math:`\rightarrow` Maintains planar illuminance. This mapping is
-limited to a 180 field of view.
-
-:math:`\rightarrow` Maintains angles throughout the image. Note that
-stereographic mapping fails to work with field of views close to 360
-degrees.
 
 .. _node:cylindricalcamera:
 
@@ -1505,16 +1531,26 @@ The Cylindricalcamera Node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This node specifies a cylindrical projection camera and has the
-following attibutes: [section:cylindricalcamera]
+following attibutes:
 
-Specifies the *vertical* field of view, in degrees. The default value is
-90.
+.. table:: cylindrical camera nodes shared attributes
+    :widths: 3 1 6
 
-Specifies the horizontal field of view, in degrees. The default value is
-360.
-
-This offset allows to render stereoscopic cylindrical images by
-specifying an eye offset
+    +----------------------------------+--------------+--------------------------------------+
+    | **Name**                         | **Type**     | **Description/Values**               |
+    +==================================+==============+======================================+
+    | ``fov``                          | float        | Specifies the *vertical* field of    |
+    |                                  |              | view, in degrees. The default value  |
+    |                                  | (``90``)     | is 90.                               |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``horizontalfov``                | float        | Specifies the horizontal field of    |
+    |                                  |              | view, in degrees. The default value  |
+    | ``fov.horizontal`` (!)           | (``360``)    | is 360.                              |
+    +----------------------------------+--------------+--------------------------------------+
+    | ``eyeoffset``                    | float        | This allows to render stereoscopic   |
+    |                                  |              | cylindrical images by specifying an  |
+    |                                  |              | eye offset                           |
+    +----------------------------------+--------------+--------------------------------------+
 
 .. _node:sphericalcamera:
 
@@ -1545,7 +1581,3 @@ instructs the renderer not to trace the corresponding ray sample.
 --------------
 
 .. rubric:: Footnotes
-
-.. [#]
-   It is sometimes desirable to turn off dithering, for example, when
-   outputting object IDs.
