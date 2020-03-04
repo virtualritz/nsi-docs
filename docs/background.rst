@@ -27,13 +27,13 @@ The design of the |nsi| was shaped by multiple goals:
     if complex things can be done with it. This simplicity is carried
     into everything which derives from the interface.
 
-| **Interactive rendering and scene edits**
+| **Interactive Rendering and Scene Edits**
 |   Scene edit operations should not be a special case. There should be
     no difference between scene *description* and scene *edits*. In
     other words, a scene description is a series of edits and vice
     versa.
 
-| **Tight integration with Open Shading Language**
+| **Tight Integration with Open Shading Language**
 |   |osl| integration is not superficial and affects scene definition.
     For example, there are no explicit light sources in |nsi|: light
     sources are created by connecting shaders with an ``emission()``
@@ -44,7 +44,7 @@ The design of the |nsi| was shaped by multiple goals:
     efficient and easily accessible scripting language. Scripts can be
     used to add render time intelligence to a given scene description.
 
-| **Performance and multi-threading**
+| **Performance and Multi-Threading**
 |   All API design decisions are made with performance in mind and this
     includes the possibility to run all api calls in a concurrent,
     multi-threaded environment. Nearly all software today which deals
@@ -55,7 +55,7 @@ The design of the |nsi| was shaped by multiple goals:
     Everything which is needed to perform an action is passed in on
     every call.
 
-| **Support for serialization**
+| **Support for Serialization**
 |   The interface calls should be serializable. This implies a mostly
     unidirectional dataflow from the client application to the renderer
     and allows greater implementation flexibility.
