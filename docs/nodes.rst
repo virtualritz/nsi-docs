@@ -762,8 +762,8 @@ It also has these optional attributes:
     | ``id``                          | integer  | This attribute has to be the same length  |
     |                                 |          | as ``P``. It assigns a unique identifier  |
     |                                 |          | to each particle which must be constant   |
-    |                                 |          | throughout the entire :ref:`shutter       |
-    |                                 |          | range<motionblur>`. Its presence is       |
+    |                                 |          | throughout the entire :ref:`shutter range |
+    |                                 |          | <motionblur>`. Its presence is            |
     |                                 |          | necessary in the case where particles are |
     |                                 |          | motion blurred and some of them could     |
     |                                 |          | appear or disappear during the motion     |
@@ -798,7 +798,7 @@ as such, also supports all the attributes of a regular node. In order
 to connect the nodes it creates to the sub-scene’s root, the procedural
 simply has to connect them to the regular ``.root``.
 
-In the context of an :ref:`interactive render`, the procedural will
+In the context of an :ref:`interactive render <section:rendering:interactive>`, the procedural will
 be executed again after the node's attributes have been edited. All
 nodes previously connected by the procedural to the sub-scene's root
 will be deleted automatically before the procedural’s re-execution.
@@ -1409,6 +1409,14 @@ below.
     |                              |                 | which open and close movements are    |
     |                              |                 | not instantaneous. shows the geometry |
     |                              |                 | of such a trapezoid filter.           |
+    |                              |                 |                                       |
+    |                              |                 | .. figure:: image/aperture.svg        |
+    |                              |                 |    :alt: aperture                     |
+    |                              |                 |                                       |
+    |                              |                 |    An example shutter opening         |
+    |                              |                 |    configuration with                 |
+    |                              |                 |    :math:`a=\frac{1}{3}` and          |
+    |                              |                 |    :math:`b=\frac{2}{3}`.             |
     +------------------------------+-----------------+---------------------------------------+
     | ``clippingrange``            | [double; 2]     | Distance of the near and far clipping |
     |                              |                 | planes from the camera. It’s defined  |

@@ -387,7 +387,6 @@ attribute to its default value, use .
 
 --------------
 
-: _motionblur:
 : _CAPI:nsisetattributeattime:
 
 .. code-block:: c
@@ -713,7 +712,9 @@ issued. The function accepts :
     | ``progressive``        | integer  | If set to ``1``, render the image in a progressive |
     |                        |          | fashion.                                           |
     +------------------------+----------+----------------------------------------------------+
-    | ``interactive``        | integer  | If set to ``1``, the renderer will accept commands |
+    | ``interactive``        | integer  | .. _section:rendering:interactive:                 |
+    |                        |          |                                                    |
+    |                        |          | If set to ``1``, the renderer will accept commands |
     |                        |          | to edit scene’s state while rendering.             |
     |                        |          | The difference with a normal render is that the    |
     |                        |          | render task will not exit even if rendering is     |
