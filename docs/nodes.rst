@@ -1404,11 +1404,12 @@ below.
     |                              |                 | time at which the shutter starts to   |
     |                              |                 | close (b). These two values define    |
     |                              |                 | the top part of a trapezoid filter.   |
-    |                              |                 | The end goal of this feature it to    |
-    |                              |                 | simulate a mechanical shutter on      |
-    |                              |                 | which open and close movements are    |
-    |                              |                 | not instantaneous. shows the geometry |
-    |                              |                 | of such a trapezoid filter.           |
+    |                              |                 |                                       |
+    |                              |                 | This feature simulates a mechanical   |
+    |                              |                 | shutter on which open and close       |
+    |                              |                 | movements are not instantaneous.      |
+    |                              |                 | Below is an image showing the         |
+    |                              |                 | geometry of such a trapezoid filter.  |
     |                              |                 |                                       |
     |                              |                 | .. figure:: image/aperture.svg        |
     |                              |                 |    :alt: aperture                     |
