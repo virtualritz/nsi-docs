@@ -1218,12 +1218,12 @@ following attributes:
     |                                 |                 | quantization.                          |
     +---------------------------------+-----------------+----------------------------------------+
     | ``dithering``                   | integer         | If set to 1, dithering is applied to   |
-    |                                 |                 | integer scalars [#]_.                  |
+    |                                 |                 | integer scalars.                       |
     |                                 |                 | Otherwise, it must be set to 0.        |
     |                                 |                 |                                        |
-    |                                 |                 | It is sometimes desirable to turn off  |
-    |                                 |                 | dithering, for example, when           |
-    |                                 |                 | outputting object IDs.                 |
+    |                                 |                 | *It is sometimes desirable to turn     |
+    |                                 |                 | off dithering, for example, when       |
+    |                                 |                 | outputting object IDs.*                |
     +---------------------------------+-----------------+----------------------------------------+
     | ``withalpha``                   | integer         | If set to 1, an alpha channel is       |
     |                                 |                 | included in the output layer.          |
@@ -1283,53 +1283,85 @@ The Screen Node
 ---------------
 
 This node describes how the view from a camera node will be rasterized
-into an node. It can be connected to the ``screens`` attribute of a
-camera node.
+into an :ref:`output layer <node:outputlayer>` node. It can be connected
+to the ``screens`` attribute of a :ref:`camera node <node:camera>`.
 
-This connection accepts nodes which will receive a rendered image of the
-scene as seen by the camera.
+For an exmplanation of coordinate systems/spaces mentioned below, e.g.
+``NDC``, ``screen``, etc., please refer to the `Open Shading Language
+specification
+<https://github.com/imageworks/OpenShadingLanguage/raw/master/src/doc/osl-languagespec.pdf>`__
 
-Horizontal and vertical resolution of the rendered image, in pixels.
+.. table:: screen node attributes
+    :widths: 3 1 2 4
 
-The total number of samples (i.e. camera rays) to be computed for each
-pixel in the image.
-
-The region of the image to be rendered. It’s defined by a list of
-exactly 2 pairs of floating-point number. Each pair represents a point
-in ndc space:
-
--  ``Top-left`` corner of the crop region
-
--  ``Bottom-right`` corner of the crop region
-
-For progressive renders, this is the region of the image to be rendered
-first. It is two pairs of integers. Each represents pixel coordinates:
-
--  ``Top-left`` corner of the high priority region
-
--  ``Bottom-right`` corner of the high priority region
-
-Specifies the screen space region to the rendered. Each pair represents
-a 2D point in ``screen`` space:
-
--  ``Bottom-left`` corner of the region
-
--  ``Top-right`` corner of the region
-
-Note that the default screen window is set implicitely by the frame
-aspect ratio:
-
-.. math::
-
-   screenwindow = \begin{bmatrix}-f && -1\end{bmatrix}, \begin{bmatrix}f && 1\end{bmatrix} \text{for } f=\dfrac{xres}{yres}\\
-
-Ratio of the physical width to the height of a single pixel. A value of
-1.0 corresponds to square pixels.
-
-This controls whether or not the sampling pattern used to produce the
-image change for every frame. A nonzero value will cause the same
-pattern to be used for all frames. A value of zero will cause the
-pattern to change with the frame attribute of the .
+    +-----------------------------+-----------------+----------------------------------------+
+    | **Name**                    | **Type**        | **Description/Values**                 |
+    +=============================+=================+========================================+
+    | ``outputlayers``            | «connection(s)» | This connection accepts nodes which    |
+    |                             |                 | will receive a rendered image of the   |
+    | ``outputlayer``             |                 | scene as seen by the camera.           |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``resolution``              | integer[2]      | Horizontal and vertical resolution of  |
+    |                             |                 | the rendered image, in pixels.         |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``oversampling``            | integer         | The total number of samples (i.e.      |
+    |                             |                 | camera rays) to be computed for each   |
+    |                             |                 | pixel in the image.                    |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``crop``                    | float[2][2]     | The region of the image to be          |
+    |                             |                 | rendered. It is defined by a two       |
+    |                             |                 | 2D coordinates. Each represents a      |
+    |                             |                 | point in `NDC` space:                  |
+    |                             |                 |                                        |
+    |                             |                 | *  ``Top-left`` corner of the crop     |
+    |                             |                 |    region.                             |
+    |                             |                 | *  ``Bottom-right`` corner of the crop |
+    |                             |                 |    region.                             |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``prioritywindow``          | integer[2][2]   | For progressive renders, this is the   |
+    |                             |                 | region of the image to be rendered     |
+    |                             |                 | first. It is defined by two            |
+    |                             |                 | coordinates. Each represents a pixel   |
+    |                             |                 | position in ``raster`` space:          |
+    |                             |                 |                                        |
+    |                             |                 | *  ``Top-left`` corner of the high     |
+    |                             |                 |    priority region.                    |
+    |                             |                 | *  ``Bottom-right`` corner of the high |
+    |                             |                 |    priority region.                    |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``screenwindow``            | double[2][2]    | Specifies the screen space region to   |
+    |                             |                 | be rendered. It is defined by two      |
+    |                             |                 | coordinates. Each represents a         |
+    |                             |                 | point in ``screen`` space:             |
+    |                             |                 |                                        |
+    |                             |                 | *  ``Top-left`` corner of the region.  |
+    |                             |                 | *  ``Bottom-right`` corner of the      |
+    |                             |                 |    region.                             |
+    |                             |                 |                                        |
+    |                             |                 | Note that the default screen window is |
+    |                             |                 | set implicitely by the frame aspect    |
+    |                             |                 | ratio:                                 |
+    |                             |                 |                                        |
+    |                             |                 | .. math::                              |
+    |                             |                 |     screenwindow = \begin{bmatrix}-f   |
+    |                             |                 |     & -1\end{bmatrix},                 |
+    |                             |                 |     \begin{bmatrix}f & 1\end{bmatrix}  |
+    |                             |                 |     \text{for } f=\dfrac{xres}{yres}\\ |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``pixelaspectratio``        | float (``1``)   | Ratio of the physical width to the     |
+    |                             |                 | height of a single pixel. A value of   |
+    |                             |                 | ``1`` corresponds to square pixels.    |
+    +-----------------------------+-----------------+----------------------------------------+
+    | ``staticsamplingpattern``   | integer (``0``) | This controls whether or not the       |
+    |                             |                 | sampling pattern used to produce the   |
+    |                             |                 | image changes for every frame.         |
+    |                             |                 |                                        |
+    |                             |                 | A nonzero value will cause the same    |
+    |                             |                 | pattern to be used for all frames. A   |
+    |                             |                 | value of ``0`` will cause the pattern  |
+    |                             |                 | to change with the frame attribute of  |
+    |                             |                 | the :ref:`global node <node:globa>`.   |
+    +-----------------------------+-----------------+----------------------------------------+
 
 .. _node:volume:
 
@@ -1365,8 +1397,8 @@ attributes:
     |                                 |              | first of three scalar grids (i.e.         |
     |                                 |              | "velocityX").                             |
     +---------------------------------+--------------+-------------------------------------------+
-    | ``velocityscale``               | string       | A scaling factor applied to the motion    |
-    |                                 |              | vectors.                                  |
+    | ``velocityscale``               | double       | A scaling factor applied to the motion    |
+    |                                 | (``1``)      | vectors.                                  |
     +---------------------------------+--------------+-------------------------------------------+
 
 .. _node:camera:
@@ -1388,17 +1420,17 @@ below.
     | ``screen`` (!)               |                 | as seen by the camera. Refer to for   |
     |                              |                 | more information.                     |
     +------------------------------+-----------------+---------------------------------------+
-    | ``shutterrange``             | [double; 2]     | Time interval during which the camera |
+    | ``shutterrange``             | double[2]       | Time interval during which the camera |
     |                              |                 | shutter is at least partially open.   |
     |                              |                 | It is defined by a list of exactly    |
     |                              |                 | two values:                           |
     |                              |                 |                                       |
-    |                              |                 | -  Time at which the shutter starts   |
+    |                              |                 | *  Time at which the shutter starts   |
     |                              |                 |    **opening**.                       |
-    |                              |                 | -  Time at which the shutter finishes |
+    |                              |                 | *  Time at which the shutter finishes |
     |                              |                 |    **closing**.                       |
     +------------------------------+-----------------+---------------------------------------+
-    | ``shutteropening``           | [double; 2]     | A *normalized* time interval          |
+    | ``shutteropening``           | double[2]       | A *normalized* time interval          |
     |                              |                 | indicating the time at which the      |
     |                              |                 | shutter is fully open (a) and the     |
     |                              |                 | time at which the shutter starts to   |
@@ -1419,19 +1451,21 @@ below.
     |                              |                 |    :math:`a=\frac{1}{3}` and          |
     |                              |                 |    :math:`b=\frac{2}{3}`.             |
     +------------------------------+-----------------+---------------------------------------+
-    | ``clippingrange``            | [double; 2]     | Distance of the near and far clipping |
+    | ``clippingrange``            | double[2]       | Distance of the near and far clipping |
     |                              |                 | planes from the camera. It’s defined  |
     |                              |                 | by a list of exactly two values:      |
     |                              |                 |                                       |
-    |                              |                 | -  Distance to the **near** clipping  |
+    |                              |                 | *  Distance to the **near** clipping  |
     |                              |                 |    plane, in front of which scene     |
     |                              |                 |    objects are clipped.               |
-    |                              |                 | -  Distance to the **far** clipping   |
+    |                              |                 | *  Distance to the **far** clipping   |
     |                              |                 |    plane, behind which scene objects  |
     |                              |                 |    are clipped.                       |
     +------------------------------+-----------------+---------------------------------------+
-
-
+    | ``lensshader``               | «connection»    | An |osl| shader through which camera  |
+    |                              |                 | rays get sent. See :ref:`lens shaders |
+    |                              |                 | <shader:lens>`.                       |
+    +------------------------------+-----------------+---------------------------------------+
 .. _node:orthographiccamera:
 
 The Orthographiccamera Node
@@ -1458,8 +1492,8 @@ attributes:
     +==================================+==============+======================================+
     | ``fov``                          | float        | The field of view angle, in degrees. |
     +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.enable``          | integer (0)  | Enables depth of field effect for    |
-    |                                  |              | this camera.                         |
+    | ``depthoffield.enable``          | integer      | Enables depth of field effect for    |
+    |                                  | (``0``)      | this camera.                         |
     +----------------------------------+--------------+--------------------------------------+
     | ``depthoffield.fstop``           | double       | Relative aperture of the camera.     |
     +----------------------------------+--------------+--------------------------------------+
@@ -1470,20 +1504,20 @@ attributes:
     |                                  |              | of the camera at which objects will  |
     |                                  |              | be in focus.                         |
     +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.aperture.enable`` | integer (0)  | By default, the renderer simulates   |
-    |                                  |              | a circular aperture for depth of     |
+    | ``depthoffield.aperture.enable`` | integer      | By default, the renderer simulates   |
+    |                                  | (``0``)      | a circular aperture for depth of     |
     |                                  |              | field. Enable this feature to        |
     |                                  |              | simulate aperture “blades” as on a   |
     |                                  |              | real camera. This feature affects    |
     |                                  |              | the look in out-of-focus regions of  |
     |                                  |              | the image.                           |
     +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.aperture.sides``  | integer (5)  | Number of sides of the camera's      |
-    |                                  |              | aperture. The mininum number of      |
+    | ``depthoffield.aperture.sides``  | integer      | Number of sides of the camera's      |
+    |                                  | (``5``)      | aperture. The mininum number of      |
     |                                  |              | sides is 3.                          |
     +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.aperture.angle``  | double (0)   | A rotation angle (in degrees) to be  |
-    |                                  |              | applied to the camera’s aperture,    |
+    | ``depthoffield.aperture.angle``  | double       | A rotation angle (in degrees) to be  |
+    |                                  | (``0``)      | applied to the camera’s aperture,    |
     |                                  |              | in the image plane.                  |
     +----------------------------------+--------------+--------------------------------------+
 
@@ -1569,6 +1603,8 @@ The Sphericalcamera Node
 This node defines a spherical projection camera. This camera has no
 specific attributes.
 
+.. _shader:lens:
+
 Lens Shaders
 ~~~~~~~~~~~~
 
@@ -1586,7 +1622,3 @@ instructs the renderer not to trace the corresponding ray sample.
 ``time`` — The time at which the ray is sampled.
 
 ``(u, v)`` — Coordinates, in screen space, of the ray being traced.
-
---------------
-
-.. rubric:: Footnotes
