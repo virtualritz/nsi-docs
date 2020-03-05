@@ -1380,9 +1380,9 @@ below.
 .. table:: camera nodes shared attributes
     :widths: 3 1 6
 
-    +------------------------------+--------------+------------------------------------------+
-    | **Name**                     | **Type**     | **Description/Values**                   |
-    +==============================+==============+==========================================+
+    +------------------------------+-----------------+---------------------------------------+
+    | **Name**                     | **Type**        | **Description/Values**                |
+    +==============================+=================+=======================================+
     | ``screens``                  | «connection(s)» | This connection accepts nodes which   |
     |                              |                 | will rasterize an image of the scene  |
     | ``screen`` (!)               |                 | as seen by the camera. Refer to for   |
