@@ -39,7 +39,8 @@ details.
    |                                        | subdivision surface      |
    +----------------------------------------+--------------------------+
    | :ref:`faceset<node:faceset>`           | Assign attributes to     |
-   |                                        | part of a mesh           |
+   |                                        | part of a mesh, curves   |
+   |                                        | or paticels.             |
    +----------------------------------------+--------------------------+
    | :ref:`curves<node:curves>`             | Linear, b-spline and     |
    |                                        | Catmull-Rom curves       |
@@ -163,79 +164,79 @@ recognized by *3Delight*:
     +---------------------------------+----------+--------------------------------------------+
 
 .. index::
-   caching
-   disk cache
-   disk usage
-   network cache
-   temporary files
+    caching
+    disk cache
+    disk usage
+    network cache
+    temporary files
 
 .. table:: global node optional network cache attributes
-   :widths: 3 1 6
+    :widths: 3 1 6
 
-   +---------------------------------+----------+--------------------------------------------+
-   | ``networkcache.size``           | integer  | Specifies the maximum network cache size,  |
-   |                                 |          | in gigabytes (*GB*, not *GiB*), the        |
-   |                                 |          | renderer will use to cache textures on a   |
-   |                                 |          | local drive to accelerate data access.     |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``networkcache.directory``      | string   | Specifies the directory in which textures  |
-   |                                 |          | will be cached. A good default value is    |
-   |                                 |          | ``/var/tmp/3DelightCache`` on Linux        |
-   |                                 |          | systems.                                   |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``networkcache.write``          | integer  | Enables caching for image write            |
-   |                                 |          | operations. This alleviates pressure on    |
-   |                                 |          | networks by first rendering images to a    |
-   |                                 |          | local temporary location and copying them  |
-   |                                 |          | to their final destination at the end of   |
-   |                                 |          | the render. This replaces many small       |
-   |                                 |          | network writes by more efficient larger    |
-   |                                 |          | operations.                                |
-   +---------------------------------+----------+--------------------------------------------+
+    +---------------------------------+----------+--------------------------------------------+
+    | ``networkcache.size``           | integer  | Specifies the maximum network cache size,  |
+    |                                 |          | in gigabytes (*GB*, not *GiB*), the        |
+    |                                 |          | renderer will use to cache textures on a   |
+    |                                 |          | local drive to accelerate data access.     |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``networkcache.directory``      | string   | Specifies the directory in which textures  |
+    |                                 |          | will be cached. A good default value is    |
+    |                                 |          | ``/var/tmp/3DelightCache`` on Linux        |
+    |                                 |          | systems.                                   |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``networkcache.write``          | integer  | Enables caching for image write            |
+    |                                 |          | operations. This alleviates pressure on    |
+    |                                 |          | networks by first rendering images to a    |
+    |                                 |          | local temporary location and copying them  |
+    |                                 |          | to their final destination at the end of   |
+    |                                 |          | the render. This replaces many small       |
+    |                                 |          | network writes by more efficient larger    |
+    |                                 |          | operations.                                |
+    +---------------------------------+----------+--------------------------------------------+
 
 .. index::
     license
     server
 
-.. table:: global node optional attributes fpr licensing
-   :widths: 3 1 6
+.. table:: global node optional attributes for licensing
+    :widths: 3 1 6
 
-   +---------------------------------+----------+--------------------------------------------+
-   | ``license.server``              | string   | Specifies the name or IP address of the    |
-   |                                 |          | license server to be used.                 |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``license.wait``                | integer  | When no license is available for           |
-   |                                 |          | rendering, the renderer will wait until a  |
-   |                                 |          | license is available if this attribute is  |
-   |                                 |          | set to ``1``, but will stop immediately if |
-   |                                 |          | it is set to ``0``.                        |
-   |                                 |          | The latter setting is useful when managing |
-   |                                 |          | a renderfarm and other work could be       |
-   |                                 |          | scheduled instead.                         |
-   +---------------------------------+----------+--------------------------------------------+
-   | ``license.hold``                | integer  | By default, the renderer will get new      |
-   |                                 |          | licenses for every render and release them |
-   |                                 |          | once it is done. This can be undesirable   |
-   |                                 |          | if several frames are rendered in sequence |
-   |                                 |          | from the same process process. If this     |
-   |                                 |          | option is set to ``1``, the licenses       |
-   |                                 |          | obtained for the first frame are held      |
-   |                                 |          | until the last frame is finished.          |
-   +---------------------------------+----------+--------------------------------------------+
+    +---------------------------------+----------+--------------------------------------------+
+    | ``license.server``              | string   | Specifies the name or IP address of the    |
+    |                                 |          | license server to be used.                 |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``license.wait``                | integer  | When no license is available for           |
+    |                                 |          | rendering, the renderer will wait until a  |
+    |                                 |          | license is available if this attribute is  |
+    |                                 |          | set to ``1``, but will stop immediately if |
+    |                                 |          | it is set to ``0``.                        |
+    |                                 |          | The latter setting is useful when managing |
+    |                                 |          | a renderfarm and other work could be       |
+    |                                 |          | scheduled instead.                         |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``license.hold``                | integer  | By default, the renderer will get new      |
+    |                                 |          | licenses for every render and release them |
+    |                                 |          | once it is done. This can be undesirable   |
+    |                                 |          | if several frames are rendered in sequence |
+    |                                 |          | from the same process process. If this     |
+    |                                 |          | option is set to ``1``, the licenses       |
+    |                                 |          | obtained for the first frame are held      |
+    |                                 |          | until the last frame is finished.          |
+    +---------------------------------+----------+--------------------------------------------+
 
 .. index::
-   diffuse ray depth
-   diffuse ray length
-   reflection ray depth
-   reflection ray length
-   refraction ray depth
-   refraction ray length
-   glossy ray length
-   specular ray length
-   volume ray depth
-   volume ray length
-   hair ray depth
-   hair ray length
+    diffuse ray depth
+    diffuse ray length
+    reflection ray depth
+    reflection ray length
+    refraction ray depth
+    refraction ray length
+    glossy ray length
+    specular ray length
+    volume ray depth
+    volume ray length
+    hair ray depth
+    hair ray length
 
 .. table:: global node optional attributes governing ray tracing quality
     :widths: 3 1 6
@@ -407,6 +408,11 @@ The Mesh Node
 This node represents a polygon mesh or a subdivision surface. It has the following required
 attributes:
 
+.. index::
+    P (mesh node)
+    nvertices (mesh node)
+    vertex.size (mesh node)
+
 .. table:: mesh node required attributes
     :widths: 3 1 6
 
@@ -430,13 +436,13 @@ subdvision surface, the mesh node accepts these optionalattributes:
 
 .. index::
     subdivision surface
-    Catmull-Clark
-    crease
-    corner
-    sharpness
+    Catmull-Clark (subdivision surface)
+    crease (subdivision surface)
+    corner (subdivision surface)
+    sharpness (subdivision surface)
     subdivision crease
     subdivision corner
-    smooth corners
+    smooth corners (subdivision surface)
 
 .. table:: mesh node as subdivision surface optional attributes
     :widths: 3 1 6
@@ -494,9 +500,9 @@ subdvision surface, the mesh node accepts these optionalattributes:
 The mesh node also has these optional attributes:
 
 .. index::
-    winding order
-    clockwise winding
-    counterclockwise winding
+    winding order (mesh node)
+    clockwise winding (mesh node)
+    counterclockwise winding (mesh node)
 
 .. table:: mesh node optional attributes
     :widths: 3 1 6
@@ -566,11 +572,12 @@ Below is a sample |nsi| stream snippet showing the definition of a mesh with hol
 The Faceset Node
 ----------------
 
-This node is used to provide a way to attach attributes to some faces of
-another geometric primitive, such as the :ref:`mesh node<node:mesh>`. It
-has the following attributes:
+This node is used to provide a way to attach attributes to parts of
+another geometric primitive, such as faces of a :ref:`mesh
+<node:mesh>`, curves or particles.
+It has the following attributes:
 
-.. table:: faceset node optional attributes
+.. table:: faceset node attributes
     :widths: 3 1 6
 
     +---------------------------------+--------------+---------------------------------------+
@@ -581,6 +588,58 @@ has the following attributes:
     | ``face.index`` (!)              |              | original geometry will be part of     |
     |                                 |              | this face set.                        |
     +---------------------------------+--------------+---------------------------------------+
+
+
+.. table:: component node optional attributes
+    :widths: 3 1 6
+
+    +---------------------------------+----------+--------------------------------------------+
+    | **Name**                        | **Type** | **Description/Values**                     |
+    +=================================+==========+============================================+
+    | ``index``                       | integer  | A list of indices of components. It        |
+    |                                 |          | identifies which component of the original |
+    |                                 |          | geometry will be part of this component    |
+    |                                 |          | set.                                       |
+    +---------------------------------+----------+--------------------------------------------+
+    | ``level``                       | integer  | Specifies hierarchical depth of the        |
+    |                                 |          | component this node targets.               |
+    |                                 |          | The only node that supports a depth higher |
+    |                                 |          | than 0 is the `curves` node.               |
+    |                                 |          | The meaning depends on the node this is    |
+    |                                 |          | connected to.                              |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``mesh`` node  | The `index` attribute     |
+    |                                 |          |                | refers to an individual   |
+    |                                 |          |                | face.                     |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``curves``     | `0` – The `index`         |
+    |                                 |          |                | attribute refers to an    |
+    |                                 |          |                | individual curve.         |
+    |                                 |          |                |                           |
+    |                                 |          |                | `1` – The `index`         |
+    |                                 |          |                | attribute refers to a     |
+    |                                 |          |                | span on an individual     |
+    |                                 |          |                | curve.                    |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``particles``  | The `index` attribute     |
+    |                                 |          | node           | refers to an individual   |
+    |                                 |          |                | particle.                 |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``patchmesh``  | The `index` attribute     |
+    |                                 |          | node           | refers to an individual   |
+    |                                 |          |                | subpatch. Sub-patches are |
+    |                                 |          |                | numbered per column per   |
+    |                                 |          |                | row. I.e. the first row   |
+    |                                 |          |                | indices 0, 1, 2 ...       |
+    |                                 |          +----------------+---------------------------+
+    |                                 |          | ``procedural`` | Procedural nodes          |
+    |                                 |          | node           |                           |
+    +---------------------------------+----------+--------------------------------------------+
+
+Proceduaral nodes need to tag the level using the ``__componentlevel`` attribute.
+
+Let's take for example a procedural tree node.
+
 
 .. index::
     subdivision mesh example
@@ -776,6 +835,11 @@ It also has these optional attributes:
     |                                 |          | by definition.                            |
     +---------------------------------+----------+-------------------------------------------+
 
+.. index::
+    procedural node
+    delayed loading of geometry
+    scripting geometry
+
 .. _node:procedural:
 
 The Procedural Node
@@ -819,6 +883,9 @@ Additionally, this node has the following optional attribute :
     |                              |              | 'maximum' corners of the box.            |
     +------------------------------+--------------+------------------------------------------+
 
+.. index::
+    environment node
+
 .. _node:environment:
 
 The Environment Node
@@ -856,6 +923,8 @@ following optional node attribute is recognized:
     To position the environment dome one must connect the node to a :ref:`transform
     node<node:transform>` and apply the desired rotation(s).
 
+.. index::
+    shader node
 
 .. _node:shader:
 
@@ -864,6 +933,10 @@ The Shader Node
 
 This node represents an |osl| shader, also called layer when part of a
 shader group. It has the following required attribute:
+
+.. index::
+    filename (shader node)
+    shaderfilename (shader node)
 
 .. table:: shader node attributes
     :widths: 3 1 6
@@ -882,6 +955,9 @@ other shader nodes to build shader networks. |osl| shader networks must
 form acyclic graphs or they will be rejected. Refer to
 :ref:`the guidelines<section:creating_osl_networks>` for instructions
 on |osl| network creation and usage.
+
+.. index::
+    attributes node
 
 .. _node:attributes:
 
@@ -908,6 +984,9 @@ attributes node can set object visibility and another can set the
 surface shader) and will all be considered.
 
 This node has the following attributes:
+
+.. index::
+
 
 
 .. table:: attributes node attributes
@@ -1484,42 +1563,66 @@ in the direction of the :math:`\mathrm{Z-}` axis. The node is usually
 connected into a node for camera placement. It has the following
 attributes:
 
-.. table:: camera nodes shared attributes
+.. table:: perspective node attributes
     :widths: 3 1 6
 
-    +----------------------------------+--------------+--------------------------------------+
-    | **Name**                         | **Type**     | **Description/Values**               |
-    +==================================+==============+======================================+
-    | ``fov``                          | float        | The field of view angle, in degrees. |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.enable``          | integer      | Enables depth of field effect for    |
-    |                                  | (``0``)      | this camera.                         |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.fstop``           | double       | Relative aperture of the camera.     |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.focallength``     | double       | Focal length, in scene units, of the |
-    |                                  |              | camera lens.                         |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.focaldistance``   | double       | Distance, in scene units, in front   |
-    |                                  |              | of the camera at which objects will  |
-    |                                  |              | be in focus.                         |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.aperture.enable`` | integer      | By default, the renderer simulates   |
-    |                                  | (``0``)      | a circular aperture for depth of     |
-    |                                  |              | field. Enable this feature to        |
-    |                                  |              | simulate aperture “blades” as on a   |
-    |                                  |              | real camera. This feature affects    |
-    |                                  |              | the look in out-of-focus regions of  |
-    |                                  |              | the image.                           |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.aperture.sides``  | integer      | Number of sides of the camera's      |
-    |                                  | (``5``)      | aperture. The mininum number of      |
-    |                                  |              | sides is 3.                          |
-    +----------------------------------+--------------+--------------------------------------+
-    | ``depthoffield.aperture.angle``  | double       | A rotation angle (in degrees) to be  |
-    |                                  | (``0``)      | applied to the camera’s aperture,    |
-    |                                  |              | in the image plane.                  |
-    +----------------------------------+--------------+--------------------------------------+
+    +---------------------------------------+-----------+--------------------------------------+
+    | **Name**                              | **Type**  | **Description/Values**               |
+    +=======================================+===========+======================================+
+    | ``fov``                               | float     | The field of view angle, in degrees. |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.enable``               | integer   | Enables depth of field effect for    |
+    |                                       | (``0``)   | this camera.                         |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.fstop``                | double    | Relative aperture of the camera.     |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.focallength``          | double    | Focal length, in scene units, of the |
+    |                                       |           | camera lens.                         |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.focaldistance``        | double    | Distance, in scene units, in front   |
+    |                                       |           | of the camera at which objects will  |
+    |                                       |           | be in focus.                         |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.aperture.enable``      | integer   | By default, the renderer simulates   |
+    |                                       | (``0``)   | a circular aperture for depth of     |
+    |                                       |           | field. Enable this feature to        |
+    |                                       |           | simulate aperture “blades” as on a   |
+    |                                       |           | real camera. This feature affects    |
+    |                                       |           | the look in out-of-focus regions of  |
+    |                                       |           | the image.                           |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.aperture.sides``       | integer   | Number of sides of the camera's      |
+    |                                       | (``5``)   | aperture. The mininum number of      |
+    |                                       |           | sides is 3.                          |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.aperture.angle``       | double    | A rotation angle (in degrees) to be  |
+    |                                       | (``0``)   | applied to the camera’s aperture,    |
+    |                                       |           | in the image plane.                  |
+    +---------------------------------------+-----------+--------------------------------------+
+
+.. table:: perspective node extra attributes
+    :widths: 3 1 6
+
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.aperture.roundness``   | double    | This shapes the sides of the polygon |
+    |                                       | (``0``)   | When set to ``0``, the aperture is   |
+    |                                       |           | polygon with flat sides. When set to |
+    |                                       |           | ``1``, the aperture is a perfect     |
+    |                                       |           | circle. When set to ``-1``, the      |
+    |                                       |           | aperture sides curve inwards.        |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.aperture.density``     | double    | The slope of the aperture's density. |
+    |                                       | (``0``)   | A value of ``0`` gives uniform       |
+    |                                       |           | density. Negative values, up to      |
+    |                                       |           | ``-1``, make the aperture brighter   |
+    |                                       |           | near the center. Positive values, up |
+    |                                       |           | to ``1``, make it brighter near the  |
+    |                                       |           | edge.                                |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.aperture.aspectratio`` | double    | Circularity of the aperture. This    |
+    |                                       | (``1``)   | can be used to simulate anamorphic   |
+    |                                       |           | lenses.                              |
+    +---------------------------------------+-----------+--------------------------------------+
 
 .. _node:fisheyecamera:
 

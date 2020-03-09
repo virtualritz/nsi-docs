@@ -378,16 +378,17 @@ Setting attributes
        const NSIParam_t *params
    )
 
-This functions sets attributes on a previously node. All of the function
-become attributes of the node. On a node, this function is used to set
-the implicitly defined shader parameters. Setting an attribute using
-this function replaces any value previously set by
-``NSISetAttribute()`` or ``NSISetAttributeAtTime()``. To reset an
-attribute to its default value, use .
+This functions sets attributes on a previously node. All :ref:`optional
+parameters <CAPI:optionalparameters>` of the function become attributes
+of the node. On a node, this function is used to set the implicitly
+defined shader parameters. Setting an attribute using this function
+replaces any value previously set by ``NSISetAttribute()`` or
+``NSISetAttributeAtTime()``. To reset an attribute to its default value,
+use :ref:`NSIDeleteAttribute() <CAPI:nsidepeteattribute>`.
 
 --------------
 
-: _CAPI:nsisetattributeattime:
+.. _CAPI:nsisetattributeattime:
 
 .. code-block:: c
 
@@ -420,13 +421,16 @@ an attribute using this function replaces any value previously set by
    )
 
 This function deletes any attribute with a name which matches the
-``name`` parameter on the specified object. There is no way to delete an
-attribute only for a specific time value.
+``name`` parameter on the specified object. There is no way to delete
+an attribute only for a specific time value.
 
-Deleting an attribute resets it to its default value. For example, after
-deleting the ``transformationmatrix`` attribute on a node, the transform
-will be an identity. Deleting a previously set attribute on a node will
-default to whatever is declared inside the shader.
+Deleting an attribute resets it to its default value.
+
+For example, after deleting the ``transformationmatrix`` attribute on a
+:ref:`transform node <node:transform>`, the transform will be an
+identity. Deleting a previously set attribute on a :ref:`shader
+node<node:shader>` node will default to whatever is declared inside the
+shader.
 
 .. _CAPI:nsiconnect:
 
