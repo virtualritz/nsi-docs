@@ -380,11 +380,15 @@ Setting attributes
 
 This functions sets attributes on a previously node. All :ref:`optional
 parameters <CAPI:optionalparameters>` of the function become attributes
-of the node. On a node, this function is used to set the implicitly
-defined shader parameters. Setting an attribute using this function
-replaces any value previously set by ``NSISetAttribute()`` or
-``NSISetAttributeAtTime()``. To reset an attribute to its default value,
-use :ref:`NSIDeleteAttribute() <CAPI:nsidepeteattribute>`.
+of the node.
+
+On a :ref:`shader node<node:shader>`, this function is used to set the
+implicitly defined shader parameters.
+
+Setting an attribute using this function replaces any value previously
+set by ``NSISetAttribute()`` or ``NSISetAttributeAtTime()``. To reset
+an attribute to its default value, use :ref:`NSIDeleteAttribute()
+<CAPI:nsidepeteattribute>`.
 
 --------------
 
@@ -405,10 +409,10 @@ This function sets time-varying attributes (i.e. motion blurred). The
 defined. It is not required to set time-varying attributes in any
 particular order. In most uses, attributes that are motion blurred must
 have the same specification throughout the time range. A notable
-exception is the ``P`` attribute on which can be of different size for
-each time step because of appearing or disappearing particles. Setting
-an attribute using this function replaces any value previously set by
-``NSISetAttribute()``.
+exception is the ``P`` attribute on :ref:`particles <node:particles>`
+which can be of different size for each time step because of appearing
+or disappearing particles. Setting an attribute using this function
+replaces any value previously set by ``NSISetAttribute()``.
 
 --------------
 
