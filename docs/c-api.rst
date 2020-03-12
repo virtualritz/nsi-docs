@@ -203,6 +203,20 @@ the array in the ``arraylength`` member.
 .. Tip::
     It helps to view ``arraylength`` as a part of the data type.
 
+.. Warning::
+    If ``NSIParamIsArray`` is not set, ``arraylength`` is *ignored*.
+
+    The ``NSIParamIsArray`` flag is neccessary to distinguish between
+    parameters that have a *size* of 1 and arrays of *arbitrary length*
+    that happen to be of *length* 1 for the resp. parameter.
+
+    .. code-block:: shell
+        :caption: An array parameter of length 1 (and count 1) vs. a (non-array) parameter of count 1
+
+        "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in an array
+        "bar" "int" 1 13       # My favorite Friday
+
+
 The ``count`` member gives the number of data items given as the value
 of the parameter.
 

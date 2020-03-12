@@ -986,8 +986,25 @@ surface shader) and will all be considered.
 This node has the following attributes:
 
 .. index::
-
-
+    surface shader
+    displacement shader
+    volume shader
+    priority of attributes
+    visibility
+    camera (ray) visibility
+    diffuse (ray) visibility
+    hair (ray) visibility
+    reflection (ray) visibility
+    refraction (ray) visibility
+    shadow (ray) visibility
+    specular (ray) visibility
+    volume (ray) visibility
+    matte
+    stencil (matte)
+    alpha mask (matte)
+    regularemission
+    quantizedemission
+    bounds
 
 .. table:: attributes node attributes
     :widths: 3 1 6
