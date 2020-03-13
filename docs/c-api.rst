@@ -187,11 +187,13 @@ following constants:
     | ``NSITypeNormal``       | Normal vector, given as three 32-bit   |
     |                         | floating point values.                 |
     +-------------------------+----------------------------------------+
-    | ``NSITypeMatrix``       | Transformation matrix, given as 16     |
-    |                         | 32-bit floating point values.          |
+    | ``NSITypeMatrix``       | Transformation matrix, in row-major    |
+    |                         | order, given as 16 32-bit floating     |
+    |                         | point values.                          |
     +-------------------------+----------------------------------------+
-    | ``NSITypeDoubleMatrix`` | Transformation matrix, given as 16     |
-    |                         | 64-bit floating point values.          |
+    | ``NSITypeDoubleMatrix`` | Transformation matrix, in row-major    |
+    |                         | order, given as 16 64-bit floating     |
+    |                         | point values.                          |
     +-------------------------+----------------------------------------+
     | ``NSITypePointer``      | C |nbsp| pointer.                      |
     +-------------------------+----------------------------------------+
@@ -203,8 +205,8 @@ the array in the ``arraylength`` member.
 .. Tip::
     It helps to view ``arraylength`` as a part of the data type.
 
-.. Warning::
-    If ``NSIParamIsArray`` is not set, ``arraylength`` is *ignored*.
+.. Caution::
+    If ``NSIParamIsArray`` is not set, ``arraylength`` is **ignored**.
 
     The ``NSIParamIsArray`` flag is neccessary to distinguish between
     parameters that have a *size* of 1 and arrays of *arbitrary length*
