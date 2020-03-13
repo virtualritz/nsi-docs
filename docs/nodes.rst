@@ -40,7 +40,7 @@ details.
    +----------------------------------------+--------------------------+
    | :ref:`faceset<node:faceset>`           | Assign attributes to     |
    |                                        | part of a mesh, curves   |
-   |                                        | or paticels.             |
+   |                                        | or paticles.             |
    +----------------------------------------+--------------------------+
    | :ref:`curves<node:curves>`             | Linear, b-spline and     |
    |                                        | Catmull-Rom curves       |
@@ -51,8 +51,8 @@ details.
    |                                        | or generated in delayed  |
    |                                        | fashion                  |
    +----------------------------------------+--------------------------+
-   | :ref:`volume<node:volume>`             | A volume loaded from a   |
-   |                                        | VDB file                 |
+   | :ref:`volume<node:volume>`             | A volume loaded from an  |
+   |                                        | |OpenVDB| file           |
    +----------------------------------------+--------------------------+
    | :ref:`environment<node:environment>`   | Geometry type to define  |
    |                                        | environment lighting     |
@@ -69,8 +69,8 @@ details.
    |                                        | node                     |
    +----------------------------------------+--------------------------+
    | :ref:`screen<node:screen>`             | Describes how the view   |
-   |                                        | from acamera will be     |
-   |                                        | rasterized into an       |
+   |                                        | from a camera node will  |
+   |                                        | be rasterized into an    |
    |                                        | ``outputlayer`` node     |
    +----------------------------------------+--------------------------+
 
