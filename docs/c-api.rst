@@ -198,12 +198,14 @@ following constants:
     | ``NSITypePointer``      | C |nbsp| pointer.                      |
     +-------------------------+----------------------------------------+
 
-Array types are specified by setting the bit defined by the
+Tuple types are specified by setting the bit defined by the
 ``NSIParamIsArray`` constant in the ``flags`` member and the length of
-the array in the ``arraylength`` member.
+the array in the ``arraylength`` member. This is the length of the
+tuple.
 
 .. Tip::
-    It helps to view ``arraylength`` as a part of the data type.
+    It helps to view ``arraylength`` as a part of the data type. The
+    data is a tuple with this length when ``NSIParamIsArray`` is set.
 
 .. Caution::
     If ``NSIParamIsArray`` is not set, ``arraylength`` is **ignored**.
