@@ -200,8 +200,7 @@ following constants:
 
 Tuple types are specified by setting the bit defined by the
 ``NSIParamIsArray`` constant in the ``flags`` member and the length of
-the array in the ``arraylength`` member. This is the length of the
-tuple.
+the tuple in the ``arraylength`` member.
 
 .. Tip::
     It helps to view ``arraylength`` as a part of the data type. The
@@ -211,13 +210,14 @@ tuple.
     If ``NSIParamIsArray`` is not set, ``arraylength`` is **ignored**.
 
     The ``NSIParamIsArray`` flag is neccessary to distinguish between
-    parameters that have a *size* of 1 and arrays of *arbitrary length*
-    that happen to be of *length* 1 for the resp. parameter.
+    parameters of that happen to be of *length* 1 (set in the ``count``
+    member) and tuples that have a *length* of 1 (set in the
+    ``array_length`` member) for the resp. parameter.
 
     .. code-block:: shell
-        :caption: An array parameter of length 1 (and count 1) vs. a (non-array) parameter of count 1
+        :caption: A tuple parameter of length 1 (and count 1) vs. a (non-tuple) parameter of count 1
 
-        "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in an array
+        "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in an a (single) tuple
         "bar" "int" 1 13       # My favorite Friday
 
 

@@ -35,6 +35,8 @@ details.
    | :ref:`instances<node:instances>`       | Specifies instances of   |
    |                                        | other nodes              |
    +----------------------------------------+--------------------------+
+   | :ref:`plane<node:plane>`               | An infinite plane        |
+   +----------------------------------------+--------------------------+
    | :ref:`mesh<node:mesh>`                 | Polygonal mesh or        |
    |                                        | subdivision surface      |
    +----------------------------------------+--------------------------+
@@ -397,6 +399,18 @@ It has the following attributes:
     | ``object`` (!)                  |                 |                                    |
     +---------------------------------+-----------------+------------------------------------+
 
+.. _node:plane:
+
+.. index::
+    plane node
+
+The Plane Node
+--------------
+
+This node represents an infinite plane, centered at the origin and
+pointing towards :math:`\mathrm{Z+}`. It has no required attributes. The
+UV coordinates are defined as the X and Y coordinates of the plane.
+
 .. _node:mesh:
 
 .. index::
@@ -447,55 +461,57 @@ subdvision surface, the mesh node accepts these optionalattributes:
 .. table:: mesh node as subdivision surface optional attributes
     :widths: 3 1 6
 
-    +----------------------------------+----------+------------------------------------------+
-    | **Name**                         | **Type** | **Description/Values**                   |
-    +==================================+==========+==========================================+
-    | ``subdivision.scheme``           | string   | A value of ``"catmull-clark"`` will      |
-    |                                  |          | cause the mesh to render as a            |
-    |                                  |          | Catmull-Clark subdivision surface.       |
-    +----------------------------------+----------+------------------------------------------+
-    | ``subdivision.cornervertices``   | integer  | A list of vertices which are sharp       |
-    |                                  |          | corners. The values are indices into the |
-    | ``subdivision.corner.index``     |          | ``P`` attribute, like ``P.indices``.     |
-    | (!)                              |          |                                          |
-    +----------------------------------+----------+------------------------------------------+
-    | ``subdivision.cornersharpness``  | float    | The sharpness of each specified sharp    |
-    |                                  |          | corner. It must have a value for each    |
-    | ``subdivision.corner.sharpness`` |          | value given in                           |
-    | (!)                              |          | ``subdivision.cornervertices``.          |
-    +----------------------------------+----------+------------------------------------------+
-    | ``subdivision.corner.automatic`` | integer  | This tag requires a single integer       |
-    |                                  |          | parameter with a value of ``0`` or ``1`` |
-    |                                  |          | indicating whether or not the surface    |
-    |                                  |          | uses enhanced subdivision rules on       |
-    |                                  |          | vertices where *more than two* creased   |
-    |                                  |          | edges meet.                              |
-    |                                  |          |                                          |
-    |                                  |          | With a value of ``1`` (**the default**), |
-    |                                  |          | such a configuration uses the            |
-    |                                  |          | conventional rules which treat the       |
-    |                                  |          | vertex as a sharp corner when it has     |
-    |                                  |          | *two or more* incoming creased edges.    |
-    |                                  |          | With a value of ``0``, the vertex is     |
-    |                                  |          | subdivided using an extended crease      |
-    |                                  |          | vertex subdivision rule which yields a   |
-    |                                  |          | smooth crease.                           |
-    |                                  |          |                                          |
-    |                                  |          | Note that sharp corners can still be     |
-    |                                  |          | explicitly requested using the           |
-    |                                  |          | ``subdivision.corner.index`` &           |
-    |                                  |          | ``subdivision.corner.sharpness`` tags.   |
-    +----------------------------------+----------+------------------------------------------+
-    | ``subdivision.creasevertices``   | integer  | A list of crease edges. Each edge is     |
-    |                                  |          | specified as a pair of indices into the  |
-    | ``subdivision.crease.index``     |          | ``P`` attribute, like ``P.indices``.     |
-    | (!)                              |          |                                          |
-    +----------------------------------+----------+------------------------------------------+
-    | ``subdivision.creasesharpness``  | float    | The sharpness of each specified crease.  |
-    |                                  |          | It must have a value for each pair of    |
-    | ``subdivision.crease.sharpness`` |          | values given in                          |
-    | (!)                              |          | ``subdivision.creasevertices``.          |
-    +----------------------------------+----------+------------------------------------------+
+    +-------------------------------------+----------+---------------------------------------+
+    | **Name**                            | **Type** | **Description/Values**                |
+    +=====================================+==========+=======================================+
+    | ``subdivision.scheme``              | string   | A value of ``"catmull-clark"`` will   |
+    |                                     |          | cause the mesh to render as a         |
+    |                                     |          | Catmull-Clark subdivision surface.    |
+    +-------------------------------------+----------+---------------------------------------+
+    | ``subdivision.cornervertices``      | integer  | A list of vertices which are sharp    |
+    |                                     |          | corners. The values are indices into  |
+    | ``subdivision.corner.index``        |          | the ``P`` attribute, like             |
+    | (!)                                 |          | ``P.indices``.                        |
+    +-------------------------------------+----------+---------------------------------------+
+    | ``subdivision.cornersharpness``     | float    | The sharpness of each specified sharp |
+    |                                     |          | corner. It must have a value for each |
+    | ``subdivision.corner.sharpness``    |          | value given in                        |
+    | (!)                                 |          | ``subdivision.cornervertices``.       |
+    +-------------------------------------+----------+---------------------------------------+
+    | ``subdivision.smoothcreasecorners`` | integer  | This tag requires a single integer    |
+    |                                     |          | parameter with a value of ``1`` or    |
+    | ``subdivision.corner.automatic``    |          | ``0`` indicating whether or not the   |
+    | (!)                                 |          | surface uses enhanced subdivision     |
+    |                                     |          | rules on vertices where *more than    |
+    |                                     |          | two* creased edges meet.              |
+    |                                     |          |                                       |
+    |                                     |          | With a value of ``1`` (**the          |
+    |                                     |          | default**) the vertex is subdivided   |
+    |                                     |          | using an extended crease vertex       |
+    |                                     |          | subdivision rule which yields a       |
+    |                                     |          | *smooth* crease.                      |
+    |                                     |          | With a value of 0 the surface uses    |
+    |                                     |          | enhanced subdivision rules where a    |
+    |                                     |          | vertex *becomes a sharp corner* when  |
+    |                                     |          | it has more than two incoming         |
+    |                                     |          | creased edges.                        |
+    |                                     |          |                                       |
+    |                                     |          | Note that sharp corners can still be  |
+    |                                     |          | explicitly requested using the        |
+    |                                     |          | ``subdivision.corner.index`` &        |
+    |                                     |          | ``subdivision.corner.sharpness``      |
+    |                                     |          | tags.                                 |
+    +-------------------------------------+----------+---------------------------------------+
+    | ``subdivision.creasevertices``      | integer  | A list of crease edges. Each edge is  |
+    |                                     |          | specified as a pair of indices into   |
+    | ``subdivision.crease.index``        |          | the ``P`` attribute, like             |
+    | (!)                                 |          | ``P.indices``.                        |
+    +-------------------------------------+----------+---------------------------------------+
+    | ``subdivision.creasesharpness``     | float    | The sharpness of each specified       |
+    |                                     |          | crease. It must have a value for each |
+    | ``subdivision.crease.sharpness``    |          | pair of values given in               |
+    | (!)                                 |          | ``subdivision.creasevertices``.       |
+    +-------------------------------------+----------+---------------------------------------+
 
 The mesh node also has these optional attributes:
 
