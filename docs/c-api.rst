@@ -43,7 +43,7 @@ nodes in some contexts, such as when
 
 .. _CAPI:contexthandling:
 
-Context handling
+Context Handling
 ~~~~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -131,9 +131,53 @@ which is defined in :doc:`nsi.h`:
     |                        |          | procedural's execution.                            |
     +------------------------+----------+----------------------------------------------------+
 
+Parameters vs. Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are two terms used throught this specification and this can
+be confusing to a new user of the API. Please read this section
+carefully to understand the distinction.
+
+Optional Parameters
+===================
+Any API call can take extra parameters. These are always optional.
+This means the call can do work without specifying these parameters.
+
+Nodes are special as they have mandatory extra attributes (*not*
+parameters) that are set *after* the node is created inside the API but
+which must be set *before* the geometry or concept the node represents
+can actually be created in the scene.
+
+Nodes also can take extra parameters when they are created. These
+optional parameters are only meant to add information needed to create
+the node, that a particular implementation may need.
+
+**As of this writing there is no implementation that has any such
+optional parameters on the NSICreate call. The possibility to specify
+them is solely there to make the API future proof.**
+
+.. Caution::
+    Nodes do *not* have optional parameters for now. **An optional
+    parameter on a node *is not the same* as an attribute on a node!**
+
+Attributes – Describe the Node's Specifics
+==========================================
+
+Attributes are *only* for nodes. They must be set using the
+``NSISetAttribute()`` or ``NSISetAttributeAtTime()`` calls.
+
+They can **not** be set on the node when it is created with the
+``NSICreate()`` call.
+
+.. Caution::
+    Only nodes have attributes! They are sent to the API
+    via optional parameters on the API's attribute calls.
+
+
+
 .. _CAPI:optionalparameters:
 
-Passing optional parameters
+Passing Optional Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -290,9 +334,11 @@ know which values of the other parameter to use.
     creating nodes
     node creation
 
+
+
 .. _CAPI:nsicreate:
 
-Node creation
+Node Creation
 ~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -331,9 +377,12 @@ This function is used to create a new node. Its parameters are:
 |   The type of :ref:`node<chapter:nodes>` to create.
 
 | ``nparams``, ``params``
-    This pair describes a list of optional parameters. *There are no
-    optional parameters defined as of now*. The ``NSIParam_t`` type is
+    This pair describes a list of optional parameters.
+    The ``NSIParam_t`` type is
     described in :ref:`this section<CAPI:optionalparameters>`.
+
+.. Caution::
+    There are *no* optional parameters defined as of now.
 
 --------------
 
@@ -384,7 +433,7 @@ It accepts the following optional parameters:
     |                        |          | network in a single call.                          |
     +------------------------+----------+---------------+------------------------------------+
 
-Setting attributes
+Setting Attributes
 ~~~~~~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -456,7 +505,7 @@ shader.
 
 .. _CAPI:nsiconnect:
 
-Making connections
+Making Connections
 ~~~~~~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -486,28 +535,21 @@ two elements. It is not an error to create a connection which already
 exists or to remove a connection which does not exist but the nodes on
 which the connection is performed must exist. The parameters are:
 
-.. table:: NSIConnect()/NSIDisconnect() optional parameters
-    :widths: 3 1 6
+| ``from``
+|   The handle of the node from which the connection is made.
 
-    +------------------------+----------+----------------------------------------------------+
-    | **Name**               | **Type** | **Description/Values**                             |
-    +========================+==========+====================================================+
-    | ``from``               | string   | The handle of the node from which the connection   |
-    |                        |          | is made.                                           |
-    +------------------------+----------+----------------------------------------------------+
-    | ``from attr``          | string   | The name of the attribute from which the           |
-    |                        |          | connection is made. If this is an empty string     |
-    | ``from.attribute`` (!) |          | then the connection is made from the node instead  |
-    |                        |          | of from a specific attribute of the node.          |
-    +------------------------+----------+----------------------------------------------------+
-    | ``to``                 | string   | The handle of the node to which the connection is  |
-    |                        |          | made.                                              |
-    +------------------------+----------+----------------------------------------------------+
-    | ``to``                 | string   | The name of the attribute to which the connection  |
-    |                        |          | is made. If this is an empty string then the       |
-    | ``to.attribute`` (!)   |          | connection is made to the node instead of to a     |
-    |                        |          | specific attribute of the node.                    |
-    +------------------------+----------+----------------------------------------------------+
+| ``from_attr``
+|   The name of the attribute from which the connection is made. If this
+    is an empty string then the connection is made from the node instead
+    of from a specific attribute of the node.
+
+| ``to``
+|   The handle of the node to which the connection is made.                                              |
+
+| ``to_attr``
+|   The name of the attribute to which the connection is made. If this
+    is an empty string then the connection is made to the node instead
+    of to a specific attribute of the node.
 
 ``NSIConnect()`` accepts additional optional parameters. Refer to the
 :ref:`guidelines on inter-object visibility<section:lightlinking>` for
@@ -530,7 +572,7 @@ everything from :ref:`the scene's root<node:root>`:
     evaluating Lua scripts
     inline archive
 
-Evaluating procedurals
+Evaluating Procedurals
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -614,7 +656,7 @@ The optional parameters accepted by this function are:
     error reporting
     enum error levels
 
-Error reporting
+Error Reporting
 ~~~~~~~~~~~~~~~
 
 .. code-block:: c

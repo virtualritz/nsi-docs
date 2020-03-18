@@ -382,9 +382,9 @@ The Set Node
 This node can be used to express relationships between objects.
 
 An example is to connect many lights to such a node to create a *light
-set* and then to connect this node to ``outputlayer.lightset`` (see
-:ref:`outputlayer<node:outputlayer>` and
-:ref:`light layers<section:lightlayers>` ).
+set* and then to connect this node to an  :ref:`outputlayer
+<node:outputlayer>`'s ``lightset`` attribute (see also :ref:`light
+layers<section:lightlayers>`).
 
 It has the following attributes:
 
@@ -1364,8 +1364,8 @@ following attributes:
     |  ``outputdriver`` (!)           |                 |                                        |
     +---------------------------------+-----------------+----------------------------------------+
     | ``filter``                      | string          | The type of filter to use when         |
-    |                                 |                 | reconstructing the final image from    |
-    |                                 |                 | sub-pixel samples. Possible values     |
+    |                                 | (blackmann-     | reconstructing the final image from    |
+    |                                 | harris)         | sub-pixel samples. Possible values     |
     |                                 |                 | are:                                   |
     |                                 |                 | *  ``box``                             |
     |                                 |                 | *  ``triangle``                        |
@@ -1411,7 +1411,7 @@ specification
     +=============================+=================+========================================+
     | ``outputlayers``            | «connection(s)» | This connection accepts nodes which    |
     |                             |                 | will receive a rendered image of the   |
-    | ``outputlayer``             |                 | scene as seen by the camera.           |
+    | ``outputlayer`` (!)         |                 | scene as seen by the camera.           |
     +-----------------------------+-----------------+----------------------------------------+
     | ``resolution``              | integer[2]      | Horizontal and vertical resolution of  |
     |                             |                 | the rendered image, in pixels.         |

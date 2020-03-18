@@ -9,7 +9,7 @@ The :doc:`nsi.hpp` file provides C++ wrappers which are less tedious to use
 than the low level C interface. All the functionality is inline so no
 additional libraries are needed and there are no abi issues to consider.
 
-Creating a context
+Creating a Context
 ------------------
 
 The core of these wrappers is the ``NSI::Context`` class. Its default
@@ -47,7 +47,7 @@ object is deleted. It is also possible to bind the object to a handle
 from the C API, in which case it will not be released unless the
 ``End()`` method is explicitly called.
 
-Argument passing
+Argument Passing
 ----------------
 
 The ``NSI::Context`` class has methods for all the other |nsi| calls.
@@ -84,7 +84,7 @@ And finally a class supports dynamically building a list.
 The ``NSI::ArgumentList`` object will delete all the objects added to it
 when it is deleted.
 
-Argument classes
+Argument Classes
 ~~~~~~~~~~~~~~~~
 
 To be continued …

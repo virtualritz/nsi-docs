@@ -47,6 +47,7 @@ APIs
 
     c-api
     cpp-api
+    rust-api
     lua-api
     python-api
     stream-api
