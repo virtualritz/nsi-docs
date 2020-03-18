@@ -150,8 +150,10 @@ arguments.
 Nodes are special as they have mandatory extra **attributes** that are
 set *after* the node is created inside the API but which must be set
 *before* the geometry or concept the node represents can actually be
-created in the scene. These attributes are passed as extra arguments
-to the ``NSISetAttribute()`` and ``NSISetAttributeAtTime()`` functions.
+created in the scene.
+
+These attributes are passed as extra arguments to the
+``NSISetAttribute()`` and ``NSISetAttributeAtTime()`` functions.
 
 .. Note::
     Nodes can also take extra **arguments** when they are created.

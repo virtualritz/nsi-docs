@@ -394,9 +394,9 @@ It has the following attributes:
     +---------------------------------+-----------------+------------------------------------+
     | **Name**                        | **Type**        | **Description/Values**             |
     +=================================+=================+====================================+
-    | ``objects``                     | «connection(s)» | This connection accepts all nodes  |
+    | ``members``                     | «connection(s)» | This connection accepts all nodes  |
     |                                 |                 | that are members of the set.       |
-    | ``object`` (!)                  |                 |                                    |
+    | ``member`` (!)                  |                 |                                    |
     +---------------------------------+-----------------+------------------------------------+
 
 .. _node:plane:
