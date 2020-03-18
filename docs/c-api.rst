@@ -143,22 +143,22 @@ Optional Parameters
 Any API call can take extra parameters. These are always optional.
 This means the call can do work without specifying these parameters.
 
-Nodes are special as they have mandatory extra attributes (*not*
-parameters) that are set *after* the node is created inside the API but
-which must be set *before* the geometry or concept the node represents
-can actually be created in the scene.
+Nodes are special as they have mandatory extra **attributes** that are
+set *after* the node is created inside the API but which must be set
+*before* the geometry or concept the node represents can actually be
+created in the scene.
 
-Nodes also can take extra parameters when they are created. These
+Nodes can also take extra **parameters** when they are created. These
 optional parameters are only meant to add information needed to create
-the node, that a particular implementation may need.
+the node that a particular implementation may need.
 
 **As of this writing there is no implementation that has any such
-optional parameters on the NSICreate call. The possibility to specify
-them is solely there to make the API future proof.**
+optional parameters on the** ``NSICreate()`` **call.** The possibility
+to specify them is solely there to make the API future proof.
 
 .. Caution::
     Nodes do *not* have optional parameters for now. **An optional
-    parameter on a node *is not the same* as an attribute on a node!**
+    parameter on a node is not the same as an attribute on a node.**
 
 Attributes – Describe the Node's Specifics
 ==========================================
@@ -170,7 +170,7 @@ They can **not** be set on the node when it is created with the
 ``NSICreate()`` call.
 
 .. Caution::
-    Only nodes have attributes! They are sent to the API
+    **Only nodes have attributes.** They are sent to the API
     via optional parameters on the API's attribute calls.
 
 
