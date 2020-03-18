@@ -16,7 +16,7 @@ There are many things that lack coherence & stringency in naming of
 parts of the API.
 
 The current documentation has new naming suggestions for some
-parameters, attributes and nodes that are marked with exclamation
+arguments, attributes and nodes that are marked with exclamation
 marks **(!)**.
 
 If you see a name writte dfferently below the current name and marked

@@ -51,7 +51,7 @@ Argument Passing
 ----------------
 
 The ``NSI::Context`` class has methods for all the other |nsi| calls.
-The optional parameters of those can be set by several accessory classes
+The optional arguments of those can be set by several accessory classes
 and given in many ways. The most basic is a single argument.
 
 .. code-block:: cpp

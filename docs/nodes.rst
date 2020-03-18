@@ -445,7 +445,7 @@ attributes:
 
 
 To render a mesh as a subdivision surface, at least the
-``subdivision.scheme`` parameter must be set. When rendering as a
+``subdivision.scheme`` argument must be set. When rendering as a
 subdvision surface, the mesh node accepts these optionalattributes:
 
 .. index::
@@ -479,7 +479,7 @@ subdvision surface, the mesh node accepts these optionalattributes:
     | (!)                                 |          | ``subdivision.cornervertices``.       |
     +-------------------------------------+----------+---------------------------------------+
     | ``subdivision.smoothcreasecorners`` | integer  | This tag requires a single integer    |
-    |                                     |          | parameter with a value of ``1`` or    |
+    |                                     |          | argument with a value of ``1`` or     |
     | ``subdivision.corner.automatic``    |          | ``0`` indicating whether or not the   |
     | (!)                                 |          | surface uses enhanced subdivision     |
     |                                     |          | rules on vertices where *more than    |
@@ -769,11 +769,11 @@ It also has these optional attributes:
 Attributes may also have a single value, one value per curve, one value
 per vertex or one value per vertex of a single curve, reused for all
 curves. Attributes which fall in that last category must always specify
-:ref:`NSIParamPerVertex<CAPI:paramflags>`.
+:ref:`NSIParamPerVertex<CAPI:argflags>`.
 
 .. Note::
     A single curve is considered a face as far as use of
-    :ref:`NSIParamPerFace<CAPI:paramflags>` is concerned. See also the
+    :ref:`NSIParamPerFace<CAPI:argflags>` is concerned. See also the
     :ref:`faceset node<node:faceset>`.
 
 
@@ -867,7 +867,7 @@ the procedural is evaluated in complete isolation from the rest of the
 scene, it can be done either lazily (depending on its ``boundingbox``
 attribute) or in parallel with other procedural nodes.
 
-The procedural node supports, as its attributes, all the parameters of
+The procedural node supports, as its attributes, all the arguments of
 the :ref:`NSIEvaluate<CAPI:nsievaluate>` API call, meaning that
 procedural types accepted by that api call (|nsi| archives, dynamic
 libraries, Lua scripts) are also supported by this node. Those
@@ -965,7 +965,7 @@ shader group. It has the following required attribute:
     | ``filename`` (!)             |              |                                          |
     +------------------------------+--------------+------------------------------------------+
 
-All other attributes on this node are considered parameters of the
+All other attributes on this node are considered arguments of the
 shader. They may either be given values or connected to attributes of
 other shader nodes to build shader networks. |osl| shader networks must
 form acyclic graphs or they will be rejected. Refer to

@@ -39,9 +39,9 @@ calls.
 It returns a pointer to an descriptor struct of type ``NSIProcedural_t``
 (see :ref:`below<CAPI:proceduraldescription>`).
 
-``NSIProceduralLoad()`` receives the following parameters:
+``NSIProceduralLoad()`` receives the following arguments:
 
-.. table:: NSIProceduralLoad() optional parameters
+.. table:: NSIProceduralLoad() optional arguments
     :widths: 2 1 7
 
     +----------------------+------------------+----------------------------------------------+
@@ -84,8 +84,8 @@ Procedural description
         NSIContext_t ctx,
         NSIReport_t report,
         struct NSIProcedural_t* proc,
-        int nparams,
-        const struct NSIParam_t* params);
+        int n_args,
+        const struct NSIParam_t* args);
 
     struct NSIProcedural_t
     {
@@ -115,7 +115,7 @@ The function pointers types used in the definition are :
 
 -  ``NSIProceduralUnload_t`` is a function that cleans-up after the last
    execution of the procedural. This is the dual of
-   ``NSIProceduralLoad()``. In addition to parameters ``ctx`` and
+   ``NSIProceduralLoad()``. In addition to arguments ``ctx`` and
    ``report``, also received by ``NSIProceduralLoad()``, it receives the
    description of the procedural returned by ``NSIProceduralLoad()``.
 
@@ -123,16 +123,16 @@ The function pointers types used in the definition are :
    description of the scene by generating |nsi| API calls. Since
    ``NSIProceduralExecute_t`` might be called multiple times in the same
    render, it’s important that it uses the context ``ctx`` it receives
-   as a parameter to make its |nsi| calls, and not the context previously
+   as a argument to make its |nsi| calls, and not the context previously
    received by ``NSIProceduralLoad()``. It also receives any extra
-   parameters sent to , or any extra attributes set on a node. They are
-   stored in the ``params`` array (of length ``nparams``).
+   arguments sent to , or any extra attributes set on a node. They are
+   stored in the ``args`` array (of length ``n_args``).
    ``NSIParam_t`` is described in .
 
 Error reporting
 ~~~~~~~~~~~~~~~
 
-All functions of the procedural called by |nsi| receive a parameter of
+All functions of the procedural called by |nsi| receive a argument of
 type ``NSIReport_t``. This is a pointer to a function which should be
 used by the procedural to report errors or display any informational
 message.

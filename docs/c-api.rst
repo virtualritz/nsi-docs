@@ -49,8 +49,8 @@ Context Handling
 .. code-block:: c
 
     NSIContext_t NSIBegin(
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
     )
 
 .. code-block:: c
@@ -77,10 +77,10 @@ which is defined in :doc:`nsi.h`:
 
     #define NSI_BAD_CONTEXT ((NSIContext_t)0)
 
-:ref:`Optional parameters<CAPI:optionalparameters>` may be given to
+:ref:`Optional arguments<CAPI:optionalarguments>` may be given to
 ``NSIBegin()`` to control the creation of the context:
 
-.. table:: NSIBegin() optional parameters
+.. table:: NSIBegin() optional arguments
     :widths: 3 1 2 4
 
     +------------------------+----------+----------------------------------------------------+
@@ -96,7 +96,7 @@ which is defined in :doc:`nsi.h`:
     |                        |          |               | stream, for later execution.       |
     |                        |          |               | The target for writing the stream  |
     |                        |          |               | must be specified in another       |
-    |                        |          |               | parameter.                         |
+    |                        |          |               | argument.                          |
     +------------------------+----------+---------------+------------------------------------+
     | ``stream.filename``    | string   | The file to which the stream is to be output, if   |
     |                        |          | the context type is ``apistream``.                 |
@@ -120,7 +120,7 @@ which is defined in :doc:`nsi.h`:
     |                        |          | to report errors. The default handler will print   |
     |                        |          | messages to the console.                           |
     +------------------------+----------+----------------------------------------------------+
-    | ``errorhandler.data``  | pointer  | The ``userdata`` parameter of the :ref:`error      |
+    | ``errorhandler.data``  | pointer  | The ``userdata`` argument of the :ref:`error       |
     |                        |          | reporting function<CAPI:errorcallback>`.           |
     +------------------------+----------+----------------------------------------------------+
     | ``executeprocedurals`` | string   | A list of procedural types that should be executed |
@@ -131,58 +131,59 @@ which is defined in :doc:`nsi.h`:
     |                        |          | procedural's execution.                            |
     +------------------------+----------+----------------------------------------------------+
 
-Parameters vs. Attributes
+Arguments vs. Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are two terms used throught this specification and this can
 be confusing to a new user of the API. Please read this section
 carefully to understand the distinction.
 
-Optional Parameters
-===================
-Any API call can take extra parameters. These are always optional.
-This means the call can do work without specifying these parameters.
+Optional Arguments
+==================
+Any API call can take extra arguments. These are always optional.
+What this means the call can do work without the user specifying these
+arguments.
 
 Nodes are special as they have mandatory extra **attributes** that are
 set *after* the node is created inside the API but which must be set
 *before* the geometry or concept the node represents can actually be
-created in the scene.
+created in the scene. These attributes are passed as extra arguments
+to the ``NSISetAttribute()`` and ``NSISetAttributeAtTime()`` functions.
 
-Nodes can also take extra **parameters** when they are created. These
-optional parameters are only meant to add information needed to create
+Nodes can also take extra **arguments** when they are created. These
+optional arguments are only meant to add information needed to create
 the node that a particular implementation may need.
 
 **As of this writing there is no implementation that has any such
-optional parameters on the** ``NSICreate()`` **call.** The possibility
-to specify them is solely there to make the API future proof.
+optional arguments on the** ``NSICreate()`` **fucntion.** The
+possibility to specify them is solely there to make the API future
+proof.
 
 .. Caution::
-    Nodes do *not* have optional parameters for now. **An optional
-    parameter on a node is not the same as an attribute on a node.**
+    Nodes do *not* have optional arguments for now. **An optional
+    argument on a node is not the same as an attribute on a node.**
 
 Attributes – Describe the Node's Specifics
 ==========================================
 
 Attributes are *only* for nodes. They must be set using the
-``NSISetAttribute()`` or ``NSISetAttributeAtTime()`` calls.
+``NSISetAttribute()`` or ``NSISetAttributeAtTime()`` functions.
 
 They can **not** be set on the node when it is created with the
-``NSICreate()`` call.
+``NSICreate()`` function.
 
 .. Caution::
     **Only nodes have attributes.** They are sent to the API
-    via optional parameters on the API's attribute calls.
+    via optional arguments on the API's attribute functions.
 
+.. _CAPI:optionalarguments:
 
-
-.. _CAPI:optionalparameters:
-
-Passing Optional Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Passing Optional Arguments
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: c
 
-    struct NSIParam_t
+    struct NSIArg_t
     {
         const char *name;
         const void *data;
@@ -192,130 +193,131 @@ Passing Optional Parameters
         int flags;
     };
 
-This structure is used to pass variable parameter lists through the
+This structure is used to pass variable argument lists through the
 C |nbsp| interface. Most functions accept an array of the structure in
-a ``params`` parameter along with its length in a ``nparams``
-parameter.
+a ``args`` argument along with its length in a ``n_args``
+argument.
 
-The meaning of these two parameters will not be documented for every
-function. Instead, they will document the parameters which can be given
-in the array.
+The meaning of these two arguments will not be documented for every
+function. Instead, each function will document the arguments which can
+be given in the array.
 
-The ``name`` member is a C string which gives the parameter's name.
+| ``name``
+|   A C string which gives the argument's name.
 
-The ``type`` member identifies the parameter's type, using one of the
-following constants:
+| ``type``
+|   Identifies the argument's type, using one of the following constants:
 
-.. table:: types of optional parameters
-    :widths: 2 8
+    .. table:: types of optional arguments
+        :widths: 2 8
 
-    +-------------------------+----------------------------------------+
-    | ``NSITypeFloat``        | Single 32-bit floating point value.    |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeDouble``       | Single 64-bit floating point value.    |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeInteger``      | Single 32-bit integer value.           |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeString``       | String value, given as a pointer to a  |
-    |                         | C |nbsp| string.                       |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeColor``        | Color, given as three 32-bit floating  |
-    |                         | point values.                          |
-    +-------------------------+----------------------------------------+
-    | ``NSITypePoint``        | Point, given as three 32-bit floating  |
-    |                         | point values.                          |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeVector``       | Vector, given as three 32-bit floating |
-    |                         | point values.                          |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeNormal``       | Normal vector, given as three 32-bit   |
-    |                         | floating point values.                 |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeMatrix``       | Transformation matrix, in row-major    |
-    |                         | order, given as 16 32-bit floating     |
-    |                         | point values.                          |
-    +-------------------------+----------------------------------------+
-    | ``NSITypeDoubleMatrix`` | Transformation matrix, in row-major    |
-    |                         | order, given as 16 64-bit floating     |
-    |                         | point values.                          |
-    +-------------------------+----------------------------------------+
-    | ``NSITypePointer``      | C |nbsp| pointer.                      |
-    +-------------------------+----------------------------------------+
+        +-------------------------+----------------------------------------+
+        | ``NSITypeFloat``        | Single 32-bit floating point value.    |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeDouble``       | Single 64-bit floating point value.    |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeInteger``      | Single 32-bit integer value.           |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeString``       | String value, given as a pointer to a  |
+        |                         | C |nbsp| string.                       |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeColor``        | Color, given as three 32-bit floating  |
+        |                         | point values.                          |
+        +-------------------------+----------------------------------------+
+        | ``NSITypePoint``        | Point, given as three 32-bit floating  |
+        |                         | point values.                          |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeVector``       | Vector, given as three 32-bit floating |
+        |                         | point values.                          |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeNormal``       | Normal vector, given as three 32-bit   |
+        |                         | floating point values.                 |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeMatrix``       | Transformation matrix, in row-major    |
+        |                         | order, given as 16 32-bit floating     |
+        |                         | point values.                          |
+        +-------------------------+----------------------------------------+
+        | ``NSITypeDoubleMatrix`` | Transformation matrix, in row-major    |
+        |                         | order, given as 16 64-bit floating     |
+        |                         | point values.                          |
+        +-------------------------+----------------------------------------+
+        | ``NSITypePointer``      | C |nbsp| pointer.                      |
+        +-------------------------+----------------------------------------+
 
 Tuple types are specified by setting the bit defined by the
-``NSIParamIsArray`` constant in the ``flags`` member and the length of
+``NSIArgIsArray`` constant in the ``flags`` member and the length of
 the tuple in the ``arraylength`` member.
 
 .. Tip::
     It helps to view ``arraylength`` as a part of the data type. The
-    data is a tuple with this length when ``NSIParamIsArray`` is set.
+    data is a tuple with this length when ``NSIArgIsArray`` is set.
 
 .. Caution::
-    If ``NSIParamIsArray`` is not set, ``arraylength`` is **ignored**.
+    If ``NSIArgIsArray`` is not set, ``arraylength`` is **ignored**.
 
-    The ``NSIParamIsArray`` flag is neccessary to distinguish between
-    parameters of that happen to be of *length* 1 (set in the ``count``
+    The ``NSIArgIsArray`` flag is neccessary to distinguish between
+    arguments of that happen to be of *length* 1 (set in the ``count``
     member) and tuples that have a *length* of 1 (set in the
-    ``array_length`` member) for the resp. parameter.
+    ``array_length`` member) for the resp. argument.
 
     .. code-block:: shell
-        :caption: A tuple parameter of length 1 (and count 1) vs. a (non-tuple) parameter of count 1
+        :caption: A tuple argument of length 1 (and count 1) vs. a (non-tuple) argument of count 1
 
         "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in an a (single) tuple
         "bar" "int" 1 13       # My favorite Friday
 
 
 The ``count`` member gives the number of data items given as the value
-of the parameter.
+of the argument.
 
-The ``data`` member is a pointer to the data for the parameter.
+The ``data`` member is a pointer to the data for the argument.
 
 The ``flags`` member is a bit field with a number of constants defined
-to communicate more information about the parameter:
+to communicate more information about the argument:
 
-.. _CAPI:paramflags:
+.. _CAPI:argflags:
 
-.. table:: flags for optional parameters
+.. table:: flags for optional arguments
     :widths: 2 8
 
     +-------------------------------+----------------------------------+
-    | ``NSIParamIsArray``           | to specify that the parameter is |
+    | ``NSIArgIsArray``             | to specify that the argument is  |
     |                               | an array type, as explained      |
     |                               | previously.                      |
     +-------------------------------+----------------------------------+
-    | ``NSIParamPerFace``           | to specify that the parameter    |
+    | ``NSIArgPerFace``             | to specify that the argument     |
     |                               | has different values for every   |
     |                               | face of a geometric primitive,   |
     |                               | where this might be ambiguous.   |
     +-------------------------------+----------------------------------+
-    | ``NSIParamPerVertex``         | Specify that the parameter has   |
+    | ``NSIArgPerVertex``           | Specify that the argument has    |
     |                               | different values for every       |
     |                               | vertex of a geometric primitive, |
     |                               | where this might be ambiguous.   |
     +-------------------------------+----------------------------------+
-    | ``NSIParamInterpolateLinear`` | Specify that the parameter is to |
+    | ``NSIArgInterpolateLinear``   | Specify that the argument is to  |
     |                               | be interpolated linearly instead |
-    |                               | of using some other default      |
+    |                               | of using some other, default     |
     |                               | method.                          |
     +-------------------------------+----------------------------------+
 
-.. Tip::
-    ``NSIParamPerFace`` or ``NSIParamPerVertex`` are only strictly
+.. Note::
+    ``NSIArgPerFace`` or ``NSIArgPerVertex`` are only strictly
     needed in rare circumstances when a geometric primitive's number of
     vertices matches the number of faces. The most simple case is a
     tetrahedral mesh which has exactly four vertices and also four
     faces.
 
-Indirect lookup of parameters is achieved by giving an integer parameter
+Indirect lookup of arguments is achieved by giving an integer argument
 of the same name, with the ``.indices`` suffix added. This is read to
-know which values of the other parameter to use.
+know which values of the other argument to use.
 
 .. index::
     P.indices example
     indexing example
 
 .. code-block:: shell
-   :caption: A subdivision mesh using ``P.indices`` to reference the ``P`` parameter
+   :caption: A subdivision mesh using ``P.indices`` to reference the ``P`` argument
    :linenos:
 
    Create "subdiv" "mesh"
@@ -347,11 +349,11 @@ Node Creation
        NSIContext_t context,
        NSIHandle_t handle,
        const char *type,
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
    )
 
-This function is used to create a new node. Its parameters are:
+This function is used to create a new node. Its arguments are:
 
 | ``context``
 |   The context returned by ``NSIBegin()``. See
@@ -362,7 +364,7 @@ This function is used to create a new node. Its parameters are:
     scene.
 
     If the supplied handle matches an existing node, the function does
-    nothing if all other parameters match the call which created that
+    nothing if all other arguments match the call which created that
     node.
     Otherwise, it emits an error. Note that handles need only be unique
     within a given interface context. It is acceptable to reuse the same
@@ -376,13 +378,13 @@ This function is used to create a new node. Its parameters are:
 | ``type``
 |   The type of :ref:`node<chapter:nodes>` to create.
 
-| ``nparams``, ``params``
-    This pair describes a list of optional parameters.
-    The ``NSIParam_t`` type is
-    described in :ref:`this section<CAPI:optionalparameters>`.
+| ``n_args``, ``args``
+    This pair describes a list of optional arguments.
+    The ``NSIArg_t`` type is
+    described in :ref:`this section<CAPI:optionalarguments>`.
 
 .. Caution::
-    There are *no* optional parameters defined as of now.
+    There are *no* optional arguments defined as of now.
 
 --------------
 
@@ -396,14 +398,14 @@ This function is used to create a new node. Its parameters are:
    void NSIDelete(
        NSIContext_t ctx,
        NSIHandle_t handle,
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
    )
 
 This function deletes a node from the scene. All connections to and from
 the node are also deleted. Note that it is not possible to delete the
 :ref:`root<node:root>` or the :ref:`global<node:global>` node.
-Its parameters are:
+Its arguments are:
 
 | ``context``
 |   The context returned by ``NSIBegin()``. See
@@ -412,12 +414,12 @@ Its parameters are:
 | ``handle``
 |   A node handle. It identifies the node to be deleted.
 
-It accepts the following optional parameters:
+It accepts the following optional arguments:
 
 .. index::
     recursive node deletetion
 
-.. table:: NSIDelete() optional parameters
+.. table:: NSIDelete() optional arguments
     :widths: 3 1 2 4
 
     +------------------------+----------+----------------------------------------------------+
@@ -441,16 +443,16 @@ Setting Attributes
    void NSISetAttribute(
        NSIContext_t ctx,
        NSIHandle_t object,
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
    )
 
 This functions sets attributes on a previously node. All :ref:`optional
-parameters <CAPI:optionalparameters>` of the function become attributes
+arguments <CAPI:optionalarguments>` of the function become attributes
 of the node.
 
 On a :ref:`shader node<node:shader>`, this function is used to set the
-implicitly defined shader parameters.
+implicitly defined shader arguments.
 
 Setting an attribute using this function replaces any value previously
 set by ``NSISetAttribute()`` or ``NSISetAttributeAtTime()``. To reset
@@ -467,12 +469,12 @@ an attribute to its default value, use :ref:`NSIDeleteAttribute()
        NSIContext_t ctx,
        NSIHandle_t object,
        double time,
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
    )
 
 This function sets time-varying attributes (i.e. motion blurred). The
-``time`` parameter specifies at which time the attribute is being
+``time`` argument specifies at which time the attribute is being
 defined. It is not required to set time-varying attributes in any
 particular order. In most uses, attributes that are motion blurred must
 have the same specification throughout the time range. A notable
@@ -492,7 +494,7 @@ replaces any value previously set by ``NSISetAttribute()``.
    )
 
 This function deletes any attribute with a name which matches the
-``name`` parameter on the specified object. There is no way to delete
+``name`` argument on the specified object. There is no way to delete
 an attribute only for a specific time value.
 
 Deleting an attribute resets it to its default value.
@@ -516,8 +518,8 @@ Making Connections
        const char *from_attr,
        NSIHandle_t to,
        const char *to_attr,
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
    )
 
 .. code-block:: c
@@ -533,7 +535,7 @@ Making Connections
 These two functions respectively create or remove a connection between
 two elements. It is not an error to create a connection which already
 exists or to remove a connection which does not exist but the nodes on
-which the connection is performed must exist. The parameters are:
+which the connection is performed must exist. The arguments are:
 
 | ``from``
 |   The handle of the node from which the connection is made.
@@ -551,13 +553,13 @@ which the connection is performed must exist. The parameters are:
     is an empty string then the connection is made to the node instead
     of to a specific attribute of the node.
 
-``NSIConnect()`` accepts additional optional parameters. Refer to the
+``NSIConnect()`` accepts additional optional arguments. Refer to the
 :ref:`guidelines on inter-object visibility<section:lightlinking>` for
 more information about their utility.
 
 With ``NSIDisconnect()``, the handle for either node may be the special
 value :ref:`'.all'<CAPI:dotall>` . This will remove all connections
-which match the other three parameters. For example, to disconnect
+which match the other three arguments. For example, to disconnect
 everything from :ref:`the scene's root<node:root>`:
 
 .. code-block:: c
@@ -579,8 +581,8 @@ Evaluating Procedurals
 
    void NSIEvaluate(
        NSIContext_t ctx,
-       int nparams,
-       const NSIParam_t *params
+       int n_args,
+       const NSIArg_t *args
    )
 
 This function includes a block of interface calls from an external
@@ -600,9 +602,9 @@ gives great flexibility in how components of a scene are put together.
 
 The ability to load |nsi| command straight from memory is also provided.
 
-The optional parameters accepted by this function are:
+The optional arguments accepted by this function are:
 
-.. table:: NSIEvaluate() optional parameters
+.. table:: NSIEvaluate() optional arguments
     :widths: 3 1 2 4
 
     +------------------------+----------+----------------------------------------------------+
@@ -616,7 +618,7 @@ The optional parameters accepted by this function are:
     |                        |          |                    | This requires either          |
     |                        |          |                    | ``stream.filename`` or        |
     |                        |          |                    | ``buffer``/``size``           |
-    |                        |          |                    | parameters to be specified    |
+    |                        |          |                    | arguments to be specified     |
     |                        |          |                    | too.                          |
     |                        |          +--------------------+-------------------------------+
     |                        |          | ``lua``            | Execute a                     |
@@ -638,7 +640,7 @@ The optional parameters accepted by this function are:
     | ``script``             | string   | A valid :ref:`Lua<section:Lua>` script to execute  |
     |                        |          | when ``type`` is set to ``lua``.                   |
     +------------------------+----------+----------------------------------------------------+
-    | ``buffer``             | pointer  | These two parameters define a memory block that    |
+    | ``buffer``             | pointer  | These two arguments define a memory block that     |
     |                        |          | contains |nsi| commands to execute.                |
     | ``size``               | int      |                                                    |
     +------------------------+----------+----------------------------------------------------+
@@ -676,10 +678,10 @@ Error Reporting
    )
 
 This defines the type of the error handler callback given to the
-``NSIBegin()`` function. When it is called, the ``level`` parameter is one
+``NSIBegin()`` function. When it is called, the ``level`` argument is one
 of the values defined by the ``NSIErrorLevel`` enum. The ``code``
-parameter is a numeric identifier for the error message, or 0 when
-irrelevant. The ``message`` parameter is the text of the message.
+argument is a numeric identifier for the error message, or 0 when
+irrelevant. The ``message`` argument is the text of the message.
 
 The text of the message will not contain the numeric identifier nor any
 reference to the error level. It is usually desirable for the error
@@ -737,8 +739,8 @@ Rendering
 
     void NSIRenderControl(
         NSIContext_t ctx,
-        int nparams,
-        const NSIParam_t *params
+        int n_args,
+        const NSIArg_t *args
     )
 
 This function is the only control function of the API. It is responsible
@@ -746,7 +748,7 @@ of starting, suspending and stopping the render. It also allows for
 synchronizing the render with interactive calls that might have been
 issued. The function accepts :
 
-.. table:: NSIRenderControl() optional parameters
+.. table:: NSIRenderControl() optional arguments
     :widths: 3 1 2 4
 
     +------------------------+----------+----------------------------------------------------+
@@ -805,7 +807,7 @@ issued. The function accepts :
     |                        |          |         int status                                 |
     |                        |          |     )                                              |
     |                        |          |                                                    |
-    |                        |          | The third parameter is an integer which can take   |
+    |                        |          | The third argument is an integer which can take    |
     |                        |          | the following values:                              |
     |                        |          |                                                    |
     |                        |          | *  ``NSIRenderCompleted`` indicates that           |

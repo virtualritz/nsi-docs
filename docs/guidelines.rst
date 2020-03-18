@@ -50,18 +50,24 @@ A Word – or Two – About Attributes
 Those familiar with the *RenderMan* standard will remember the various
 ways to attach information to elements of the scene (standard
 attributes, user attributes, primitive variables, construction
-parameters). [#]_
+arguments). [#]_
 
 .. figure:: image/attribute_inheritance.svg
    :alt: Attribute inheritance and override
 
    Attribute inheritance and override
 
-In nsi things are simpler and all attributes are set
+In |nsi| things are simpler and all attributes are set
 through the ``SetAttribute()`` mechanism. The only distinction is that
 some attributes are required (*intrinsic attributes*) and some are
 optional: a :ref:`mesh node<node:mesh>` needs to have ``P``
-and ``nvertices`` defined — otherwise the geometry is invalid [#]_.
+and ``nvertices`` defined — otherwise the geometry is invalid.
+
+.. Note::
+    In this documentation, all intrinsic attributes are documented at
+    the beginning of each section describing a particular
+    node.
+
 In |osl| shaders, attributes are accessed using the ``getattribute()``
 function and *this is the only way to access attributes in nsi*. Having
 one way to set and to access attributes makes things simpler (a
@@ -118,15 +124,15 @@ Creating |osl| Networks
 The semantics used to create |osl| networks are the same as for scene
 creation. Each shader node in the network corresponds to a which must be
 created using . Each shader node has implicit attributes corresponding
-to shader’s parameters and connection between said parameters is done
+to shader’s arguments and connection between said arguments is done
 using . depicts a simple |osl| network connected to an attributes node.
 Some observations:
 
 -  Both the source and destination attributes (passed to ``NSIConnect``)
-   must be present and map to valid and compatible shader parameters ().
+   must be present and map to valid and compatible shader arguments ().
    [#]_
 
--  There is no *symbolic linking* between shader parameters and geometry
+-  There is no *symbolic linking* between shader arguments and geometry
    attributes (a.k.a. primvars). One has to explicitly use the
    ``getattribute()`` |osl| function to read attributes attached to
    geometry. In this is done in the ``read_attribute`` node (). More
@@ -210,7 +216,7 @@ Spot and Point Lights
 ~~~~~~~~~~~~~~~~~~~~~
 
 Such lights are created using an epsilon sized geometry (a small disk, a
-particle, etc.) and optionally using extra parameters to the
+particle, etc.) and optionally using extra arguments to the
 ``emission()`` closure.
 
 .. code-block:: c
@@ -405,13 +411,11 @@ inter-object visibility are applied:
    emissive.
 
 .. [#]
-   Parameters passed to ``Ri`` calls to build certain objects. For
+   Arguments passed to ``Ri`` calls to build certain objects. For
    example, knot vectors passed to ``RiNuPatch``.
 
 .. [#]
-   In this documentation, all intrinsic attributes are usually
-   documented at the beginning of each section describing a particular
-   node.
+
 
 .. [#]
    There is an exception to this: any non-shader node can be connected

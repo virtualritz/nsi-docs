@@ -12,12 +12,12 @@ main differences with the C |nbsp| API are:
 -  No need to pass a |nsi| context to function calls since it’s already
    embodied in the |nsi| Lua table (which is used as a class).
 
--  The ``type`` parameter specified can be omitted if the parameter is
-   an integer, real or string (as with the ``Kd`` and ``filename`` in
-   the example below).
+-  The ``type`` argument can be omitted if the argument is an integer,
+   real or string (as with the ``Kd`` and ``filename`` in the example
+   below).
 
--  |nsi| parameters can either be passed as a variable number of
-   arguments or as a single argument representing an array of parameters
+-  |nsi| arguments can either be passed as a variable number of
+   arguments or as a single argument representing an array of arguments
    (as in the ``"ggx"`` shader below)
 
 -  There is no need to call ``NSIBegin()`` and ``NSIEnd()`` equivalents
@@ -69,20 +69,20 @@ contains a :ref:`method to print errors<luaapi:errors>`.
     ``Evaluate()``               ``NSIEvaluate()``
     ============================ ===========================
 
-Optional function parameters format
+Optional function arguments format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Each single parameter is passed as a Lua table containing the following
+Each single argument is passed as a Lua table containing the following
 key values:
 
--  ``name`` – the name of the parameter.
+-  ``name`` – the name of the argument.
 
--  ``data`` – the parameter data. Either a value (integer, float or
+-  ``data`` – the argument data. Either a value (integer, float or
    string) or an array.
 
--  ``type`` – the type of the parameter. Possible values are:
+-  ``type`` – the type of the argument. Possible values are:
 
-   .. table:: Lua |nsi| parameter types
+   .. table:: Lua |nsi| argument types
        :widths: 1 1
 
        =================== ==================
@@ -100,10 +100,10 @@ key values:
 -  ``arraylength`` – length of the array for each element.
 
    .. Note:
-       There is no ``count`` parameter in Lua since it can be deduced
+       There is no ``count`` argument in Lua since it can be deduced
        from the size of the provided data, its type and array length.
 
-Here are some example of well formed parameters:
+Here are some example of well formed arguments:
 
 .. code-block:: lua
     :linenos:
@@ -168,7 +168,7 @@ script. Here is an example using an |nsi| stream:
         "type" "string" 1 ["lua"]
 
 It is also possible to evaluate a Lua script *inline* using the
-``script`` parameter. For example:
+``script`` argument. For example:
 
 .. code-block:: shell
     :linenos:
@@ -191,11 +191,11 @@ Some utilities, such as error reporting, are available through the
     All Lua scripts are run in a sandbox in which all Lua system libraries
     are *disabled*.
 
-Passing parameters to a Lua script
+Passing arguments to a Lua script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All parameters passed to ``NSIEvaluate()`` will appear in the
-``nsi.scriptparameters`` table. For example, the following call:
+All arguments passed to ``NSIEvaluate()`` will appear in the
+``nsi.scriptarguments`` table. For example, the following call:
 
 .. code-block:: shell
     :linenos:
@@ -205,13 +205,13 @@ All parameters passed to ``NSIEvaluate()`` will appear in the
         "type" "string" 1 ["lua"]
         "userdata" "color[2]" 1 [1 0 1 2 3 4]
 
-Will register a ``userdata`` entry in the ``nsi.scriptparameters``
+Will register a ``userdata`` entry in the ``nsi.scriptarguments``
 table. So executing the following line in the ``test.lua`` script
 that the above snippete references:
 
 .. code-block:: lua
 
-    print( nsi.scriptparameters.userdata.data[5] );
+    print( nsi.scriptarguments.userdata.data[5] );
 
 Will print:
 
