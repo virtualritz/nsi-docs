@@ -134,9 +134,12 @@ which is defined in :doc:`nsi.h`:
 Arguments vs. Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There are two terms used throught this specification and this can
-be confusing to a new user of the API. Please read this section
-carefully to understand the distinction.
+Arguments are what a user specifies when calling a function of the API.
+Each function takes extra, optional arguments.
+
+Attributes are properties of nodes and are only set *through* the
+aforementioed optional arguments using the ``NSISetAttribute()`` and
+``NSISetAttributeAtTime()`` functions.
 
 Optional Arguments
 ==================
@@ -150,14 +153,15 @@ set *after* the node is created inside the API but which must be set
 created in the scene. These attributes are passed as extra arguments
 to the ``NSISetAttribute()`` and ``NSISetAttributeAtTime()`` functions.
 
-Nodes can also take extra **arguments** when they are created. These
-optional arguments are only meant to add information needed to create
-the node that a particular implementation may need.
+.. Note::
+    Nodes can also take extra **arguments** when they are created.
+    These optional arguments are only meant to add information needed
+    to create the node that a particular implementation may need.
 
-**As of this writing there is no implementation that has any such
-optional arguments on the** ``NSICreate()`` **fucntion.** The
-possibility to specify them is solely there to make the API future
-proof.
+    **As of this writing there is no implementation that has any such
+    optional arguments on the** ``NSICreate()`` **fucntion.** The
+    possibility to specify them is solely there to make the API future
+    proof.
 
 .. Caution::
     Nodes do *not* have optional arguments for now. **An optional
