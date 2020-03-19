@@ -124,8 +124,9 @@ which is defined in :doc:`nsi.h`:
     |                        |          | reporting function<CAPI:errorcallback>`.           |
     +------------------------+----------+----------------------------------------------------+
     | ``executeprocedurals`` | string   | A list of procedural types that should be executed |
-    |                        |          | immediately when a call to or a procedural node is |
-    |                        |          | encountered and ``NSIBegin()``'s output ``type``   |
+    |                        |          | immediately when a call to :ref:`NSIEvaluate()     |
+    | ``evaluate.replace``   |          | <CAPI:nsievaluate>` or a procedural node is        |
+    | (!)                    |          | encountered and ``NSIBegin()``'s output ``type``   |
     |                        |          | is ``apistream``. This will replace any matching   |
     |                        |          | call to ``NSIEvaluate()`` with the results of the  |
     |                        |          | procedural's execution.                            |

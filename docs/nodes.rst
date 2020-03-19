@@ -1176,13 +1176,19 @@ has the following attributes:
     |                             |                 | instance.                              |
     | ``matrix`` (!)              |                 |                                        |
     +-----------------------------+-----------------+----------------------------------------+
+
+
+.. table:: instances node optional attributes
+    :widths: 3 1 6
+
+    +-----------------------------+-----------------+----------------------------------------+
     | ``modelindices``            | integer         | An optional model selector for each    |
     |                             |                 | instance.                              |
     | ``object.index`` (!)        |                 |                                        |
     +-----------------------------+-----------------+----------------------------------------+
     | ``disabledinstances``       | [integer; ...]  | An optional list of indices of         |
     |                             |                 | instances which are not to be          |
-    | ``instance.disable`` (!)    |                 | rendered.                              |
+    | ``disable.index`` (!)       |                 | rendered.                              |
     +-----------------------------+-----------------+----------------------------------------+
 
 
