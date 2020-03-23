@@ -755,7 +755,7 @@ of starting, suspending and stopping the render. It also allows for
 synchronizing the render with interactive calls that might have been
 issued. The function accepts :
 
-.. table:: NSIRenderControl() optional arguments
+.. table:: NSIRenderControl() intrinsic argument
     :widths: 3 1 2 4
 
     +------------------------+----------+----------------------------------------------------+
@@ -786,52 +786,58 @@ issued. The function accepts :
     |                        |          |                    | provided context without      |
     |                        |          |                    | destroying the scene.         |
     +------------------------+----------+--------------------+-------------------------------+
-    | ``progressive``        | integer  | If set to ``1``, render the image in a progressive |
-    |                        |          | fashion.                                           |
-    +------------------------+----------+----------------------------------------------------+
-    | ``interactive``        | integer  | .. _section:rendering:interactive:                 |
-    |                        |          |                                                    |
-    |                        |          | If set to ``1``, the renderer will accept commands |
-    |                        |          | to edit scene’s state while rendering.             |
-    |                        |          | The difference with a normal render is that the    |
-    |                        |          | render task will not exit even if rendering is     |
-    |                        |          | finished. Interactive renders are by definition    |
-    |                        |          | progressive.                                       |
-    +------------------------+----------+----------------------------------------------------+
-    | ``frame``              |          | Specifies the frame number of this render.         |
-    +------------------------+----------+----------------------------------------------------+
-    | ``stoppedcallback``    | pointer  | A pointer to a user function that should be        |
-    |                        |          | called on rendering status changes. This function  |
-    | ``callback`` (!)       |          | must have no return value and accept a pointer     |
-    |                        |          | argument, a |nsi| context argument and an integer  |
-    |                        |          | argument:                                          |
-    |                        |          |                                                    |
-    |                        |          | .. code-block:: c                                  |
-    |                        |          |                                                    |
-    |                        |          |     void StoppedCallback(                          |
-    |                        |          |         void* stoppedcallbackdata,                 |
-    |                        |          |         NSIContext_t ctx,                          |
-    |                        |          |         int status                                 |
-    |                        |          |     )                                              |
-    |                        |          |                                                    |
-    |                        |          | The third argument is an integer which can take    |
-    |                        |          | the following values:                              |
-    |                        |          |                                                    |
-    |                        |          | *  ``NSIRenderCompleted`` indicates that           |
-    |                        |          |    rendering has completed normally.               |
-    |                        |          |                                                    |
-    |                        |          | *  ``NSIRenderAborted`` indicates that rendering   |
-    |                        |          |    was interrupted before completion.              |
-    |                        |          |                                                    |
-    |                        |          | *  ``NSIRenderSynchronized`` indicates that an     |
-    |                        |          |    interactive render has produced an image which  |
-    |                        |          |    reflects all changes to the scene.              |
-    |                        |          |                                                    |
-    |                        |          | *  ``NSIRenderRestarted`` indicates that an        |
-    |                        |          |    interactive render has received new changes to  |
-    |                        |          |    the scene and no longer has an up to date       |
-    |                        |          |    image.                                          |
-    +------------------------+----------+----------------------------------------------------+
-    | callback.data          | pointer  | A pointer that will be passed back to the          |
-    |                        |          | ``stoppedcallback`` function.                      |
-    +------------------------+----------+----------------------------------------------------+
+
+.. table:: NSIRenderControl() optional arguments
+    :widths: 3 1 6
+
+    +-------------------------+----------+---------------------------------------------------+
+    | ``progressive``         | integer  | If set to ``1``, render the image in a            |
+    |                         |          | progressive fashion.                              |
+    +-------------------------+----------+---------------------------------------------------+
+    | ``interactive``         | integer  | .. _section:rendering:interactive:                |
+    |                         |          |                                                   |
+    |                         |          | If set to ``1``, the renderer will accept         |
+    |                         |          | commands to edit scene’s state while rendering.   |
+    |                         |          | The difference with a normal render is that the   |
+    |                         |          | render task will not exit even if rendering is    |
+    |                         |          | finished. Interactive renders are by definition   |
+    |                         |          | progressive.                                      |
+    +-------------------------+----------+---------------------------------------------------+
+    | ``frame``               |          | Specifies the frame number of this render.        |
+    +-------------------------+----------+---------------------------------------------------+
+    | ``stoppedcallback``     | pointer  | A pointer to a user function that should be       |
+    |                         |          | called on rendering status changes. This function |
+    | ``callback`` (!)        |          | must have no return value and accept a pointer    |
+    |                         |          | argument, a |nsi| context argument and an integer |
+    |                         |          | argument:                                         |
+    |                         |          |                                                   |
+    |                         |          | .. code-block:: c                                 |
+    |                         |          |                                                   |
+    |                         |          |     void StoppedCallback(                         |
+    |                         |          |         void* stoppedcallbackdata,                |
+    |                         |          |         NSIContext_t ctx,                         |
+    |                         |          |         int status                                |
+    |                         |          |     )                                             |
+    |                         |          |                                                   |
+    |                         |          | The third argument is an integer which can take   |
+    |                         |          | the following values:                             |
+    |                         |          |                                                   |
+    |                         |          | *  ``NSIRenderCompleted`` indicates that          |
+    |                         |          |    rendering has completed normally.              |
+    |                         |          |                                                   |
+    |                         |          | *  ``NSIRenderAborted`` indicates that rendering  |
+    |                         |          |    was interrupted before completion.             |
+    |                         |          |                                                   |
+    |                         |          | *  ``NSIRenderSynchronized`` indicates that an    |
+    |                         |          |    interactive render has produced an image which |
+    |                         |          |    reflects all changes to the scene.             |
+    |                         |          |                                                   |
+    |                         |          | *  ``NSIRenderRestarted`` indicates that an       |
+    |                         |          |    interactive render has received new changes to |
+    |                         |          |    the scene and no longer has an up to date      |
+    |                         |          |    image.                                         |
+    +-------------------------+----------+---------------------------------------------------+
+    | ``stoppedcallbackdata`` | pointer  | A pointer that will be passed back to the         |
+    |                         |          | ``stoppedcallback`` function.                     |
+    | ``callback.data`` (!)   |          |                                                   |
+    +-------------------------+----------+---------------------------------------------------+

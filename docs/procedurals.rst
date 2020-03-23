@@ -2,7 +2,7 @@
 
 .. _section:procedurals:
 
-Dynamic library procedurals
+Dynamic Library Procedurals
 ---------------------------
 
 and nodes can execute code loaded from a dynamically loaded library that
@@ -16,7 +16,7 @@ This section describes how to use the definitions from the
 However, the process of compiling and linking it is specific to each
 operating system and out of the scope of this manual.
 
-Entry point
+Entry Point
 ~~~~~~~~~~~
 
 The renderer expects a dynamic library procedural to contain a
@@ -69,7 +69,7 @@ It returns a pointer to an descriptor struct of type ``NSIProcedural_t``
 
 .. _CAPI:proceduraldescription:
 
-Procedural description
+Procedural Description
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: c
@@ -129,7 +129,7 @@ The function pointers types used in the definition are :
    stored in the ``args`` array (of length ``n_args``).
    ``NSIParam_t`` is described in .
 
-Error reporting
+Error Reporting
 ~~~~~~~~~~~~~~~
 
 All functions of the procedural called by |nsi| receive a argument of
@@ -149,7 +149,7 @@ renderer messages. Using this, instead of a custom error reporting
 mechanism, will benefit the user by ensuring that all messages are
 displayed in a consistent manner.
 
-Preprocessor macros
+Preprocessor Macros
 ~~~~~~~~~~~~~~~~~~~
 
 Some convenient C preprocessor macros are also defined in
