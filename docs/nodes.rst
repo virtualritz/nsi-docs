@@ -164,6 +164,17 @@ recognized by *3Delight*:
     |                                 |          | seed for the sampling pattern.             |
     |                                 |          | See the :ref:`screen node<node:screen>`.   |
     +---------------------------------+----------+--------------------------------------------+
+    | ``lightcache``                  | integer  | Controls use of the renderer's light       |
+    |                                 | (1)      | cache. Set this to `0` to switch the cache |
+    |                                 |          | off.                                       |
+    |                                 |          |                                            |
+    |                                 |          | When this is switched on, each bucket is   |
+    |                                 |          | visited twice during rendering.            |
+    |                                 |          |                                            |
+    |                                 |          | **WARNING:** *display drivers that do not  |
+    |                                 |          | request  scanline order need to make sure  |
+    |                                 |          | they handle this gracefully.*              |
+    +---------------------------------+----------+--------------------------------------------+
 
 .. index::
     caching
@@ -263,7 +274,7 @@ recognized by *3Delight*:
     |                                 |          | the limitation.                            |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.reflection``  | integer  | Specifies the maximum bounce depth a       |
-    |                                 |          | reflection ray can reach.                  |
+    |                                 |          | reflection/glossy/specular ray can reach.  |
     | ``reflection.ray.depth.max``    |          |                                            |
     | (!)                             |          |                                            |
     |                                 |          | Setting reflection depth to 0 will only    |
@@ -271,14 +282,10 @@ recognized by *3Delight*:
     |                                 |          | only surfaces with an emission |closure|   |
     |                                 |          | to appear in reflections.                  |
     +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraylength.reflection`` | double   | Limits the distance a reflection ray can   |
-    |                                 |          | travel. Setting this to a negative value   |
-    | ``reflection.ray.length.max``   |          | disables the limitation.                   |
-    | (!)                             |          |                                            |
-    +---------------------------------+----------+--------------------------------------------+
-    | ``maximumraylength.specular``   | double   | Limits the distance a glossy ray can       |
-    |                                 |          | travel. Setting this to a negative value   |
-    | ``glossy.ray.length.max`` (!)   |          | disables the limitation.                   |
+    | ``maximumraylength.reflection`` | double   | Limits the distance a                      |
+    |                                 |          | reflection/glossy/specular ray can travel. |
+    | ``reflection.ray.length.max``   |          | Setting this to a negative value disables  |
+    | (!)                             |          | the limitation.                            |
     +---------------------------------+----------+--------------------------------------------+
     | ``maximumraydepth.refraction``  | integer  | Specifies the maximum bounce depth a       |
     |                                 |          | refraction ray can reach.                  |
@@ -1370,9 +1377,10 @@ following attributes:
     |  ``outputdriver`` (!)           |                 |                                        |
     +---------------------------------+-----------------+----------------------------------------+
     | ``filter``                      | string          | The type of filter to use when         |
-    |                                 | (blackmann-     | reconstructing the final image from    |
-    |                                 | harris)         | sub-pixel samples. Possible values     |
+    |                                 | ``(blackmann-   | reconstructing the final image from    |
+    |                                 | harris)``       | sub-pixel samples. Possible values     |
     |                                 |                 | are:                                   |
+    |                                 |                 |                                        |
     |                                 |                 | *  ``box``                             |
     |                                 |                 | *  ``triangle``                        |
     |                                 |                 | *  ``catmull-rom``                     |
@@ -1383,11 +1391,34 @@ following attributes:
     |                                 |                 | *  ``blackman-harris`` **(default)**   |
     |                                 |                 | *  ``zmin``                            |
     |                                 |                 | *  ``zmax``                            |
+    |                                 |                 |                                        |
+    |                                 |                 | *  ``cryptomattelayer%u`` Take two     |
+    |                                 |                 |    values from those present in each   |
+    |                                 |                 |    pixel's samples.                    |
     +---------------------------------+-----------------+----------------------------------------+
     | ``filterwidth``                 | double          | Diameter in pixels of the              |
     |                                 |                 | reconstruction filter. It is ignored   |
     |                                 |                 | when filter is ``box`` or ``zmin``.    |
-    +---------------------------------+-----------------+----------------------------------------+
+    |                                 |                 |                                        |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | Filter              | Suggested Width  |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``box``             | ``1.0``          |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``triangle``        | ``2.0``          |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``catmull-rom``     | ``4.0``          |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``bessel``          | ``6.49``         |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``gaussian``        | ``2.0``–``2.5``  |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``sinc``            | ``4.0``–``8.0``  |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``mitchell``        | ``4.0``–``5.0``  |
+    |                                 |                 +---------------------+------------------+
+    |                                 |                 | ``blackman-harris`` | ``3.0``–``4.0``  |
+    +---------------------------------+-----------------+---------------------+------------------+
     | ``backgroundvalue``             | float           | The value given to pixels where        |
     |                                 |                 | nothing is rendered.                   |
     +---------------------------------+-----------------+----------------------------------------+
