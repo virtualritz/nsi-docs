@@ -1653,6 +1653,9 @@ attributes:
     |                                       |           | of the camera at which objects will  |
     |                                       |           | be in focus.                         |
     +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.focallengthratio``     | double    | The aspect ratio of the lens. This   |
+    |                                       | (``1.0``) | allows simulating anamorphic DOF.    |
+    +---------------------------------------+-----------+--------------------------------------+
     | ``depthoffield.aperture.enable``      | integer   | By default, the renderer simulates   |
     |                                       | (``0``)   | a circular aperture for depth of     |
     |                                       |           | field. Enable this feature to        |
