@@ -21,6 +21,7 @@ Jump To
    nodes
    script_objects
    guidelines
+   cookbook
    acknowledgments
    genindex
 

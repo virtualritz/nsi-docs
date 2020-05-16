@@ -162,7 +162,7 @@ These attributes are passed as extra arguments to the
     to create the node that a particular implementation may need.
 
     **As of this writing there is no implementation that has any such
-    optional arguments on the** ``NSICreate()`` **fucntion.** The
+    optional arguments on the** ``NSICreate()`` **function.** The
     possibility to specify them is solely there to make the API future
     proof.
 
@@ -263,7 +263,7 @@ the tuple in the ``arraylength`` member.
     If ``NSIArgIsArray`` is not set, ``arraylength`` is **ignored**.
 
     The ``NSIArgIsArray`` flag is neccessary to distinguish between
-    arguments of that happen to be of *length* 1 (set in the ``count``
+    arguments that happen to be of *length* 1 (set in the ``count``
     member) and tuples that have a *length* of 1 (set in the
     ``array_length`` member) for the resp. argument.
 

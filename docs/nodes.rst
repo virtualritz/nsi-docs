@@ -572,14 +572,14 @@ Below is a sample |nsi| stream snippet showing the definition of a mesh with hol
      "nvertices" "int" 6 [
        4 3                 # Square with 1 triangular hole
        4 4 4               # Square with 2 square holes
-       4 ]                 # Square with 0 hole
+       4 ]                 # Square with no hole
      "P" "point" 23 [
-       0 0 0   3 0 0   3 3 0   0 3 0
-       1 1 0   2 1 0   1 2 0
+        0 0 0    3 0 0    3 3 0    0 3 0
+        1 1 0    2 1 0    1 2 0
 
-       4 0 0   9 0 0   9 3 0   4 3 0
-       5 1 0   6 1 0   6 2 0   5 2 0
-       7 1 0   8 1 0   8 2 0   7 2 0
+        4 0 0    9 0 0    9 3 0    4 3 0
+        5 1 0    6 1 0    6 2 0    5 2 0
+        7 1 0    8 1 0    8 2 0    7 2 0
 
        10 0 0   13 0 0   13 3 0   10 3 0 ]
 
@@ -1126,7 +1126,7 @@ It has the following attributes:
     +------------------------------+-----------------+------------------------------------------+
     | **Name**                     | **Type**        | **Description/Values**                   |
     +==============================+=================+==========================================+
-    | ``tranformationmatrix``      | string          | This is a 4×4 matrix which describes     |
+    | ``tranformationmatrix``      | doublematrix    | This is a 4×4 matrix which describes     |
     |                              |                 | the node's transformation. Matrices      |
     |                              |                 | in |nsi| post-multiply so column         |
     | ``matrix`` (!)               |                 | vectors are of the form:                 |
