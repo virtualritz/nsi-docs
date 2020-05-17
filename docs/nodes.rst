@@ -1128,7 +1128,7 @@ It has the following attributes:
     +==============================+=================+==========================================+
     | ``tranformationmatrix``      | doublematrix    | This is a 4×4 matrix which describes     |
     |                              |                 | the node's transformation. Matrices      |
-    |                              |                 | in |nsi| post-multiply so column         |
+    |                              |                 | in |nsi| *post-multiply* so column       |
     | ``matrix`` (!)               |                 | vectors are of the form:                 |
     |                              |                 |                                          |
     |                              |                 | .. math::                                |

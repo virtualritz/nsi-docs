@@ -257,7 +257,7 @@ the tuple in the ``arraylength`` member.
 
 .. Tip::
     It helps to view ``arraylength`` as a part of the data type. The
-    data is a tuple with this length when ``NSIArgIsArray`` is set.
+    data type is a tuple with this length when ``NSIArgIsArray`` is set.
 
 .. Caution::
     If ``NSIArgIsArray`` is not set, ``arraylength`` is **ignored**.
@@ -265,7 +265,7 @@ the tuple in the ``arraylength`` member.
     The ``NSIArgIsArray`` flag is neccessary to distinguish between
     arguments that happen to be of *length* 1 (set in the ``count``
     member) and tuples that have a *length* of 1 (set in the
-    ``array_length`` member) for the resp. argument.
+    ``arraylength`` member) for the resp. argument.
 
     .. code-block:: shell
         :caption: A tuple argument of length 1 (and count 1) vs. a (non-tuple) argument of count 1
