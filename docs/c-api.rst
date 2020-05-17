@@ -259,7 +259,7 @@ the tuple in the ``arraylength`` member.
     It helps to view ``arraylength`` as a part of the data type. The
     data type is a tuple with this length when ``NSIArgIsArray`` is set.
 
-.. Caution::
+.. Note::
     If ``NSIArgIsArray`` is not set, ``arraylength`` is **ignored**.
 
     The ``NSIArgIsArray`` flag is neccessary to distinguish between
@@ -273,13 +273,25 @@ the tuple in the ``arraylength`` member.
         "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in an a (single) tuple
         "bar" "int" 1 13       # My favorite Friday
 
-
 The ``count`` member gives the number of data items given as the value
 of the argument.
 
-The ``data`` member is a pointer to the data for the argument.
+The ``data`` member is a pointer to the data for the argument. This is
+a pointer to a single value or a number values. Depending on ``type``,
+``count`` and ``arraylength`` settings.
 
-The ``flags`` member is a bit field with a number of constants defined
+.. Note::
+    When data is an array, the actual number of elements in the array
+    is :math:`count\times arraylength\times n`. Where :math:`n` is
+    specified in the ``type`` table above.
+
+    For example, if the type is ``NSITypeColor`` (**3** values),
+    ``NSIArgIsArray`` is set, ``arraylength`` is **2** and ``count`` is **4**, ``data``
+    is expected to be **24** 32-bit floating point values (:math:`4\times2\times3`).
+
+
+
+The ``flags`` member is a bit field with a number of constants used
 to communicate more information about the argument:
 
 .. _CAPI:argflags:
