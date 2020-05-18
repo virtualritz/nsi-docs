@@ -260,7 +260,7 @@ the tuple in the ``arraylength`` member.
     data type is a tuple with this length when ``NSIArgIsArray`` is set.
 
 .. Note::
-    If ``NSIArgIsArray`` is not set, ``arraylength`` is **ignored**.
+    If ``NSIArgIsArray`` is not set, ``arraylength`` is *ignored*.
 
     The ``NSIArgIsArray`` flag is neccessary to distinguish between
     arguments that happen to be of *length* 1 (set in the ``count``
@@ -283,12 +283,12 @@ a pointer to a single value or a number values. Depending on ``type``,
 .. Note::
     When data is an array, the actual number of elements in the array
     is :math:`count\times arraylength\times n`. Where :math:`n` is
-    specified in the ``type`` table above.
+    specified implictly through the ``type`` member in the table above.
 
     For example, if the type is ``NSITypeColor`` (**3** values),
-    ``NSIArgIsArray`` is set, ``arraylength`` is **2** and ``count`` is **4**, ``data``
-    is expected to be **24** 32-bit floating point values (:math:`4\times2\times3`).
-
+    ``NSIArgIsArray`` is set, ``arraylength`` is **2** and ``count`` is
+    **4**, ``data`` is expected to contain **24** 32-bit floating point
+    values (:math:`3\times2\times4`).
 
 
 The ``flags`` member is a bit field with a number of constants used
@@ -302,7 +302,7 @@ to communicate more information about the argument:
     +-------------------------------+----------------------------------+
     | ``NSIArgIsArray``             | to specify that the argument is  |
     |                               | an array type, as explained      |
-    |                               | previously.                      |
+    |                               | above.                           |
     +-------------------------------+----------------------------------+
     | ``NSIArgPerFace``             | to specify that the argument     |
     |                               | has different values for every   |

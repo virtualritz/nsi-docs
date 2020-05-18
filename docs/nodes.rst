@@ -116,7 +116,7 @@ recognized by *3Delight*:
     +=================================+==========+============================================+
     | ``numberofthreads``             | integer  | Specifies the total number of threads to   |
     |                                 |          | use for a particular render:               |
-    | ``threads.number`` (!)          |          +--------------------------------------------+
+    | ``threads.count`` (!)           |          +--------------------------------------------+
     |                                 |          | -  A value of ``0`` lets the render engine |
     |                                 |          |    choose an optimal thread value.         |
     |                                 |          |    This is is the **default** behaviour.   |
@@ -446,8 +446,9 @@ attributes:
     +---------------------------------+----------+-------------------------------------------+
     | ``nvertices``                   | integer  | The number of vertices for each face of   |
     |                                 |          | the mesh. The number of values for this   |
-    | ``vertex.size`` (!)             |          | attribute specifies total face number     |
+    | ``vertex.count`` (!)            |          | attribute specifies total face number     |
     |                                 |          | (unless ``nholes`` is defined).           |
+    | ``face.vertex.count`` (!)       |          |                                           |
     +---------------------------------+----------+-------------------------------------------+
 
 
@@ -535,7 +536,7 @@ The mesh node also has these optional attributes:
     +==================================+==========+==========================================+
     | ``nholes``                       | integer  | The number of holes in the polygons.     |
     |                                  |          | When this attribute is defined, the      |
-    | ``hole.size`` (!)                |          | total number of faces in the mesh is     |
+    | ``hole.count`` (!)               |          | total number of faces in the mesh is     |
     |                                  |          | defined by the number of values for      |
     |                                  |          | ``nnholes`` rather than for              |
     |                                  |          | ``nvertices``. For each face, there      |
@@ -713,7 +714,7 @@ attributes:
     +=================================+==========+===========================================+
     | ``nverts``                      | integer  | The number of vertices for each curve.    |
     |                                 |          | This must be at least ``4`` for cubic     |
-    | ``vertex.size`` (!)             |          | curves and ``2`` for linear curves. There |
+    | ``vertex.count`` (!)            |          | curves and ``2`` for linear curves. There |
     |                                 |          | can be either a single value or one value |
     |                                 |          | per curve.                                |
     +---------------------------------+----------+-------------------------------------------+
