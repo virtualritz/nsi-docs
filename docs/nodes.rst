@@ -1353,7 +1353,7 @@ following attributes:
     +---------------------------------+-----------------+----------------------------------------+
     | ``withalpha``                   | integer         | If set to 1, an alpha channel is       |
     |                                 |                 | included in the output layer.          |
-    |                                 |                 | Otherwise, it must be set to 0.        |
+    |                                 |                 | Otherwise, it must be set to ``0``.    |
     +---------------------------------+-----------------+----------------------------------------+
     | ``sortkey``                     | integer         | This attribute is used as a sorting    |
     |                                 |                 | key when ordering multiple output      |
@@ -1531,7 +1531,11 @@ attributes:
     +=================================+==============+===========================================+
     | ``vdbfilename``                 | string       | The path to an OpenVDB file with the      |
     |                                 |              | volumetric data.                          |
-    | ``vdb.filename`` (!)            |              |                                           |
+    | ``filename`` (!)                |              |                                           |
+    +---------------------------------+--------------+-------------------------------------------+
+    | ``colorgrid``                   | string       | The name of the OpenVDB grid to use as    |
+    |                                 |              | a scattering color multiplier for the     |
+    |                                 |              | volume shader.                            |
     +---------------------------------+--------------+-------------------------------------------+
     | ``densitygrid``                 | string       | The name of the OpenVDB grid to use as    |
     |                                 |              | volume density for the volume shader.     |
@@ -1647,15 +1651,16 @@ attributes:
     +---------------------------------------+-----------+--------------------------------------+
     | ``depthoffield.fstop``                | double    | Relative aperture of the camera.     |
     +---------------------------------------+-----------+--------------------------------------+
-    | ``depthoffield.focallength``          | double    | Focal length, in scene units, of the |
-    |                                       |           | camera lens.                         |
+    | ``depthoffield.focallength``          | double    | Verical focal length, in scene       |
+    |                                       |           | units, of the camera lens.           |
+    +---------------------------------------+-----------+--------------------------------------+
+    | ``depthoffield.focallengthratio``     | double    | Ratio of vertical focal length to    |
+    |                                       | (``1.0``) | horizontal focal length. This is the |
+    |                                       |           | squeeze ratio of an anamorphic lens. |
     +---------------------------------------+-----------+--------------------------------------+
     | ``depthoffield.focaldistance``        | double    | Distance, in scene units, in front   |
     |                                       |           | of the camera at which objects will  |
     |                                       |           | be in focus.                         |
-    +---------------------------------------+-----------+--------------------------------------+
-    | ``depthoffield.focallengthratio``     | double    | The aspect ratio of the lens. This   |
-    |                                       | (``1.0``) | allows simulating anamorphic DOF.    |
     +---------------------------------------+-----------+--------------------------------------+
     | ``depthoffield.aperture.enable``      | integer   | By default, the renderer simulates   |
     |                                       | (``0``)   | a circular aperture for depth of     |

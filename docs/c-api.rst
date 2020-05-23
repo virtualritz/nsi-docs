@@ -35,8 +35,19 @@ The ``NSI_SCENE_ROOT`` macro defines the handle of the
     #define NSI_ALL_NODES ".all"
 
 The ``NSI_ALL_NODES`` macro defines a special handle to refer to all
-nodes in some contexts, such as when
+nodes in some contexts, such as
 :ref:`removing connections<CAPI:nsiconnect>`.
+
+.. _CAPI:dotallattrib:
+
+.. code-block:: c
+
+    #define NSI_ALL_ATTRIBUTES ".all"
+
+The ``NSI_ALL_ATTRIBUTES`` macro defines a special handle to refer to
+all attributes in some contexts, such as
+:ref:`removing connections<CAPI:nsiconnect>`.
+
 
 .. index::
     context handling
@@ -83,54 +94,68 @@ which is defined in :doc:`nsi.h`:
 .. table:: NSIBegin() optional arguments
     :widths: 3 1 2 4
 
-    +------------------------+----------+----------------------------------------------------+
-    | **Name**               | **Type** | **Description/Values**                             |
-    +========================+==========+====================================================+
-    | ``type``               | string   | Sets the type of context to create. The possible   |
-    |                        |          | types are:                                         |
-    |                        |          +---------------+------------------------------------+
-    |                        |          | ``render``    | Execute the calls directly in the  |
-    |                        |          |               | renderer. This is the **default**. |
-    |                        |          +---------------+------------------------------------+
-    |                        |          | ``apistream`` | To write the interface calls to a  |
-    |                        |          |               | stream, for later execution.       |
-    |                        |          |               | The target for writing the stream  |
-    |                        |          |               | must be specified in another       |
-    |                        |          |               | argument.                          |
-    +------------------------+----------+---------------+------------------------------------+
-    | ``stream.filename``    | string   | The file to which the stream is to be output, if   |
-    |                        |          | the context type is ``apistream``.                 |
-    |                        |          | Specify ``stdout`` to write to standard output and |
-    |                        |          | ``stderr`` to write to standard error.             |
-    +------------------------+----------+----------------------------------------------------+
-    | ``stream.format``      | string   | The format of the command stream to write.         |
-    |                        |          | Possible formats are:                              |
-    |                        |          +---------------+------------------------------------+
-    |                        |          | ``nsi``       | Produces an :ref:`nsi              |
-    |                        |          |               | stream<section:nsistream>`         |
-    |                        |          +---------------+------------------------------------+
-    |                        |          | ``binarynsi`` | Produces a binary encoded          |
-    |                        |          |               | :ref:`nsi                          |
-    |                        |          |               | stream<section:nsistream>`         |
-    +------------------------+----------+---------------+------------------------------------+
-    | ``stream.compression`` | string   | The type of compression to apply to the written    |
-    |                        |          | command stream.                                    |
-    +------------------------+----------+----------------------------------------------------+
-    | ``errorhandler``       | pointer  | A function which is to be called by the renderer   |
-    |                        |          | to report errors. The default handler will print   |
-    |                        |          | messages to the console.                           |
-    +------------------------+----------+----------------------------------------------------+
-    | ``errorhandler.data``  | pointer  | The ``userdata`` argument of the :ref:`error       |
-    |                        |          | reporting function<CAPI:errorcallback>`.           |
-    +------------------------+----------+----------------------------------------------------+
-    | ``executeprocedurals`` | string   | A list of procedural types that should be executed |
-    |                        |          | immediately when a call to :ref:`NSIEvaluate()     |
-    | ``evaluate.replace``   |          | <CAPI:nsievaluate>` or a procedural node is        |
-    | (!)                    |          | encountered and ``NSIBegin()``'s output ``type``   |
-    |                        |          | is ``apistream``. This will replace any matching   |
-    |                        |          | call to ``NSIEvaluate()`` with the results of the  |
-    |                        |          | procedural's execution.                            |
-    +------------------------+----------+----------------------------------------------------+
+    +----------------------------+----------+------------------------------------------------+
+    | **Name**                   | **Type** | **Description/Values**                         |
+    +============================+==========+================================================+
+    | ``type``                   | string   | Sets the type of context to create. The        |
+    |                            |          | possibletypes are:                             |
+    |                            |          +---------------+--------------------------------+
+    |                            |          | ``render``    | Execute the calls directly in  |
+    |                            |          |               | the renderer. This is the      |
+    |                            |          |               | **default**.                   |
+    |                            |          +---------------+--------------------------------+
+    |                            |          | ``apistream`` | To write the interface calls   |
+    |                            |          |               | to a  stream, for later        |
+    |                            |          |               | execution.                     |
+    |                            |          |               | The target for writing the     |
+    |                            |          |               | stream must be specified in    |
+    |                            |          |               | another argument.              |
+    +----------------------------+----------+---------------+--------------------------------+
+    | ``streamfilename``         | string   | The file to which the stream is to be output,  |
+    |                            |          | if the context type is ``apistream``.          |
+    | ``stream.filename`` (!)    |          | Specify ``stdout`` to write to standard output |
+    |                            |          | and``stderr`` to write to standard error.      |
+    +----------------------------+----------+------------------------------------------------+
+    | ``streamformat``           | string   | The format of the command stream to write.     |
+    |                            |          | Possible formats are:                          |
+    | ``stream.format`` (!)      |          +---------------+--------------------------------+
+    |                            |          | ``nsi``       | Produces an :ref:`nsi          |
+    |                            |          |               | stream<section:nsistream>`     |
+    |                            |          +---------------+--------------------------------+
+    |                            |          | ``binarynsi`` | Produces a binary encoded      |
+    |                            |          |               | :ref:`nsi                      |
+    |                            |          |               | stream<section:nsistream>`     |
+    +----------------------------+----------+---------------+--------------------------------+
+    | ``stream.compression``     | string   | The type of compression to apply to the        |
+    |                            |          | written command stream.                        |
+    | ``stream.compression`` (!) |          |                                                |
+    +----------------------------+----------+------------------------------------------------+
+    | ``streampathreplacement``  | int      | Use ``0`` to disable replacement of path       |
+    |                            |          | prefixes by references to environment          |
+    | ``stream.path.replace``    |          | variables which begin with ``NSI_PATH_`` in an |
+    |                            |          | |nsi| stream.                                  |
+    |                            |          | This should generally be left enabled to ease  |
+    |                            |          | creation of files which can be moved between   |
+    |                            |          | systems.                                       |
+    +----------------------------+----------+------------------------------------------------+
+    | ``errorhandler``           | pointer  | A function which is to be called by the        |
+    |                            |          | renderer.                                      |
+    | ``errorhandler``           | pointer  | A function which is to be called by the        |
+    |                            |          | renderer to report errors. The default handler |
+    |                            |          | will print messages to the console.            |
+    +---------====---------------+----------+------------------------------------------------+
+    | ``errorhandler.data``      | pointer  | The ``userdata`` argument of the :ref:`error   |
+    |                            |          | reporting function<CAPI:errorcallback>`.       |
+    +----------------------------+----------+------------------------------------------------+
+    | ``executeprocedurals``     | string   | A list of procedural types that should be      |
+    |                            |          | executed immediately when a call to            |
+    | ``evaluate.replace``  (!)  |          | :ref:`NSIEvaluate() <CAPI:nsievaluate>` or a   |
+    |                            |          | procedural node is encountered and             |
+    |                            |          | ``NSIBegin()``'s output ``type`` is            |
+    |                            |          | ``apistream``. This will replace any matching  |
+    |                            |          | call to ``NSIEvaluate()`` with the results of  |
+    |                            |          | the procedural's execution.                    |
+    +----------------------------+----------+------------------------------------------------+
 
 Arguments vs. Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -407,6 +432,10 @@ This function is used to create a new node. Its arguments are:
 
 --------------
 
+.. _CAPI:nsidelete:
+
+:ref:`NSIDeleteAttribute()`
+
 .. index::
     NSIDelete()
     deleting nodes
@@ -439,19 +468,26 @@ It accepts the following optional arguments:
     recursive node deletetion
 
 .. table:: NSIDelete() optional arguments
-    :widths: 3 1 2 4
+    :widths: 3 1 6
 
     +------------------------+----------+----------------------------------------------------+
     | **Name**               | **Type** | **Description/Values**                             |
     +========================+==========+====================================================+
     | ``recursive``          | int      | Specifies whether deletion is recursive. By        |
     |                        |          | default, only the specified node is deleted.       |
-    |                        |          | If a value of 1 is given, then nodes which connect |
-    |                        |          | to the specified node are recursively removed,     |
-    |                        |          | unless they also have connections which do not     |
-    |                        |          | eventually lead to the specified node. This        |
-    |                        |          | allows, for example, deletion of an entire shader  |
-    |                        |          | network in a single call.                          |
+    |                        |          | If a value of ``1`` is given, then nodes which     |
+    |                        |          | connect to the specified node are recursively      |
+    |                        |          | removed. Unless they meet one of the following     |
+    |                        |          | conditions:                                        |
+    |                        |          |                                                    |
+    |                        |          | * They also have connections which do not          |
+    |                        |          |   eventually lead to the specified node.           |
+    |                        |          |                                                    |
+    |                        |          | * Their connection to the deleted node was created |
+    |                        |          |   with a ``strength`` greater than ``0``.          |
+    |                        |          |                                                    |
+    |                        |          | This  allows, for example, deletion of an entire   |
+    |                        |          | shader network in a single call.                   |
     +------------------------+----------+---------------+------------------------------------+
 
 Setting Attributes
@@ -503,6 +539,8 @@ or disappearing particles. Setting an attribute using this function
 replaces any value previously set by ``NSISetAttribute()``.
 
 --------------
+
+.. _CAPI:nsideleteattribute:
 
 .. code-block:: c
 
@@ -572,8 +610,32 @@ which the connection is performed must exist. The arguments are:
     is an empty string then the connection is made to the node instead
     of to a specific attribute of the node.
 
-``NSIConnect()`` accepts additional optional arguments. Refer to the
-:ref:`guidelines on inter-object visibility<section:lightlinking>` for
+``NSIConnect()`` accepts additional optional arguments.
+
+.. table:: NSIConnect() optional arguments
+    :widths: 3 1 6
+
+    +------------------------+----------+----------------------------------------------------+
+    | **Name**               | **Type** | **Description/Values**                             |
+    +========================+==========+====================================================+
+    | ``value``              |          | This can be used to change the value of a node's   |
+    |                        |          | attribute in some contexts. Refer to               |
+    |                        |          | :ref:`guidelines on inter-object                   |
+    |                        |          | visibility<section:lightlinking>` for more         |
+    |                        |          | information  about the utility of this parameter.  |
+    +------------------------+----------+----------------------------------------------------+
+    | ``priority``           |          | When connecting attribute nodes, indicates in      |
+    |                        |          | which order the nodes should be considered when    |
+    |                        |          | evaluating the value of an attribute.              |
+    +------------------------+----------+----------------------------------------------------+
+    | ``strength``           | int (0)  | A connection with a strength greater than ``0``    |
+    |                        |          | will block the progression of a recursive          |
+    |                        |          | ``NSIDelete``.                                     |
+    +------------------------+----------+----------------------------------------------------+
+
+
+Refer to the
+for
 more information about their utility.
 
 With ``NSIDisconnect()``, the handle for either node may be the special
