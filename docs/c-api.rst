@@ -139,11 +139,9 @@ which is defined in :doc:`nsi.h`:
     |                            |          | systems.                                       |
     +----------------------------+----------+------------------------------------------------+
     | ``errorhandler``           | pointer  | A function which is to be called by the        |
-    |                            |          | renderer.                                      |
-    | ``errorhandler``           | pointer  | A function which is to be called by the        |
     |                            |          | renderer to report errors. The default handler |
     |                            |          | will print messages to the console.            |
-    +---------====---------------+----------+------------------------------------------------+
+    +----------------------------+----------+------------------------------------------------+
     | ``errorhandler.data``      | pointer  | The ``userdata`` argument of the :ref:`error   |
     |                            |          | reporting function<CAPI:errorcallback>`.       |
     +----------------------------+----------+------------------------------------------------+
@@ -530,13 +528,17 @@ an attribute to its default value, use :ref:`NSIDeleteAttribute()
 
 This function sets time-varying attributes (i.e. motion blurred). The
 ``time`` argument specifies at which time the attribute is being
-defined. It is not required to set time-varying attributes in any
-particular order. In most uses, attributes that are motion blurred must
-have the same specification throughout the time range. A notable
-exception is the ``P`` attribute on :ref:`particles <node:particles>`
-which can be of different size for each time step because of appearing
-or disappearing particles. Setting an attribute using this function
-replaces any value previously set by ``NSISetAttribute()``.
+defined.
+
+It is not required to set time-varying attributes in any particular
+order. In most uses, attributes that are motion blurred must have the
+same specification throughout the time range.
+
+A notable exception is the ``P`` attribute on :ref:`particles
+<node:particles>` which can be of different size for each time step
+because of appearing or disappearing particles. Setting an attribute
+using this function replaces any value previously set by
+``NSISetAttribute()``.
 
 --------------
 
@@ -629,7 +631,7 @@ which the connection is performed must exist. The arguments are:
     |                        |          | evaluating the value of an attribute.              |
     +------------------------+----------+----------------------------------------------------+
     | ``strength``           | int (0)  | A connection with a strength greater than ``0``    |
-    |                        |          | will block the progression of a recursive          |
+    |                        |          | will *block* the progression of a recursive        |
     |                        |          | ``NSIDelete``.                                     |
     +------------------------+----------+----------------------------------------------------+
 
@@ -674,14 +676,16 @@ are really the same idea expressed in a different language (note that
 for delayed procedural evaluation one should use the :ref:`procedural
 node<node:procedural>`).
 
-The |nsi| adds a third option which sits in-between—Lua scripts (). They
-are much more powerful than a simple included file yet they are also
-much easier to generate as they do not require compilation. It is, for
-example, very realistic to export a whole new script for every frame of
-an animation. It could also be done for every character in a frame. This
-gives great flexibility in how components of a scene are put together.
+The |nsi| adds a third option which sits in-between — :ref:`Lua scripts
+<section:Lua>`. They are much more powerful than a simple included file
+yet they are also much easier to generate as they do not require
+compilation. It is, for example, very realistic to export a whole new
+script for every frame of an animation. It could also be done for every
+character in a frame. This gives great flexibility in how components of
+a scene are put together.
 
-The ability to load |nsi| command straight from memory is also provided.
+The ability to load |nsi| commands straight from memory is also
+provided.
 
 The optional arguments accepted by this function are:
 
@@ -697,7 +701,7 @@ The optional arguments accepted by this function are:
     |                        |          | ``apistream``      | Read in an :ref:`nsi          |
     |                        |          |                    | stream<section:nsistream>`.   |
     |                        |          |                    | This requires either          |
-    |                        |          |                    | ``stream.filename`` or        |
+    |                        |          |                    | ``filename`` or               |
     |                        |          |                    | ``buffer``/``size``           |
     |                        |          |                    | arguments to be specified     |
     |                        |          |                    | too.                          |
@@ -716,7 +720,10 @@ The optional arguments accepted by this function are:
     |                        |          |                    | <section:procedurals>` for    |
     |                        |          |                    | an implementation example.    |
     +------------------------+----------+--------------------+-------------------------------+
-    | ``stream.filename``    | string   | The file from which to read the interface stream.  |
+    | ``filename``           | string   | The file from which to read the interface stream.  |
+    |                        |          |                                                    |
+    | ``stream.filename``    |          |                                                    |
+    | (!)                    |          |                                                    |
     +------------------------+----------+----------------------------------------------------+
     | ``script``             | string   | A valid :ref:`Lua<section:Lua>` script to execute  |
     |                        |          | when ``type`` is set to ``lua``.                   |
