@@ -2,8 +2,8 @@
 
 .. _section:cppapi:
 
-The C++ API wrappers
-====================
+The C++ API
+===========
 
 The :doc:`nsi.hpp` file provides C++ wrappers which are less tedious to use
 than the low level C interface. All the functionality is inline so no

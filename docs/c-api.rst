@@ -624,7 +624,7 @@ which the connection is performed must exist. The arguments are:
     |                        |          | attribute in some contexts. Refer to               |
     |                        |          | :ref:`guidelines on inter-object                   |
     |                        |          | visibility<section:lightlinking>` for more         |
-    |                        |          | information  about the utility of this parameter.  |
+    |                        |          | information about the utility of this parameter.   |
     +------------------------+----------+----------------------------------------------------+
     | ``priority``           |          | When connecting attribute nodes, indicates in      |
     |                        |          | which order the nodes should be considered when    |

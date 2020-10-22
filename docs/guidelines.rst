@@ -11,32 +11,34 @@ Basic Scene Anatomy
 -------------------
 
 .. figure:: image/basic_scene_anatomy.svg
-   :alt: The fundamental building blocks of an |nsi| scene
-   :align: right
-   :figwidth: 45%
+    :alt: The fundamental building blocks of an |nsi| scene
+    :align: right
+    :figwidth: 45%
 
-   The fundamental building blocks of an |nsi| scene
+    The fundamental building blocks of an |nsi| scene
 
 A minimal (and useful) |nsi| scene graph contains the three following
 components:
 
-#. Geometry linked to the ``.root`` node, usually through a transform
-   chain.
+#.  Geometry linked to the ``.root`` node, usually through a transform
+    chain.
 
-#. |osl| materials linked to scene geometry through an node.
+#.  |osl| materials linked to scene geometry through an
+    :ref:`attributes<node:attributes>` node.
 
-#. At least one *outputdriver* |nsp| → |nsp| *outputlayer* |nsp| → |nsp|
-   *screen* |nsp| → |nsp| *camera* |nsp| → |nsp| ``.root`` chain to
-   describe a view and an output device.
+#.  At least one *outputdriver* |nsp| → |nsp| *outputlayer* |nsp| → |nsp|
+    *screen* |nsp| → |nsp| *camera* |nsp| → |nsp| ``.root`` chain to
+    describe a view and an output device.
 
 The scene graph in shows a renderable scene with all the necessary
-elements. Note how the connections always lead to the ``.root`` node. In
-this view, a node with no output connections is not relevant by
+elements. Note how the connections always lead to the ``.root`` node.
+
+In this view, a node with no output connections is not relevant by
 definition and will be ignored.
 
 .. Caution::
-   For the scene to be visible, at least one of the materials has to be
-   *emissive*.
+    For the scene to be visible, at least one of the materials has to be
+    *emissive*.
 
 .. _section:attributes:
 
@@ -50,11 +52,7 @@ A Word – or Two – About Attributes
 Those familiar with the *RenderMan* standard will remember the various
 ways to attach information to elements of the scene (standard
 attributes, user attributes, primitive variables, construction
-parameters).
-
-.. Note::
-    Parameters passed to ```Ri`` calls to build certain objects. For
-    example, knot vectors passed to ``RiNuPatch``.
+parameters).[1]_
 
 .. figure:: image/attribute_inheritance.svg
     :alt: Attribute inheritance and override
@@ -62,15 +60,14 @@ parameters).
     Attribute inheritance and override
 
 In |nsi| things are simpler and all attributes are set
-through the ``SetAttribute()`` mechanism. The only distinction is that
+through the ``NSISetAttribute`` mechanism. The only distinction is that
 some attributes are required (*intrinsic attributes*) and some are
 optional: a :ref:`mesh node<node:mesh>` needs to have ``P``
 and ``nvertices`` defined — otherwise the geometry is invalid.
 
 .. Note::
     In this documentation, all intrinsic attributes are documented at
-    the beginning of each section describing a particular
-    node.
+    the beginning of each section describing a particular node.
 
 In |osl| shaders, attributes are accessed using the ``getattribute()``
 function and *this is the only way to access attributes in nsi*. Having
@@ -123,16 +120,16 @@ Creating |osl| Networks
     A simple |osl| network connected to an attributes node
 
 The semantics used to create |osl| networks are the same as for scene
-creation. Each shader node in the network corresponds to a which must be
-created using . Each shader node has implicit attributes corresponding
-to shader's parameters and connection between said arguments is done
-using ``NSIConnect``. Above diagran depicts a simple |osl| network
-connected to an ``attributes`` node.
+creation. Each :ref:`shader node<node:shader>` in the network
+corresponds to a which must be created using . Each shader node has
+implicit attributes corresponding to shader's parameters and connection
+between said arguments is done using ``NSIConnect``. Above diagran
+depicts a simple |osl| network connected to an ``attributes`` node.
 
 Some observations:
 
 -   Both the source and destination attributes (passed to
-    ``NSIConnect()``) must be present and map to valid and compatible
+    ``NSIConnect``) must be present and map to valid and compatible
     shader parameters (:ref:`Lines 21–23<osl_network_example>`).
 
    .. Note::
@@ -149,8 +146,8 @@ Some observations:
     attributes (a.k.a. primvars). One has to explicitly use the
     ``getattribute()`` |osl| function to read attributes attached to
     geometry. In this is done in the ``read_attribute`` node (:ref:`Lines
-    11–14<osl_network_example>`). More
-    about this subject in .
+    11–14<osl_network_example>`). Also see the section on
+    :ref:`attribute<section:attributes>`.
 
 
 .. _osl_network_example:
@@ -197,14 +194,17 @@ Lighting in the Nodal Scene Interface
 
    Creating lights in nsi
 
-There are no special light source nodes in |nsi| (although the node, which
-defines a sphere of infinite radius, could be considered as a light in
-practice). Any scene geometry can become a light source if its surface
-shader produces an ``emission()`` |closure|.
-Some operations on light sources, such as *light linking*, are done
-using more :ref:`general approaches<section:lightlinking>`.
+There are no special light source nodes in |nsi| (although the node,
+which defines a sphere of infinite radius, could be considered a light
+in practice).
+
+Any scene geometry can become a light source if its surface shader
+produces an ``emission()`` |closure|. Some operations on light sources,
+such as *light linking*, are done using more :ref:`general
+approaches<section:lightlinking>`.
+
 Following is a quick summary on how to create different kinds of light
-in nsi.
+in |nsi|.
 
 Area Lights
 ~~~~~~~~~~~
@@ -353,7 +353,7 @@ Light Layers
 .. figure:: image/multilight.svg
 
 The ability to render a certain set of lights per output layer has a
-formal workflow in nsi. One can use three methods to define the lights
+formal workflow in |nsi|. One can use three methods to define the lights
 used by a given output layer:
 
 #. Connect the geometry defining lights directly to the
@@ -421,3 +421,9 @@ and inter-object visibility are applied:
    documenting purposes, but it could have been omitted since
    connections always override regular attributes of equivalent
    priority.
+
+
+.. rubric:: Footnotes
+
+.. [1] Parameters passed to ```Ri`` calls to build certain objects.
+    For example, knot vectors passed to ``RiNuPatch``.

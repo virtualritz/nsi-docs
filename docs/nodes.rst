@@ -992,7 +992,7 @@ This node has the following attributes:
     |                              |              | specified by setting the ``priority``    |
     |                              |              | attribute of the connection itself.      |
     +------------------------------+--------------+------------------------------------------+
-    | ``displacemenetshader``      | «connection» | The :ref:`shader node<node:shader>`      |
+    | ``displacementshader``       | «connection» | The :ref:`shader node<node:shader>`      |
     |                              |              | which will be used to displace the       |
     | ``shader.displacement`` (!)  |              | surface is connected to this attribute.  |
     |                              |              | A priority (useful for overriding a      |
@@ -1323,7 +1323,7 @@ following attributes:
     +---------------------------------+-----------------+----------------------------------------+
     | ``outputdrivers``               | «connection(s)» | This connection accepts nodes to which |
     |                                 |                 | the layer’s image will be sent.        |
-    |  ``outputdriver`` (!)           |                 |                                        |
+    | ``outputdriver`` (!)            |                 |                                        |
     +---------------------------------+-----------------+----------------------------------------+
     | ``filter``                      | string          | The type of filter to use when         |
     |                                 | ``(blackmann-   | reconstructing the final image from    |
@@ -1599,7 +1599,7 @@ attributes:
     +---------------------------------------+-----------+--------------------------------------+
     | ``depthoffield.fstop``                | double    | Relative aperture of the camera.     |
     +---------------------------------------+-----------+--------------------------------------+
-    | ``depthoffield.focallength``          | double    | Verical focal length, in scene       |
+    | ``depthoffield.focallength``          | double    | Vertical focal length, in scene      |
     |                                       |           | units, of the camera lens.           |
     +---------------------------------------+-----------+--------------------------------------+
     | ``depthoffield.focallengthratio``     | double    | Ratio of vertical focal length to    |

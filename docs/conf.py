@@ -14,6 +14,8 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import datetime
+import sphinx_rtd_theme
+import os
 
 # -- Project information -----------------------------------------------------
 
@@ -32,12 +34,23 @@ master_doc = 'index'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinxcontrib.rsvgconverter'
+    'sphinxcontrib.rsvgconverter',
+    'sphinx_tabs.tabs',
     #'sphinxcontrib.inkscapeconverter'
 ]
 
+# Warning when the Sphinx Tabs extension is used with unknown
+# builders (like the dummy builder) - as it doesn't cause errors,
+# we can ignore this so we still can treat other warnings as errors.
+sphinx_tabs_nowarn = True
+
+if not os.getenv("SPHINX_NO_SEARCH"):
+    extensions.append("sphinx_search.extension")
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+source_encoding = "utf-8-sig"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -77,8 +90,18 @@ html_static_path = ['_static']
 
 # Overrides mainly to make table cell formatting nicer than in the original
 # theme.
+#html_css_files = [
+#    'theme_overrides.css',
+#]
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
 html_css_files = [
-    'theme_overrides.css',
+    "css/custom.css",
+]
+
+html_js_files = [
+    "js/custom.js",
 ]
 
 #epub_static_path = ['_static']
@@ -96,4 +119,3 @@ latex_elements = {
 #    \usepackage[none]{hyphenat}
 #    \usepackage[document]{ragged2e}
 #    '''
-
