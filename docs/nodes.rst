@@ -1108,8 +1108,8 @@ It has the following attributes:
 
 .. _node:instances:
 
-The Instances Nodes
--------------------
+The Instances Node
+------------------
 
 This node is an efficient way to specify a large number of instances. It
 has the following attributes:
