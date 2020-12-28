@@ -60,7 +60,7 @@ Context Handling
 .. code-block:: c
 
     NSIContext_t NSIBegin(
-       int n_args,
+       int n_params,
        const NSIParam_t *args
     )
 
@@ -225,7 +225,7 @@ Passing Optional Arguments
 
 This structure is used to pass variable argument lists through the
 C |nbsp| interface. Most functions accept an array of the structure in
-a ``args`` argument along with its length in a ``n_args``
+a ``args`` argument along with its length in a ``n_params``
 argument.
 
 The meaning of these two arguments will not be documented for every
@@ -391,7 +391,7 @@ Node Creation
        NSIContext_t context,
        NSIHandle_t handle,
        const char *type,
-       int n_args,
+       int n_params,
        const NSIParam_t *args
    )
 
@@ -420,7 +420,7 @@ This function is used to create a new node. Its arguments are:
 | ``type``
 |   The type of :ref:`node<chapter:nodes>` to create.
 
-| ``n_args``, ``args``
+| ``n_params``, ``args``
     This pair describes a list of optional arguments.
     The ``NSIParam_t`` type is
     described in :ref:`this section<CAPI:optionalarguments>`.
@@ -444,7 +444,7 @@ This function is used to create a new node. Its arguments are:
    void NSIDelete(
        NSIContext_t ctx,
        NSIHandle_t handle,
-       int n_args,
+       int n_params,
        const NSIParam_t *args
    )
 
@@ -496,7 +496,7 @@ Setting Attributes
    void NSISetAttribute(
        NSIContext_t ctx,
        NSIHandle_t object,
-       int n_args,
+       int n_params,
        const NSIParam_t *args
    )
 
@@ -522,7 +522,7 @@ an attribute to its default value, use :ref:`NSIDeleteAttribute()
        NSIContext_t ctx,
        NSIHandle_t object,
        double time,
-       int n_args,
+       int n_params,
        const NSIParam_t *args
    )
 
@@ -577,7 +577,7 @@ Making Connections
        const char *from_attr,
        NSIHandle_t to,
        const char *to_attr,
-       int n_args,
+       int n_params,
        const NSIParam_t *args
    )
 
@@ -664,7 +664,7 @@ Evaluating Procedurals
 
    void NSIEvaluate(
        NSIContext_t ctx,
-       int n_args,
+       int n_params,
        const NSIParam_t *args
    )
 
@@ -827,7 +827,7 @@ Rendering
 
     void NSIRenderControl(
         NSIContext_t ctx,
-        int n_args,
+        int n_params,
         const NSIParam_t *args
     )
 
