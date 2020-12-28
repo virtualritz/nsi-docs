@@ -61,7 +61,7 @@ Context Handling
 
     NSIContext_t NSIBegin(
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
     )
 
 .. code-block:: c
@@ -114,7 +114,7 @@ which is defined in :doc:`nsi.h`:
     | ``streamfilename``         | string   | The file to which the stream is to be output,  |
     |                            |          | if the context type is ``apistream``.          |
     | ``stream.filename`` (!)    |          | Specify ``stdout`` to write to standard output |
-    |                            |          | and``stderr`` to write to standard error.      |
+    |                            |          | and ``stderr`` to write to standard error.     |
     +----------------------------+----------+------------------------------------------------+
     | ``streamformat``           | string   | The format of the command stream to write.     |
     |                            |          | Possible formats are:                          |
@@ -213,7 +213,7 @@ Passing Optional Arguments
 
 .. code-block:: c
 
-    struct NSIArg_t
+    struct NSIParam_t
     {
         const char *name;
         const void *data;
@@ -392,7 +392,7 @@ Node Creation
        NSIHandle_t handle,
        const char *type,
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
    )
 
 This function is used to create a new node. Its arguments are:
@@ -422,7 +422,7 @@ This function is used to create a new node. Its arguments are:
 
 | ``n_args``, ``args``
     This pair describes a list of optional arguments.
-    The ``NSIArg_t`` type is
+    The ``NSIParam_t`` type is
     described in :ref:`this section<CAPI:optionalarguments>`.
 
 .. Caution::
@@ -445,7 +445,7 @@ This function is used to create a new node. Its arguments are:
        NSIContext_t ctx,
        NSIHandle_t handle,
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
    )
 
 This function deletes a node from the scene. All connections to and from
@@ -497,7 +497,7 @@ Setting Attributes
        NSIContext_t ctx,
        NSIHandle_t object,
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
    )
 
 This functions sets attributes on a previously node. All :ref:`optional
@@ -523,7 +523,7 @@ an attribute to its default value, use :ref:`NSIDeleteAttribute()
        NSIHandle_t object,
        double time,
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
    )
 
 This function sets time-varying attributes (i.e. motion blurred). The
@@ -578,7 +578,7 @@ Making Connections
        NSIHandle_t to,
        const char *to_attr,
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
    )
 
 .. code-block:: c
@@ -665,7 +665,7 @@ Evaluating Procedurals
    void NSIEvaluate(
        NSIContext_t ctx,
        int n_args,
-       const NSIArg_t *args
+       const NSIParam_t *args
    )
 
 This function includes a block of interface calls from an external
@@ -828,7 +828,7 @@ Rendering
     void NSIRenderControl(
         NSIContext_t ctx,
         int n_args,
-        const NSIArg_t *args
+        const NSIParam_t *args
     )
 
 This function is the only control function of the API. It is responsible

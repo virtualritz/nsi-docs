@@ -1324,6 +1324,7 @@ following attributes:
     | ``outputdrivers``               | «connection(s)» | This connection accepts nodes to which |
     |                                 |                 | the layer’s image will be sent.        |
     | ``outputdriver`` (!)            |                 |                                        |
+    |                                 |                 |                                        |
     +---------------------------------+-----------------+----------------------------------------+
     | ``filter``                      | string          | The type of filter to use when         |
     |                                 | ``(blackmann-   | reconstructing the final image from    |
