@@ -3,7 +3,11 @@
 
 #include <stddef.h>
 
-#include "dlInterface.h"
+#ifdef _WIN32
+    #define DL_INTERFACE __declspec(dllimport)
+#else
+    #define DL_INTERFACE
+#endif
 
 #ifdef  __cplusplus
 extern "C" {
@@ -16,6 +20,7 @@ typedef const char* NSIHandle_t;
 #define NSI_SCENE_ROOT ".root"
 #define NSI_SCENE_GLOBAL ".global"
 #define NSI_ALL_NODES ".all"
+#define NSI_ALL_ATTRIBUTES ".all"
 #define NSI_VERSION 2
 
 /* Type values for NSIParam_t.type */
