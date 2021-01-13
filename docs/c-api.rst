@@ -432,8 +432,6 @@ This function is used to create a new node. Its arguments are:
 
 .. _CAPI:nsidelete:
 
-:ref:`NSIDeleteAttribute()`
-
 .. index::
     NSIDelete()
     deleting nodes
@@ -488,6 +486,13 @@ It accepts the following optional arguments:
     |                        |          | shader network in a single call.                   |
     +------------------------+----------+---------------+------------------------------------+
 
+.. _CAPI:nsisetattribute:
+
+.. index::
+    NSISetAttribute()
+    attribute creation
+    setting attributes
+
 Setting Attributes
 ~~~~~~~~~~~~~~~~~~
 
@@ -515,6 +520,14 @@ an attribute to its default value, use :ref:`NSIDeleteAttribute()
 --------------
 
 .. _CAPI:nsisetattributeattime:
+
+.. index::
+    NSISetAttributeAtTime()
+    attribute creation
+    setting an attribute at a time
+    motion blur
+    temporal sampling
+    shutter
 
 .. code-block:: c
 
@@ -544,6 +557,11 @@ using this function replaces any value previously set by
 
 .. _CAPI:nsideleteattribute:
 
+.. index::
+    NSIDeleteAttribute()
+    attribute deletion
+    deleting an attribute
+
 .. code-block:: c
 
    void NSIDeleteAttribute(
@@ -565,6 +583,11 @@ node<node:shader>` node will default to whatever is declared inside the
 shader.
 
 .. _CAPI:nsiconnect:
+
+.. index::
+    NSIConnect()
+    connecting nodes
+    node graph
 
 Making Connections
 ~~~~~~~~~~~~~~~~~~
@@ -635,13 +658,18 @@ which the connection is performed must exist. The arguments are:
     |                        |          | ``NSIDelete``.                                     |
     +------------------------+----------+----------------------------------------------------+
 
+Severing Connections
+~~~~~~~~~~~~~~~~~~~~
 
-Refer to the
-for
-more information about their utility.
+.. _CAPI:nsidisconnect:
+
+.. index::
+    NSIDisconnect()
+    connecting nodes
+    node graph
 
 With ``NSIDisconnect()``, the handle for either node may be the special
-value :ref:`'.all'<CAPI:dotall>` . This will remove all connections
+value :ref:`'.all'<CAPI:dotall>`. This will remove all connections
 which match the other three arguments. For example, to disconnect
 everything from :ref:`the scene's root<node:root>`:
 

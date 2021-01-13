@@ -19,7 +19,7 @@ The current documentation has new naming suggestions for some
 arguments, attributes and nodes that are marked with exclamation
 marks **(!)**.
 
-If you see a name writte dfferently below the current name and marked
+If you see a name written differently below the current name and marked
 with **(!)** this is a change suggestion.
 
 Feedback on these is welcome. Please go to the `GitHub repository
@@ -40,11 +40,11 @@ corner to make this process as painless as possible.
 Language Bindings
 -----------------
 
-Currently |nsi| ships with **C++**, **Python** and **Lua** bindings.
+The actual API is **C** which makes it easy to bind |nsi| to many
+different languages.
 
-More bindings are always welcome. The actual API is **C** which
-makes it easy to bind to many different languages.
+Currently the 3Delight renderer ships with free |nsi| bindings for
+**C++**, **Python** and **Lua**.
+There is also a `Rust binding <https:://crates.io/crates/nsi>.
 
-If you are interested in helping out or leading the effort of doing a
-**Rust** binding please `ping me on GitHub
-<https://github.com/virtualritz>`__!
+More bindings are always welcome!
