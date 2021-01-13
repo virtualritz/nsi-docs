@@ -36,6 +36,7 @@ master_doc = 'index'
 extensions = [
     'sphinxcontrib.rsvgconverter',
     'sphinx_tabs.tabs',
+
     #'sphinxcontrib.inkscapeconverter'
 ]
 

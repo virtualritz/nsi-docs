@@ -1,5 +1,5 @@
 sphinx
 sphinx-tabs
 sphinx_rtd_theme
-sphinx_search
+readthedocs-sphinx-search
 sphinxcontrib-svg2pdfconverter
