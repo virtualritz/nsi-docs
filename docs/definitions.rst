@@ -10,8 +10,8 @@
 .. |nsp| unicode:: 0x200B
     :trim:
 
-.. |closure| replace:: `closure <https://3delight.atlassian.net/wiki/display/3DSP/General+Guidelines#GeneralGuidelines-SupportedClosures>`__
+.. |closure| replace:: `closure <https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support>`__
 
-.. |closures| replace:: `closures <https://3delight.atlassian.net/wiki/display/3DSP/General+Guidelines#GeneralGuidelines-SupportedClosures>`__
+.. |closures| replace:: `closures <https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support>`__
 
 .. |3delight| replace:: `3Delight <https://www.3delight.com>`__

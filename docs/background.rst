@@ -46,7 +46,7 @@ The design of the |nsi| was shaped by multiple goals:
 
 | **Performance and Multi-Threading**
 |   All API design decisions are made with performance in mind and this
-    includes the possibility to run all api calls in a concurrent,
+    includes the possibility to run all API calls in a concurrent,
     multi-threaded environment. Nearly all software today which deals
     with large data sets needs to use multiple threads at some point.
     It is important for the interface to support this directly so it

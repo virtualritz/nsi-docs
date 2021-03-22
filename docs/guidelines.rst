@@ -52,7 +52,9 @@ A Word – or Two – About Attributes
 Those familiar with the *RenderMan* standard will remember the various
 ways to attach information to elements of the scene (standard
 attributes, user attributes, primitive variables, construction
-parameters).[1]_
+parameters). E.g parameters passed to RenderMan Interface calls to
+build certain objects. For example, knot vectors passed to
+``RiNuPatch()``.
 
 .. figure:: image/attribute_inheritance.svg
     :alt: Attribute inheritance and override
@@ -60,30 +62,30 @@ parameters).[1]_
     Attribute inheritance and override
 
 In |nsi| things are simpler and all attributes are set
-through the ``NSISetAttribute`` mechanism. The only distinction is that
-some attributes are required (*intrinsic attributes*) and some are
-optional: a :ref:`mesh node<node:mesh>` needs to have ``P``
-and ``nvertices`` defined — otherwise the geometry is invalid.
+through the ``NSISetAttribute()`` mechanism. The only distinction is
+that some attributes are required (*intrinsic attributes*) and some are
+optional: a :ref:`mesh node<node:mesh>` needs to have ``P`` and
+``nvertices`` defined — otherwise the geometry is invalid.
 
 .. Note::
     In this documentation, all intrinsic attributes are documented at
     the beginning of each section describing a particular node.
 
 In |osl| shaders, attributes are accessed using the ``getattribute()``
-function and *this is the only way to access attributes in nsi*. Having
-one way to set and to access attributes makes things simpler (a
-:ref:`design goal<chapter:background>`) and allows for extra flexibility
-(another design goal). shows two features of attribute assignment in
-|nsi|:
+function and *this is the only way to access attributes in |nsi|*.
+Having one way to set and to access attributes makes things simpler (a
+:ref:`design goal<chapter:background>`) and allows for extra
+flexibility (another design goal). shows two features of attribute
+assignment in |nsi|:
 
 Attribute inheritance
-   Attributes attached at some parent (in this case, a *metal* material)
-   affect geometry downstream
+   Attributes attached at some parent (in this case, a *metal*
+   material) affect geometry downstream.
 
 Attribute override
    It is possible to override attributes for a specific geometry by
-   attaching them to a transform directly upstream (the *plastic*
-   material overrides *metal* upstream)
+   attaching them to a *transform* node directly upstream (the
+   *plastic* material overrides *metal* upstream).
 
 Note that any non-intrinsic attribute can be inherited and overridden,
 including vertex attributes such as texture coordinates.
@@ -235,7 +237,7 @@ Spot and Point Lights
 
 Such lights are created using an epsilon sized geometry (a small disk, a
 particle, etc.) and optionally using extra arguments to the
-``emission()`` closure.
+``emission()`` |closure|.
 
 .. code-block:: c
    :caption: An example OSL spot light shader
