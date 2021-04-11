@@ -1011,14 +1011,20 @@ This node has the following attributes:
     |                              |              | hierarchy.                               |
     +------------------------------+--------------+------------------------------------------+
     | ``visibility.camera``        | integer      | These attributes set visibility for each |
-    | ``visibility.diffuse``       |              | ray type specified in |osl|. The same    |
-    | ``visibility.hair``          |              | effect could be achieved using shader    |
-    | ``visibility.reflection``    |              | code (using the ``raytype()`` function)  |
-    | ``visibility.refraction``    |              | but it is much faster to filter          |
-    | ``visibility.shadow``        |              | intersections at trace time. A value of  |
-    | ``visibility.specular``      |              | ``1`` makes the object visible to the    |
-    | ``visibility.volume``        |              | corresponding ray type, while ``0``      |
-    |                              |              | makes it invisible.                      |
+    |                              |              | ray type specified in |osl|. The same    |
+    | ``visibility.diffuse``       |              | effect could be achieved using shader    |
+    |                              |              | code (using the ``raytype()`` function)  |
+    | ``visibility.hair``          |              | but it is much faster to filter          |
+    |                              |              | intersections at trace time. A value of  |
+    | ``visibility.reflection``    |              | ``1`` makes the object visible to the    |
+    |                              |              | corresponding ray type, while ``0``      |
+    | ``visibility.refraction``    |              | makes it invisible.                      |
+    |                              |              |                                          |
+    | ``visibility.shadow``        |              |                                          |
+    |                              |              |                                          |
+    | ``visibility.specular``      |              |                                          |
+    |                              |              |                                          |
+    | ``visibility.volume``        |              |                                          |
     +------------------------------+--------------+------------------------------------------+
     | ``visibility``               | integer      | This attribute sets the default          |
     |                              |              | visibility for all ray types. When       |
