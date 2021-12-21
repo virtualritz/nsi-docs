@@ -11,6 +11,7 @@ Background
 
 The Nodal Scene Interface (|nsi|) was developed to replace existing
 APIs in the |3delight| renderer which were showing their age.
+Particualry the RenderMan Interface and the RenderMan Shading Language.
 
 Having been designed in the 80s and extended several times since, they
 include features which are no longer relevant and design decisions

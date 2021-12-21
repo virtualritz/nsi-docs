@@ -340,14 +340,25 @@ recognized by *3Delight*:
     |                                 |          | Larger values give less visible noise.    |
     | ``volume.samples`` (!)          |          |                                           |
     +---------------------------------+----------+-------------------------------------------+
-    | ``displacement.show``           | integer  | When set to ``1``, enables displacement   |
-    |                                 |          | shading. Otherwise, it must be set to     |
-    | ``shading.displacement`` (!)    |          | ignore any displacement shader in the     |
+    | ``show.displacement``           | integer  | When set to ``1``, enables displacement   |
+    |                                 |          | shading. Otherwise, it must be set to `0` |
+    | ``shading.displacement`` (!)    |          | to ignore any displacement shader in the  |
     |                                 |          | scene.                                    |
     +---------------------------------+----------+-------------------------------------------+
-    | ``subsurface.show``             | integer  | When set to ``1``, enables the            |
+    | ``show.atmosphere``             | integer  | When set to ``1``, enables atmosphere     |
+    |                                 |          | shader(s). Otherwise, it must be set to   |
+    | ``shading.atmosphere`` (!)      |          | `0` to ignore any atmosphere shader in    |
+    |                                 |          | the scene.                                |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``show.multiplescattering``     | double   | This is a multiplier on the multiple      |
+    |                                 |          | scattering of VDB nodes. This parameter   |
+    | ``shading.multiplescattering``  |          | is useful to obtain faster draft renders  |
+    | (!)                             |          | by lowering the value below 1. The range  |
+    |                                 |          | is `0` to `1`.                            |
+    +---------------------------------+----------+-------------------------------------------+
+    | ``show.osl.subsurface``         | integer  | When set to ``1``, enables the            |
     |                                 |          | ``subsurface()`` |osl| |closure|.         |
-    | ``shading.subsurface`` (!)      |          | Otherwise, it must be set to ``0``, which |
+    | ``shading.osl.subsurface`` (!)  |          | Otherwise, it must be set to ``0``, which |
     |                                 |          | will ignore this |closure| in |osl|       |
     |                                 |          | shaders.                                  |
     +---------------------------------+----------+-------------------------------------------+
@@ -535,21 +546,25 @@ The mesh node also has these optional attributes:
     | **Name**                         | **Type** | **Description/Values**                   |
     +==================================+==========+==========================================+
     | ``nholes``                       | integer  | The number of holes in the polygons.     |
-    |                                  |          | When this attribute is defined, the      |
-    | ``hole.count`` (!)               |          | total number of faces in the mesh is     |
+    |                                  |          |                                          |
+    | ``hole.count`` (!)               |          | When this attribute is defined, the      |
+    |                                  |          | total number of faces in the mesh is     |
     |                                  |          | defined by the number of values for      |
-    |                                  |          | ``nnholes`` rather than for              |
+    |                                  |          | ``nholes`` rather than for               |
     |                                  |          | ``nvertices``. For each face, there      |
-    |                                  |          | should be (``nholes``+1) values in       |
-    |                                  |          | ``vertices``: the respective first value |
-    |                                  |          | specifies the number of vertices on the  |
-    |                                  |          | outside perimeter of the face, while     |
-    |                                  |          | additional values describe the number of |
-    |                                  |          | vertices on perimeters of holes in the   |
-    |                                  |          | face. shows the definition of a polygon  |
-    |                                  |          | mesh consisting of 3 square faces, with  |
-    |                                  |          | one triangular hole in the first one and |
-    |                                  |          | square holes in the second one.          |
+    |                                  |          | should be (``nholes`` + 1) values in     |
+    |                                  |          | ``nvertices``: the respective first      |
+    |                                  |          | value specifies the number of vertices   |
+    |                                  |          | on the outside perimeter of the face,    |
+    |                                  |          | while additional values describe the     |
+    |                                  |          | number of vertices on perimeters of      |
+    |                                  |          | holes in the face.                       |
+    |                                  |          |                                          |
+    |                                  |          | The example below shows the definition   |
+    |                                  |          | of a polygon mesh consisting of three    |
+    |                                  |          | square faces, with one triangular hole   |
+    |                                  |          | in the first one and square holes in the |
+    |                                  |          | second one.                              |
     +----------------------------------+----------+------------------------------------------+
     | ``clockwisewinding``             | integer  | A value of ``1`` specifies that polygons |
     |                                  |          | with clockwise winding order are front   |
@@ -918,7 +933,10 @@ shader group. It has the following required attribute:
     +==============================+==============+==========================================+
     | ``shaderfilename``           | string       | This is the name of the file which       |
     |                              |              | contains the shader’s compiled code.     |
-    | ``filename`` (!)             |              |                                          |
+    +------------------------------+--------------+------------------------------------------+
+    | ``shaderobject``             | string       | This contains the complete compiled      |
+    |                              |              | shader code. It allows specifying        |
+    |                              |              | shaders without going through files.     |
     +------------------------------+--------------+------------------------------------------+
 
 All other attributes on this node are considered arguments of the

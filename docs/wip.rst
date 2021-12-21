@@ -3,7 +3,7 @@
 Help Wanted
 ===========
 
-The |nsi| API isused in the `3Delight <https://3delight.com/>`__
+The |nsi| API is used in the `3Delight <https://3delight.com/>`__
 renderer. More and more users of this renderer are switching their
 pipelines from using the *RenderMan Interface™* to |nsi|.
 
@@ -45,6 +45,6 @@ different languages.
 
 Currently the 3Delight renderer ships with free |nsi| bindings for
 **C++**, **Python** and **Lua**.
-There is also a `Rust binding <https:://crates.io/crates/nsi>.
+There is also a `Rust binding <https:://crates.io/crates/nsi>`__.
 
 More bindings are always welcome!

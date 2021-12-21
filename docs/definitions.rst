@@ -15,3 +15,19 @@
 .. |closures| replace:: `closures <https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support>`__
 
 .. |3delight| replace:: `3Delight <https://www.3delight.com>`__
+
+.. |NSICreate| replace:: ``NSICreate``
+
+.. _NSICreate: c-api.html#capi-nsicreate
+
+.. |NSIConnect| replace:: ``NSIConnect``
+
+.. _NSIConnect: c-api.html#capi-nsiconnect
+
+.. |attributes| replace:: ``attributes``
+
+.. _attributes: nodes.html#node-attributes
+
+.. |shader| replace:: ``shader``
+
+.. _shader: nodes.html#node-shader

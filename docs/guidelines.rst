@@ -122,17 +122,18 @@ Creating |osl| Networks
     A simple |osl| network connected to an attributes node
 
 The semantics used to create |osl| networks are the same as for scene
-creation. Each :ref:`shader node<node:shader>` in the network
-corresponds to a which must be created using . Each shader node has
-implicit attributes corresponding to shader's parameters and connection
-between said arguments is done using ``NSIConnect``. Above diagran
-depicts a simple |osl| network connected to an ``attributes`` node.
+creation. Each shader node in the network corresponds to a
+|shader|_ node which must be created using |NSICreate|_.
+Each shader node has implicit attributes corresponding to shader's
+parameters and connection between said arguments is done using
+|NSIConnect|_. Above diagran depicts a simple |osl| network connected
+to an |attributes|_ node.
 
 Some observations:
 
 -   Both the source and destination attributes (passed to
-    ``NSIConnect``) must be present and map to valid and compatible
-    shader parameters (:ref:`Lines 21–23<osl_network_example>`).
+    |NSIConnect|_ must be present and map to valid and compatible shader
+    parameters (:ref:`Lines 21–23<osl_network_example>`).
 
    .. Note::
        There is an exception to this: any non-shader node can be
@@ -141,15 +142,15 @@ Some observations:
        value.
 
        This behavior is useful when the shader needs to refer to another
-       node, in a call to ``transform()`` or ``getattribute()``, for
-       example.
+       node, in a |osl| call to ``transform()`` or ``getattribute()``,
+       for example.
 
 -   There is no *symbolic linking* between shader arguments and geometry
     attributes (a.k.a. primvars). One has to explicitly use the
     ``getattribute()`` |osl| function to read attributes attached to
     geometry. In this is done in the ``read_attribute`` node (:ref:`Lines
     11–14<osl_network_example>`). Also see the section on
-    :ref:`attribute<section:attributes>`.
+    :ref:`attributes<section:attributes>`.
 
 
 .. _osl_network_example:
