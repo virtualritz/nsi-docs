@@ -1,0 +1,12 @@
+# python generated files
+__pycache__/
+*.py[oc]
+dist/
+wheels/
+*.egg-info
+
+# venv
+.venv
+
+# mdbook build output
+book/build/

@@ -1,0 +1,65 @@
+# The C++ API
+
+The \[nsi.hpp\](nsi.hpp.md) file provides C++ wrappers which are less tedious to use than the low level C interface. All the functionality is inline so no additional libraries are needed and there are no abi issues to consider.
+
+## Creating a Context
+
+The core of these wrappers is the `NSI::Context` class. Its default construction will require linking with the renderer.
+
+```{.cpp linenos=""}
+#include "nsi.hpp"
+
+NSI::Context nsi;
+```
+
+The \[nsi_dynamic.hpp\](nsi_dynamic.hpp.md) file provides an alternate api source which will load the renderer at runtime and thus requires no direct linking.
+
+```{.cpp linenos=""}
+#include "nsi.hpp"
+#include "nsi_dynamic.hpp"
+
+NSI::DynamicAPI nsi_api;
+NSI::Context nsi(nsi_api);
+```
+
+In both cases, a new nsi context can then be created with the `Begin()` method.
+
+```{.cpp linenos=""}
+nsi.Begin();
+```
+
+This will be bound to the `NSI::Context` object and released when the object is deleted. It is also possible to bind the object to a handle from the C API, in which case it will not be released unless the `End()` method is explicitly called.
+
+## Argument Passing
+
+The `NSI::Context` class has methods for all the other ɴsɪ calls. The optional arguments of those can be set by several accessory classes and given in many ways. The most basic is a single argument.
+
+```{.cpp linenos=""}
+nsi.SetAttribute("handle", NSI::FloatArg("fov", 45.0f));
+```
+
+It is also possible to provide static lists:
+
+```{.cpp linenos=""}
+nsi.SetAttribute(
+    "handle",(
+        NSI::FloatArg("fov", 45.0f),
+        NSI::DoubleArg("depthoffield.fstop", 4.0)
+    )
+);
+```
+
+And finally a class supports dynamically building a list.
+
+```{.cpp linenos=""}
+NSI::ArgumentList args;
+args.Add(new NSI::FloatArg("fov", 45.0f));
+args.Add(new NSI::DoubleArg("depthoffield.fstop", 4.0));
+nsi.SetAttribute("handle", args);
+```
+
+The `NSI::ArgumentList` object will delete all the objects added to it when it is deleted.
+
+### Argument Classes
+
+To be continued ...

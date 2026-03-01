@@ -1,0 +1,15 @@
+[book]
+title = "ɴsɪ — A Flexible, Modern API for Renderers"
+authors = ["Olivier Paquet", "Aghiles Kheffache", "François Colbert", "Berj Bannayan"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "build"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+
+[output.html.search]
+enable = true
