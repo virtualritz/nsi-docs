@@ -9,4 +9,4 @@ build:
       - cargo install mdbook
     build:
       html:
-        - "$(dirname $(which cargo))/mdbook" build book --dest-dir $READTHEDOCS_OUTPUT/html
+        - PATH="$HOME/.cargo/bin:$HOME/.asdf/shims:$PATH" mdbook build book --dest-dir $READTHEDOCS_OUTPUT/html
