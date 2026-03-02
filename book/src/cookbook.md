@@ -6,7 +6,7 @@ The Nodal Scene Interface (NSI) is a simple yet expressive API to describe a sce
 
 Creating geometry nodes is simple. The content of each node is filled using the `NSISetAttribute` call.
 
-```shell
+```sh
 ## Polygonal meshes can be created minimally by specifying "P".
 ## NSI's C++ API provides an easy interface to pass parameters to all NSI
 ## API calls through the Args class.
@@ -42,7 +42,7 @@ nsi.SetAttribute( k_poly_handle, mesh_args );
 
 Specifying normals and other texture coordinates follows the same logic. Constant attributes can be declared in a concise form too:
 
-```shell
+```sh
 SetAttribute "simple polygon"
     "subdivision.scheme" "string" 1 ["catmull-clark"]
 ```
@@ -61,7 +61,7 @@ nsi.SetAttribute( k_poly_handle,
 
 In NSI, a geometry is rendered only if connected to the scene's root (which has the special handle ".root"). It is possible to directly connect a geometry node (such as the simple polygon above) to scene's root but it wouldn't be very useful. To place/instance a geometry anywhere in the 3D world a transform node is used as in the code snippet below.
 
-```shell
+```sh
 Create "my translation" "transform"
 Connect "translation"  "" ".root" "objects"
 Connect "simple polygon" "" "translation" "objects" );

@@ -1,4 +1,4 @@
-# nsi_dynamic.hpp
+# `nsi_dynamic.hpp`
 
 ```cpp
 /*

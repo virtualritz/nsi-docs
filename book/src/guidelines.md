@@ -7,7 +7,7 @@
 A minimal (and useful) ɴsɪ scene graph contains the three following components:
 
 1.  Geometry linked to the `.root` node, usually through a transform chain.
-2.  [ᴏsʟ](https://opensource.imageworks.com/?p=osl) materials linked to scene geometry through an [attributes](nodes.md#node-attributes) node.
+2.  [ᴏsʟ](https://opensource.imageworks.com/?p=osl) materials linked to scene geometry through an [attributes](nodes/attributes.md) node.
 3.  At least one _outputdriver_ ​ → ​ _outputlayer_ ​ → ​ _screen_ ​ → ​ _camera_ ​ → ​ `.root` chain to describe a view and an output device.
 
 The scene graph in shows a renderable scene with all the necessary elements. Note how the connections always lead to the `.root` node.
@@ -23,7 +23,7 @@ Those familiar with the _RenderMan_ standard will remember the various ways to a
 
 ![Attribute inheritance and override](image/attribute_inheritance.svg)
 
-In ɴsɪ things are simpler and all attributes are set through the `NSISetAttribute()` mechanism. The only distinction is that some attributes are required (_intrinsic attributes_) and some are optional: a [mesh node](nodes.md#node-mesh) needs to have `P` and `nvertices` defined --- otherwise the geometry is invalid.
+In ɴsɪ things are simpler and all attributes are set through the `NSISetAttribute()` mechanism. The only distinction is that some attributes are required (_intrinsic attributes_) and some are optional: a [mesh node](nodes/mesh.md) needs to have `P` and `nvertices` defined --- otherwise the geometry is invalid.
 
 > [!NOTE]
 > In this documentation, all intrinsic attributes are documented at the beginning of each section describing a particular node.
@@ -52,7 +52,7 @@ The above figure shows a simple scene with a geometry instanced three times. The
 
 ![A simple ᴏsʟ network connected to an attributes node](image/osl_network.svg)
 
-The semantics used to create [ᴏsʟ](https://opensource.imageworks.com/?p=osl) networks are the same as for scene creation. Each shader node in the network corresponds to a [shader](nodes.md#the-shader-node) node which must be created using [NSICreate](c-api.md#node-creation). Each shader node has implicit attributes corresponding to shader's parameters and connection between said arguments is done using [NSIConnect](c-api.md#making-connections). Above diagram depicts a simple [ᴏsʟ](https://opensource.imageworks.com/?p=osl) network connected to an [attributes](nodes.md#the-attributes-node) node.
+The semantics used to create [ᴏsʟ](https://opensource.imageworks.com/?p=osl) networks are the same as for scene creation. Each shader node in the network corresponds to a [shader](nodes/shader.md) node which must be created using [NSICreate](c-api.md#node-creation). Each shader node has implicit attributes corresponding to shader's parameters and connection between said arguments is done using [NSIConnect](c-api.md#making-connections). Above diagram depicts a simple [ᴏsʟ](https://opensource.imageworks.com/?p=osl) network connected to an [attributes](nodes/attributes.md) node.
 
 Some observations:
 
@@ -65,7 +65,7 @@ Some observations:
 
 - There is no _symbolic linking_ between shader arguments and geometry attributes (a.k.a. primvars). One has to explicitly use the `getattribute()` [ᴏsʟ](https://opensource.imageworks.com/?p=osl) function to read attributes attached to geometry. In this is done in the `read_attribute` node ([Lines 11--14](guidelines.md#osl-network-example)). Also see the section on [attributes](guidelines.md#section-attributes).
 
-```shell
+```sh
 Create "ggx_metal" "shader"
 SetAttribute "ggx"
     "shaderfilename" "string" 1  ["ggx.oso"]
@@ -98,7 +98,7 @@ Connect "ggx_metal" "Ci" "attr" "surfaceshader"
 
 ![Creating lights in nsi](image/lights.svg)
 
-There are no special light source nodes in ɴsɪ (although the [environment](nodes.md#the-environment-node) node, which defines a sphere of infinite radius, could be considered a light in practice).
+There are no special light source nodes in ɴsɪ (although the [environment](nodes/environment.md) node, which defines a sphere of infinite radius, could be considered a light in practice).
 
 Any scene geometry can become a light source if its surface shader produces an `emission()` [closure](https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support). Some operations on light sources, such as _light linking_, are done using more [general approaches](guidelines.md#section-lightlinking).
 
@@ -158,9 +158,9 @@ surface spotlight(
 
 ### Directional and HDR Lights
 
-Directional lights are created by using the [environment](nodes.md#the-environment-node) node and setting the `angle` attribute to 0. HDR lights are also created using the environment node, albeit with a 2π cone angle, and reading a high dynamic range texture in the attached surface shader. Other directional constructs, such as _solar lights_, can also be obtained using the environment node.
+Directional lights are created by using the [environment](nodes/environment.md) node and setting the `angle` attribute to 0. HDR lights are also created using the environment node, albeit with a 2π cone angle, and reading a high dynamic range texture in the attached surface shader. Other directional constructs, such as _solar lights_, can also be obtained using the environment node.
 
-Since the [environment](nodes.md#the-environment-node) node defines a sphere of infinite radius any connected [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shader must only rely on the `I` variable and disregard `P`, as is shown below.
+Since the [environment](nodes/environment.md) node defines a sphere of infinite radius any connected [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shader must only rely on the `I` variable and disregard `P`, as is shown below.
 
 ```c
 shader hdrlight(
@@ -224,7 +224,7 @@ Above figure shows a scenario where both hierarchy attribute overrides and inter
 
 - The mirror object has its own attributes node that is used to override the visibility of the ghost as seen from the mirror. The nsi stream code to achieve that would look like this:
 
-  ```shell
+  ```sh
   Connect "mirror_attribute" "" "ghost_attributes" "visibility"
       "value" "int" 1 [1]
       "priority" "int" 1 [2]

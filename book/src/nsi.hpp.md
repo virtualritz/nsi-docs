@@ -1,4 +1,4 @@
-# nsi.hpp
+# `nsi.hpp`
 
 ```cpp
 #ifndef __nsi_hpp

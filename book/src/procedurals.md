@@ -1,8 +1,8 @@
 # Dynamic Library Procedurals
 
-`NSIEvaluate` and [procedural](nodes.md#the-procedural-node) nodes can execute code loaded from a dynamically loaded library that defines a procedural. Executing the procedural is expected to result in a series of ɴsɪ API calls that contribute to the description of the scene. For example, a procedural could read a part of the scene stored in a different file format and translate it directly into ɴsɪ calls.
+`NSIEvaluate` and [procedural](nodes/procedural.md) nodes can execute code loaded from a dynamically loaded library that defines a procedural. Executing the procedural is expected to result in a series of ɴsɪ API calls that contribute to the description of the scene. For example, a procedural could read a part of the scene stored in a different file format and translate it directly into ɴsɪ calls.
 
-This section describes how to use the definitions from the [nsi_procedural.h](nsi_procedural.h.md) header to write such a library in C or C++. However, the process of compiling and linking it is specific to each operating system and out of the scope of this manual.
+This section describes how to use the definitions from the [`nsi_procedural.h`](nsi_procedural.h.md) header to write such a library in C or C++. However, the process of compiling and linking it is specific to each operating system and out of the scope of this manual.
 
 ## Entry Point
 
@@ -22,12 +22,12 @@ It returns a pointer to a descriptor struct of type `NSIProcedural_t` (see [belo
 
 `NSIProceduralLoad()` receives the following parameters:
 
-| **Name**           | **Type**       | **Description**                                                                                                                                                                                                                                                                                                                                        |
-| ------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ctx`              | `NSIContext_t` | The ɴsɪ context into which the procedural is being loaded.                                                                                                                                                                                                                                                                                             |
-| `report`           | `NSIReport_t`  | A function that can be used to display informational, warning or error messages through the renderer.                                                                                                                                                                                                                                                  |
-| `nsi_library_path` | `const char*`  | The path to the ɴsɪ implementation that is loading the procedural. This allows the procedural to explicitly make its ɴsɪ API calls through the same implementation (for example, by using `NSI::DynamicAPI` defined in [nsi_dynamic.hpp](nsi_dynamic.hpp.md)). It's usually not required if only one implementation of ɴsɪ is installed on the system. |
-| `renderer_version` | `const char*`  | A character string describing the current version of the renderer.                                                                                                                                                                                                                                                                                     |
+| **Name**           | **Type**       | **Description**                                                                                                                                                                                                                                                                                                                                          |
+| ------------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ctx`              | `NSIContext_t` | The ɴsɪ context into which the procedural is being loaded.                                                                                                                                                                                                                                                                                               |
+| `report`           | `NSIReport_t`  | A function that can be used to display informational, warning or error messages through the renderer.                                                                                                                                                                                                                                                    |
+| `nsi_library_path` | `const char*`  | The path to the ɴsɪ implementation that is loading the procedural. This allows the procedural to explicitly make its ɴsɪ API calls through the same implementation (for example, by using `NSI::DynamicAPI` defined in [`nsi_dynamic.hpp`](nsi_dynamic.hpp.md)). It's usually not required if only one implementation of ɴsɪ is installed on the system. |
+| `renderer_version` | `const char*`  | A character string describing the current version of the renderer.                                                                                                                                                                                                                                                                                       |
 
 ## Procedural Description
 
@@ -60,12 +60,12 @@ The structure returned by `NSIProceduralLoad()` contains information needed by t
 > [!TIP]
 > This means that it is possible for a procedural to extend the structure (by over-allocating memory or subclassing, for example) in order to store any **extra information** that it might need later.
 
-The `nsi_version` member must be set to `NSI_VERSION` (defined in [nsi.h](nsi.h.md)), so the renderer is able to determine which version of ɴsɪ was used when compiling the procedural.
+The `nsi_version` member must be set to `NSI_VERSION` (defined in [`nsi.h`](nsi.h.md)), so the renderer is able to determine which version of ɴsɪ was used when compiling the procedural.
 
 The function pointer types used in the definition are:
 
 - `NSIProceduralUnload_t` is a function that cleans-up after the last execution of the procedural. This is the dual of `NSIProceduralLoad()`. In addition to arguments `ctx` and `report`, also received by `NSIProceduralLoad()`, it receives the description of the procedural returned by `NSIProceduralLoad()`.
-- `NSIProceduralExecute_t` is a function that contributes to the description of the scene by generating ɴsɪ API calls. Since `NSIProceduralExecute_t` might be called multiple times in the same render, it's important that it uses the context `ctx` it receives as a parameter to make its ɴsɪ calls, and not the context previously received by `NSIProceduralLoad()`. It also receives any extra parameters sent to [NSIEvaluate](c-api.md#evaluating-procedurals), or any extra attributes set on a [procedural](nodes.md#the-procedural-node) node. They are stored in the `params` array (of length `nparams`). `NSIParam_t` is described in [passing optional arguments](c-api.md#passing-optional-arguments).
+- `NSIProceduralExecute_t` is a function that contributes to the description of the scene by generating ɴsɪ API calls. Since `NSIProceduralExecute_t` might be called multiple times in the same render, it's important that it uses the context `ctx` it receives as a parameter to make its ɴsɪ calls, and not the context previously received by `NSIProceduralLoad()`. It also receives any extra parameters sent to [NSIEvaluate](c-api.md#evaluating-procedurals), or any extra attributes set on a [procedural](nodes/procedural.md) node. They are stored in the `params` array (of length `nparams`). `NSIParam_t` is described in [passing optional arguments](c-api.md#passing-optional-arguments).
 
 ## Error Reporting
 
@@ -131,4 +131,4 @@ NSI_PROCEDURAL_LOAD
 
 ---
 
-[^1]: A good example of this is available in the [3Delight](https://www.3delight.com) installation, in file [gear.cpp](gear.cpp.md).
+[^1]: A good example of this is available in the [3Delight](https://www.3delight.com) installation, in file [`gear.cpp`](gear.cpp.md).

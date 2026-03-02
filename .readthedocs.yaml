@@ -6,7 +6,8 @@ build:
     rust: latest
   jobs:
     install:
-      - cargo install mdbook --root $HOME/.cargo
+      - cargo install cargo-binstall --root $HOME/.cargo
+      - $HOME/.cargo/bin/cargo-binstall mdbook mdbook-admonish --no-confirm --root $HOME/.cargo
     build:
       html:
         - $HOME/.cargo/bin/mdbook build book --dest-dir $READTHEDOCS_OUTPUT/html

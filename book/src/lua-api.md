@@ -9,7 +9,7 @@ The scripted interface is slightly different than its counterpart since it has b
 
 Below is an example shader creation logic in Lua.
 
-```{.lua caption="shader creation example in Lua" linenos=""}
+```lua
 nsi.Create( "lambert", "shader" );
 nsi.SetAttribute(
     "lambert", {
@@ -71,7 +71,7 @@ Each single argument is passed as a Lua table containing the following key value
 
 Here are some example of well formed arguments:
 
-```{.lua linenos=""}
+```lua
 --[[ strings, floats and integers do not need a 'type' specifier ]] --
 p1 = {
     name = "shaderfilename",
@@ -121,7 +121,7 @@ nsi.Connect( "floor", "", ".root", "objects" )
 
 Script evaluation is done through C, an ɴsɪ stream or even another Lua script. Here is an example using an ɴsɪ stream:
 
-```{.shell linenos=""}
+```sh
 Evaluate
     "filename" "string" 1 ["test.nsi.lua"]
     "type" "string" 1 ["lua"]
@@ -129,7 +129,7 @@ Evaluate
 
 It is also possible to evaluate a Lua script _inline_ using the `script` argument. For example:
 
-```{.shell linenos=""}
+```sh
 Evaluate
     "script" "string" 1 ["nsi.Create(\"light\", \"shader\");"]
     "type" "string" 1 ["lua"]
@@ -148,7 +148,7 @@ Some utilities, such as error reporting, are available through the `nsi.utilitie
 
 All arguments passed to `NSIEvaluate()` will appear in the `nsi.scriptarguments` table. For example, the following call:
 
-```{.shell linenos=""}
+```sh
 Evaluate
     "filename" "string" 1 ["test.lua"]
     "type" "string" 1 ["lua"]
@@ -163,7 +163,7 @@ print( nsi.scriptarguments.userdata.data[5] );
 
 Will print:
 
-```shell
+```sh
 3.0
 ```
 

@@ -1,6 +1,6 @@
 # The C API
 
-This section describes the C implementation of the ɴsɪ, as provided in the [nsi.h](nsi.h.md) file. This will also be a reference for the interface in other languages as all concepts are the same.
+This section describes the C implementation of the ɴsɪ, as provided in the [`nsi.h`](nsi.h.md) file. This will also be a reference for the interface in other languages as all concepts are the same.
 
 ```c
 #define NSI_VERSION 1
@@ -12,7 +12,7 @@ The `NSI_VERSION` macro exists in case there is a need at some point to break so
 #define NSI_SCENE_ROOT ".root"
 ```
 
-The `NSI_SCENE_ROOT` macro defines the handle of the [root node](nodes.md#the-root-node).
+The `NSI_SCENE_ROOT` macro defines the handle of the [root node](nodes/root.md).
 
 ```c
 #define NSI_ALL_NODES ".all"
@@ -49,7 +49,7 @@ A context must be given explicitly when calling all other functions of the inter
 typedef int NSIContext_t;
 ```
 
-If `NSIBegin` fails for some reason, it returns `NSI_BAD_CONTEXT` which is defined in [nsi.h](nsi.h.md):
+If `NSIBegin` fails for some reason, it returns `NSI_BAD_CONTEXT` which is defined in [`nsi.h`](nsi.h.md):
 
 ```c
 #define NSI_BAD_CONTEXT ((NSIContext_t)0)
@@ -57,26 +57,22 @@ If `NSIBegin` fails for some reason, it returns `NSI_BAD_CONTEXT` which is defin
 
 [Optional arguments](#passing-optional-arguments) may be given to `NSIBegin()` to control the creation of the context:
 
-| **Name**                 | **Type** | **Description/Values**                                                                                                                                                                                                                                                                                             |
-| ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `type`                   | string   | Sets the type of context to create. The possible types are:                                                                                                                                                                                                                                                        |
-|                          |          | `render` — Execute the calls directly in the renderer. This is the **default**.                                                                                                                                                                                                                                    |
-|                          |          | `apistream` — To write the interface calls to a stream, for later execution. The target for writing the stream must be specified in another argument.                                                                                                                                                              |
-| `streamfilename`         | string   | The file to which the stream is to be output, if the context type is `apistream`. Specify `stdout` to write to standard output and `stderr` to write to standard error.                                                                                                                                            |
-| `stream.filename` (!)    |          |                                                                                                                                                                                                                                                                                                                    |
-| `streamformat`           | string   | The format of the command stream to write. Possible formats are:                                                                                                                                                                                                                                                   |
-| `stream.format` (!)      |          | `nsi` — Produces an [ɴsɪ stream](stream-api.md#the-nsi-stream).                                                                                                                                                                                                                                                    |
-|                          |          | `binarynsi` — Produces a binary encoded [ɴsɪ stream](stream-api.md#the-nsi-stream).                                                                                                                                                                                                                                |
-|                          |          | `autonsi` — Automatically selects the best format.                                                                                                                                                                                                                                                                 |
-| `stream.compression`     | string   | The type of compression to apply to the written command stream.                                                                                                                                                                                                                                                    |
-| `stream.compression` (!) |          |                                                                                                                                                                                                                                                                                                                    |
-| `streampathreplacement`  | int      | Use `0` to disable replacement of path prefixes by references to environment variables which begin with `NSI_PATH_` in an ɴsɪ stream. This should generally be left enabled to ease creation of files which can be moved between systems.                                                                          |
-| `stream.path.replace`    |          |                                                                                                                                                                                                                                                                                                                    |
-| `separateprocess`        | int      | When set to `1`, the render will be executed in a separate process.                                                                                                                                                                                                                                                |
-| `errorhandler`           | pointer  | A function which is to be called by the renderer to report errors. The default handler will print messages to the console.                                                                                                                                                                                         |
-| `errorhandler.data`      | pointer  | The `userdata` argument of the [error reporting function](#error-reporting).                                                                                                                                                                                                                                       |
-| `executeprocedurals`     | string   | A list of procedural types that should be executed immediately when a call to [NSIEvaluate()](#evaluating-procedurals) or a procedural node is encountered and `NSIBegin()`'s output `type` is `apistream`. This will replace any matching call to `NSIEvaluate()` with the results of the procedural's execution. |
-| `evaluate.replace` (!)   |          |                                                                                                                                                                                                                                                                                                                    |
+| **Name**                | **Type** | **Description/Values**                                                                                                                                                                                                                                                                                             |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `type`                  | string   | Sets the type of context to create. The possible types are:                                                                                                                                                                                                                                                        |
+|                         |          | `render` — Execute the calls directly in the renderer. This is the **default**.                                                                                                                                                                                                                                    |
+|                         |          | `apistream` — To write the interface calls to a stream, for later execution. The target for writing the stream must be specified in another argument.                                                                                                                                                              |
+| `streamfilename`        | string   | The file to which the stream is to be output, if the context type is `apistream`. Specify `stdout` to write to standard output and `stderr` to write to standard error.                                                                                                                                            |
+| `streamformat`          | string   | The format of the command stream to write. Possible formats are:                                                                                                                                                                                                                                                   |
+|                         |          | `nsi` — Produces an [ɴsɪ stream](stream-api.md#the-nsi-stream).                                                                                                                                                                                                                                                    |
+|                         |          | `binarynsi` — Produces a binary encoded [ɴsɪ stream](stream-api.md#the-nsi-stream).                                                                                                                                                                                                                                |
+|                         |          | `autonsi` — Automatically selects the best format.                                                                                                                                                                                                                                                                 |
+| `stream.compression`    | string   | The type of compression to apply to the written command stream.                                                                                                                                                                                                                                                    |
+| `streampathreplacement` | int      | Use `0` to disable replacement of path prefixes by references to environment variables which begin with `NSI_PATH_` in an ɴsɪ stream. This should generally be left enabled to ease creation of files which can be moved between systems.                                                                          |
+| `separateprocess`       | int      | When set to `1`, the render will be executed in a separate process.                                                                                                                                                                                                                                                |
+| `errorhandler`          | pointer  | A function which is to be called by the renderer to report errors. The default handler will print messages to the console.                                                                                                                                                                                         |
+| `errorhandler.data`     | pointer  | The `userdata` argument of the [error reporting function](#error-reporting).                                                                                                                                                                                                                                       |
+| `executeprocedurals`    | string   | A list of procedural types that should be executed immediately when a call to [NSIEvaluate()](#evaluating-procedurals) or a procedural node is encountered and `NSIBegin()`'s output `type` is `apistream`. This will replace any matching call to `NSIEvaluate()` with the results of the procedural's execution. |
 
 ## Arguments vs. Attributes
 
@@ -157,7 +153,7 @@ Tuple types are specified by setting the bit defined by the `NSIArgIsArray` cons
 >
 > The `NSIArgIsArray` flag is necessary to distinguish between arguments that happen to be of _length_ 1 (set in the `count` member) and tuples that have a _length_ of 1 (set in the `arraylength` member) for the resp. argument.
 >
-> ```shell
+> ```sh
 > "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in a (single) tuple
 > "bar" "int" 1 13       # My favorite Friday
 > ```
@@ -185,7 +181,7 @@ The `flags` member is a bit field with a number of constants used to communicate
 
 Indirect lookup of arguments is achieved by giving an integer argument of the same name, with the `.indices` suffix added. This is read to know which values of the other argument to use.
 
-```shell
+```sh
 Create "subdiv" "mesh"
 SetAttribute "subdiv"
   "nvertices" "int" 4 [ 4 4 4 4 ]
@@ -218,14 +214,14 @@ This function is used to create a new node. Its arguments are:
 `handle`
 : A node handle. This string will uniquely identify the node in the scene.
 
-If the supplied handle matches an existing node, the function does nothing if all other arguments match the call which created that node. Otherwise, it emits an error. Note that handles need only be unique within a given interface context. It is acceptable to reuse the same handle inside different contexts. The `NSIHandle_t` typedef is defined in [nsi.h](nsi.h.md):
+If the supplied handle matches an existing node, the function does nothing if all other arguments match the call which created that node. Otherwise, it emits an error. Note that handles need only be unique within a given interface context. It is acceptable to reuse the same handle inside different contexts. The `NSIHandle_t` typedef is defined in [`nsi.h`](nsi.h.md):
 
 ```c
 typedef const char* NSIHandle_t;
 ```
 
 `type`
-: The type of [node](nodes.md#nodes) to create.
+: The type of [node](nodes.md) to create.
 
 `n_params`, `args`
 : This pair describes a list of optional arguments. The `NSIParam_t` type is described in [this section](#passing-optional-arguments).
@@ -244,7 +240,7 @@ void NSIDelete(
 )
 ```
 
-This function deletes a node from the scene. All connections to and from the node are also deleted. Note that it is not possible to delete the [root](nodes.md#the-root-node) or the [global](nodes.md#the-global-node) node. Its arguments are:
+This function deletes a node from the scene. All connections to and from the node are also deleted. Note that it is not possible to delete the [root](nodes/root.md) or the [global](nodes/global.md) node. Its arguments are:
 
 `context`
 : The context returned by `NSIBegin()`. See [context handling](#context-handling).
@@ -271,7 +267,7 @@ void NSISetAttribute(
 
 This function sets attributes on a previously created node. All [optional arguments](#passing-optional-arguments) of the function become attributes of the node.
 
-On a [shader node](nodes.md#the-shader-node), this function is used to set the implicitly defined shader arguments.
+On a [shader node](nodes/shader.md), this function is used to set the implicitly defined shader arguments.
 
 Setting an attribute using this function replaces any value previously set by `NSISetAttribute()` or `NSISetAttributeAtTime()`. To reset an attribute to its default value, use `NSIDeleteAttribute()`.
 
@@ -291,7 +287,7 @@ This function sets time-varying attributes (i.e. motion blurred). The `time` arg
 
 It is not required to set time-varying attributes in any particular order. In most uses, attributes that are motion blurred must have the same specification throughout the time range.
 
-A notable exception is the `P` attribute on [particles](nodes.md#the-particles-node) which can be of different size for each time step because of appearing or disappearing particles. Setting an attribute using this function replaces any value previously set by `NSISetAttribute()`.
+A notable exception is the `P` attribute on [particles](nodes/particles.md) which can be of different size for each time step because of appearing or disappearing particles. Setting an attribute using this function replaces any value previously set by `NSISetAttribute()`.
 
 ---
 
@@ -307,7 +303,7 @@ This function deletes any attribute with a name which matches the `name` argumen
 
 Deleting an attribute resets it to its default value.
 
-For example, after deleting the `transformationmatrix` attribute on a [transform node](nodes.md#the-transform-node), the transform will be an identity. Deleting a previously set attribute on a [shader node](nodes.md#the-shader-node) will default to whatever is declared inside the shader.
+For example, after deleting the `transformationmatrix` attribute on a [transform node](nodes/transform.md), the transform will be an identity. Deleting a previously set attribute on a [shader node](nodes/shader.md) will default to whatever is declared inside the shader.
 
 ## Making Connections
 
@@ -357,7 +353,7 @@ These two functions respectively create or remove a connection between two eleme
 
 ## Severing Connections
 
-With `NSIDisconnect()`, the handle for either node may be the special value `.all`. This will remove all connections which match the other three arguments. For example, to disconnect everything from [the scene's root](nodes.md#the-root-node):
+With `NSIDisconnect()`, the handle for either node may be the special value `.all`. This will remove all connections which match the other three arguments. For example, to disconnect everything from [the scene's root](nodes/root.md):
 
 ```c
 NSIDisconnect( NSI_ALL_NODES, "", NSI_SCENE_ROOT, "objects" );
@@ -373,7 +369,7 @@ void NSIEvaluate(
 )
 ```
 
-This function includes a block of interface calls from an external source into the current scene. It blends together the concepts of a straight file include, commonly known as an archive, with that of procedural include which is traditionally a compiled executable. Both are really the same idea expressed in a different language (note that for delayed procedural evaluation one should use the [procedural node](nodes.md#the-procedural-node)).
+This function includes a block of interface calls from an external source into the current scene. It blends together the concepts of a straight file include, commonly known as an archive, with that of procedural include which is traditionally a compiled executable. Both are really the same idea expressed in a different language (note that for delayed procedural evaluation one should use the [procedural node](nodes/procedural.md)).
 
 The ɴsɪ adds a third option which sits in-between — [Lua scripts](lua-api.md#the-lua-api). They are much more powerful than a simple included file yet they are also much easier to generate as they do not require compilation. It is, for example, very realistic to export a whole new script for every frame of an animation. It could also be done for every character in a frame. This gives great flexibility in how components of a scene are put together.
 
@@ -381,17 +377,16 @@ The ability to load ɴsɪ commands straight from memory is also provided.
 
 The optional arguments accepted by this function are:
 
-| **Name**              | **Type**      | **Description/Values**                                                                                                                                                                                                                                                     |
-| --------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`                | string        | The type of file which will generate the interface calls. This can be one of:                                                                                                                                                                                              |
-|                       |               | `apistream` — Read in an [ɴsɪ stream](stream-api.md#the-nsi-stream). This requires either `filename` or `buffer`/`size` arguments to be specified too.                                                                                                                     |
-|                       |               | `lua` — Execute a [Lua](lua-api.md#the-lua-api) script, either from file or inline. See also [how to evaluate a Lua script](lua-api.md#the-lua-api).                                                                                                                       |
-|                       |               | `dynamiclibrary` — Execute native compiled code in a loadable library. See [dynamic library procedurals](procedurals.md) for an implementation example.                                                                                                                    |
-| `filename`            | string        | The file from which to read the interface stream.                                                                                                                                                                                                                          |
-| `stream.filename` (!) |               |                                                                                                                                                                                                                                                                            |
-| `script`              | string        | A valid [Lua](lua-api.md#the-lua-api) script to execute when `type` is set to `lua`.                                                                                                                                                                                       |
-| `buffer` / `size`     | pointer / int | These two arguments define a memory block that contains ɴsɪ commands to execute.                                                                                                                                                                                           |
-| `backgroundload`      | int           | If this is nonzero, the object may be loaded in a separate thread, at some later time. This requires that further interface calls not directly reference objects defined in the included file. The only guarantee is that the file will be loaded before rendering begins. |
+| **Name**          | **Type**      | **Description/Values**                                                                                                                                                                                                                                                     |
+| ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`            | string        | The type of file which will generate the interface calls. This can be one of:                                                                                                                                                                                              |
+|                   |               | `apistream` — Read in an [ɴsɪ stream](stream-api.md#the-nsi-stream). This requires either `filename` or `buffer`/`size` arguments to be specified too.                                                                                                                     |
+|                   |               | `lua` — Execute a [Lua](lua-api.md#the-lua-api) script, either from file or inline. See also [how to evaluate a Lua script](lua-api.md#the-lua-api).                                                                                                                       |
+|                   |               | `dynamiclibrary` — Execute native compiled code in a loadable library. See [dynamic library procedurals](procedurals.md) for an implementation example.                                                                                                                    |
+| `filename`        | string        | The file from which to read the interface stream.                                                                                                                                                                                                                          |
+| `script`          | string        | A valid [Lua](lua-api.md#the-lua-api) script to execute when `type` is set to `lua`.                                                                                                                                                                                       |
+| `buffer` / `size` | pointer / int | These two arguments define a memory block that contains ɴsɪ commands to execute.                                                                                                                                                                                           |
+| `backgroundload`  | int           | If this is nonzero, the object may be loaded in a separate thread, at some later time. This requires that further interface calls not directly reference objects defined in the included file. The only guarantee is that the file will be loaded before rendering begins. |
 
 ## Error Reporting
 
@@ -454,7 +449,6 @@ This function is the only control function of the API. It is responsible for sta
 | `interactive`     | integer  | If set to `1`, the renderer will accept commands to edit scene's state while rendering. The difference with a normal render is that the render task will not exit even if rendering is finished. Interactive renders are by definition progressive. |
 | `frame`           |          | Specifies the frame number of this render.                                                                                                                                                                                                          |
 | `stoppedcallback` | pointer  | A pointer to a user function that should be called on rendering status changes. The function signature is:                                                                                                                                          |
-| `callback` (!)    |          |                                                                                                                                                                                                                                                     |
 
 ```c
 void StoppedCallback(
@@ -474,4 +468,3 @@ The `status` argument can take the following values:
 | **Name**              | **Type** | **Description/Values**                                                |
 | --------------------- | -------- | --------------------------------------------------------------------- |
 | `stoppedcallbackdata` | pointer  | A pointer that will be passed back to the `stoppedcallback` function. |
-| `callback.data` (!)   |          |                                                                       |

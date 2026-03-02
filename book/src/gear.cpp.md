@@ -1,4 +1,4 @@
-# gear.cpp
+# `gear.cpp`
 
 ```cpp
 #include "nsi_procedural.h"

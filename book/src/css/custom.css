@@ -1,0 +1,47 @@
+/* Attribute mini-tables */
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: none !important;
+}
+
+table th,
+table td {
+  text-align: left;
+  border: none !important;
+}
+
+/* Hide header row */
+table thead {
+  display: none;
+}
+
+/* Column widths: Name 50%, Type 25%, Default 25% */
+table td:first-child {
+  width: 50%;
+}
+
+table td:nth-child(2) {
+  width: 25%;
+}
+
+table td:nth-child(3) {
+  width: 25%;
+}
+
+/* Alternating row colors */
+table tbody tr:nth-child(odd) {
+  background: rgba(128, 128, 128, 0.1) !important;
+}
+
+table tbody tr:nth-child(even) {
+  background: transparent !important;
+}
+
+/* Invert SVG images in dark themes */
+.coal img[src$=".svg"],
+.navy img[src$=".svg"],
+.ayu img[src$=".svg"] {
+  filter: invert(1) hue-rotate(180deg);
+}
