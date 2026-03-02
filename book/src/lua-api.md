@@ -30,7 +30,7 @@ nsi.SetAttribute(
 
 ## API calls
 
-All (in a scripting context) useful ɴsɪ functions are provided and are listed below. There is also a `nsi.utilities` class which, for now, only contains a \[method to print errors\](lua-api.md#luaapi-errors).
+All (in a scripting context) useful ɴsɪ functions are provided and are listed below. There is also a `nsi.utilities` class which, for now, only contains a [method to print errors](lua-api.md#luaapi-errors).
 
 | **Lua Function**           | **C equivalent**          |
 | -------------------------- | ------------------------- |
@@ -137,7 +137,7 @@ Evaluate
 
 Both `filename` and `script` can be specified to `NSIEvaluate()` in one go, in which case the inline script will be evaluated before the file and both scripts will share the same ɴsɪ and Lua contexts.
 
-Any error during script parsing or evaluation will be sent to ɴsɪ\'s error handler.
+Any error during script parsing or evaluation will be sent to ɴsɪ's error handler.
 
 Some utilities, such as error reporting, are available through the `nsi.utilities` class.
 

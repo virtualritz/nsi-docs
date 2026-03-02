@@ -1,6 +1,6 @@
 # The C++ API
 
-The \[nsi.hpp\](nsi.hpp.md) file provides C++ wrappers which are less tedious to use than the low level C interface. All the functionality is inline so no additional libraries are needed and there are no abi issues to consider.
+The [nsi.hpp](nsi.hpp.md) file provides C++ wrappers which are less tedious to use than the low level C interface. All the functionality is inline so no additional libraries are needed and there are no abi issues to consider.
 
 ## Creating a Context
 
@@ -12,7 +12,7 @@ The core of these wrappers is the `NSI::Context` class. Its default construction
 NSI::Context nsi;
 ```
 
-The \[nsi_dynamic.hpp\](nsi_dynamic.hpp.md) file provides an alternate api source which will load the renderer at runtime and thus requires no direct linking.
+The [nsi_dynamic.hpp](nsi_dynamic.hpp.md) file provides an alternate api source which will load the renderer at runtime and thus requires no direct linking.
 
 ```{.cpp linenos=""}
 #include "nsi.hpp"

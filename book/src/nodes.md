@@ -1,1624 +1,929 @@
 # Nodes
 
-The following sections describe available nodes in technical terms. Refer to \[the rendering guidelines\](guidelines.md#chapter-guidelines) for usage details.
+The following sections describe available nodes in technical terms. Refer to [the rendering guidelines](guidelines.md) for usage details.
 
-<table style="width:3%;">
-<caption>Overview of nsi nodes</caption>
-<colgroup>
-<col style="width: 2%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><blockquote>
-<p><strong>Node</strong> | <strong>Function</strong> |</p>
-</blockquote>
-<dl>
-<dt>========================================+==========================+</dt>
-<dd>
-<p>[root](nodes.md#node-root) | The scene's root |</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td>[global](nodes.md#node-global) | Global settings node |</td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[set](nodes.md#node-set) | Expresses relationships |</dt>
-<dd>
-<div class="line-block">of groups of nodes |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td><dl>
-<dt>[shader](nodes.md#node-shader) | [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>) shader or layer in</dt>
-<dd>
-<div class="line-block">a shader group |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[attributes](nodes.md#node-attributes) | Container for generic |</dt>
-<dd>
-<div class="line-block">attributes (e.g. |<br />
-visibility) |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td><dl>
-<dt>[transform](nodes.md#node-transform) | Transformation to place |</dt>
-<dd>
-<div class="line-block">objects in the scene |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[instances](nodes.md#node-instances) | Specifies instances of |</dt>
-<dd>
-<div class="line-block">other nodes |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td>[plane](nodes.md#node-plane) | An infinite plane |</td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[mesh](nodes.md#node-mesh) | Polygonal mesh or |</dt>
-<dd>
-<div class="line-block">subdivision surface |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td><dl>
-<dt>[faceset](nodes.md#node-faceset) | Assign attributes to |</dt>
-<dd>
-<div class="line-block">part of a mesh, curves |<br />
-or paticles. |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[curves](nodes.md#node-curves) | Linear, b-spline and |</dt>
-<dd>
-<div class="line-block">Catmull-Rom curves |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td>[particles](nodes.md#node-particles) | Collection of particles |</td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[procedural](nodes.md#node-procedural) | Geometry to be loaded |</dt>
-<dd>
-<div class="line-block">or generated in delayed |<br />
-fashion |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td><dl>
-<dt>[volume](nodes.md#node-volume) | A volume loaded from an |</dt>
-<dd>
-<div class="line-block">[OpenVDB](<a href="https://www.openvdb.org">https://www.openvdb.org</a>) file |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[environment](nodes.md#node-environment) | Geometry type to define |</dt>
-<dd>
-<div class="line-block">environment lighting |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td><dl>
-<dt>[camera](nodes.md#node-camera) | Set of nodes to create |</dt>
-<dd>
-<div class="line-block">viewing cameras |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[outputdriver](nodes.md#node-outputdriver) | A target where to |</dt>
-<dd>
-<div class="line-block">output rendered pixels |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-<td><dl>
-<dt>[outputlayer](nodes.md#node-outputlayer) | Describes one render |</dt>
-<dd>
-<div class="line-block">layer to be connected |<br />
-to an <code>outputdriver</code> |<br />
-node |</div>
-</dd>
-</dl></td>
-</tr>
-<tr class="odd">
-<td><dl>
-<dt>[screen](nodes.md#node-screen) | Describes how the view |</dt>
-<dd>
-<div class="line-block">from a camera node will |<br />
-be rasterized into an |<br />
-<code>outputlayer</code> node |</div>
-</dd>
-</dl></td>
-</tr>
-</tbody>
-</table>
+| Node                                   | Function                                                                          |
+| -------------------------------------- | --------------------------------------------------------------------------------- |
+| [root](#the-root-node)                 | Scene's root                                                                      |
+| [global](#the-global-node)             | Global settings node                                                              |
+| [set](#the-set-node)                   | To express relationships of groups of nodes                                       |
+| [shader](#the-shader-node)             | [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shader or layer in a shader group |
+| [attributes](#the-attributes-node)     | Container for generic attributes (e.g. visibility)                                |
+| [transform](#the-transform-node)       | Transformation to place objects in the scene                                      |
+| [mesh](#the-mesh-node)                 | Polygonal mesh or subdivision surface                                             |
+| [plane](#the-plane-node)               | Infinite plane                                                                    |
+| [faceset](#the-faceset-node)           | Assign attributes to part of a mesh                                               |
+| [curves](#the-curves-node)             | Linear, B-spline and Catmull-Rom curves                                           |
+| [particles](#the-particles-node)       | Collection of particles                                                           |
+| [procedural](#the-procedural-node)     | Geometry to be loaded in delayed fashion                                          |
+| [environment](#the-environment-node)   | Geometry type to define environment lighting                                      |
+| [vdbparticles](#the-vdbparticles-node) | Particles defined by [OpenVDB](https://www.openvdb.org) data                      |
+| [volume](#the-volume-node)             | Volumetric object defined by [OpenVDB](https://www.openvdb.org) data              |
+| [outputdriver](#the-outputdriver-node) | Location where to output rendered pixels                                          |
+| [outputlayer](#the-outputlayer-node)   | Describes one render layer to be connected to an outputdriver node                |
+| [screen](#the-screen-node)             | Describes how the view from a camera will be rasterized into an outputlayer node  |
+| [\*camera](#camera-nodes)              | Set of nodes to create viewing cameras                                            |
 
-Overview of nsi nodes
+## Common attributes
 
-## The Root Node
+`nicename` — string
 
-The root node is much like a transform node. With the particularity that it is the \[end connection\](guidelines.md#section-basicscene) for all renderable scene elements. A node can exist in an nsi context without being connected to the root note but in that case it won\'t affect the render in any way. The root node has the reserved handle name `.root` and doesn't need to be created using \[NSICreate\](c-api.md#capi-nsicreate). The root node has two defined attributes: `objects` and `geometryattributes`. Both are explained under the \[transform node\](nodes.md#node-transform).
+This is an optional identifier which may be used by the renderer instead of the node handle for various identification purposes.
 
-## The Global Node
+## The `root` node
 
-This node contains various global settings for a particular nsi context. Note that these attributes are for the most case implementation specific.
+The root node is much like a transform node with the particularity that it is the end connection for all renderable scene elements (see [basic scene anatomy](guidelines.md#basic-scene-anatomy)). A node can exist in an ɴsɪ context without being connected to the root note but in that case it won't affect the render in any way. The root node has the reserved handle name `.root` and doesn't need to be created using `NSICreate`. The root node has two defined attributes: `objects` and `geometryattributes`. Both are explained in [the transform node](#the-transform-node).
 
-This node has the reserved handle name `.global` and does _not_ need to be created using \[NSICreate\](c-api.md#capi-nsicreate). The following attributes are recognized by _3Delight_:
+## The `global` node
 
-<table style="width:14%;">
-<caption>global node optional attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 2%" />
-<col style="width: 5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td rowspan="3"><blockquote>
-<p><strong>Name</strong></p>
-</blockquote>
-<dl>
-<dt>=================================</dt>
-<dd>
-<p><code>numberofthreads</code></p>
-<p><code>threads.count</code> (!)</p>
-</dd>
-</dl></td>
-<td rowspan="3"><blockquote>
-<p><strong>Type</strong></p>
-</blockquote>
-<dl>
-<dt>==========</dt>
-<dd>
-<p>integer</p>
-</dd>
-</dl></td>
-<td colspan="2" rowspan="2"><blockquote>
-<p><strong>Description/Values</strong></p>
-</blockquote>
-<dl>
-<dt>============================================</dt>
-<dd>
-<p>Specifies the total number of threads to use for a particular render:</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-</tr>
-<tr class="odd">
-<td colspan="2"><ul>
-<li>A value of <code>0</code> lets the render engine choose an optimal thread value. This is is the <strong>default</strong> behaviour.</li>
-<li>Any positive value directly sets the total number of render threads.</li>
-<li>A negative value will start as many threads as optimal <em>plus</em> the specified value. This allows for an easy way to to decrease the total number of render threads.</li>
-</ul></td>
-</tr>
-<tr class="even">
-<td><p><code>renderatlowpriority</code></p>
-<p><code>priority.low</code> (!)</p></td>
-<td>integer</td>
-<td colspan="2">If set to 1, start the render with a lower process priority. This can be useful if there are other applications that must run during rendering.</td>
-</tr>
-<tr class="odd">
-<td><p><code>texturememory</code></p>
-<p><code>texture.memory</code> (!)</p></td>
-<td>integer</td>
-<td colspan="2">Specifies the approximate maximum memory size, in megabytes, the renderer will allocate to accelerate texture access.</td>
-</tr>
-<tr class="even">
-<td rowspan="6"><p><code>bucketorder</code></p>
-<p><code>bucket.order</code> (!)</p></td>
-<td rowspan="6">string</td>
-<td colspan="2">Specifies in what order the buckets are rendered. The available values are:</td>
-</tr>
-<tr class="odd">
-<td><code>horizontal</code></td>
-<td>Row by row, left to right and top to bottom. This is the <strong>default</strong>.</td>
-</tr>
-<tr class="even">
-<td><code>vertical</code></td>
-<td>Column by column, top to bottom and left to right.</td>
-</tr>
-<tr class="odd">
-<td><code>zigzag</code></td>
-<td>Row by row, left to right on even rows and right to left on odd rows.</td>
-</tr>
-<tr class="even">
-<td><code>spiral</code></td>
-<td>In a clockwise spiral from the centre of the image.</td>
-</tr>
-<tr class="odd">
-<td><code>circle</code></td>
-<td>In concentric circles from the centre of the image.</td>
-</tr>
-<tr class="even">
-<td><code>frame</code></td>
-<td>integer</td>
-<td colspan="2">Provides a frame number to be used as a | seed for the sampling pattern. | See the [screen node](nodes.md#node-screen).</td>
-</tr>
-<tr class="odd">
-<td><code>lightcache</code></td>
-<td>integer (1)</td>
-<td colspan="2"><p>Controls use of the renderer's light cache. Set this to <span class="title-ref">0</span> to switch the cache off.</p>
-<p>When this is switched on, each bucket is visited twice during rendering.</p>
-<p><strong>WARNING:</strong> <em>display drivers that do not request scanline order need to make sure they handle this gracefully.</em></p></td>
-</tr>
-</tbody>
-</table>
+This node contains various global settings for a particular ɴsɪ context. Note that these attributes are for the most case implementation specific. This node has the reserved handle name `.global` and doesn't need to be created using `NSICreate`. The following attributes are recognized by [3Delight](https://www.3delight.com):
 
-global node optional attributes
+`numberofthreads` — int (0)\
+`thread.count` (!)
 
-|                          |         |                                                                                                                                                                                                                                                                                             |
-| ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `networkcache.size`      | integer | Specifies the maximum network cache size, in gigabytes (_GB_, not _GiB_), the renderer will use to cache textures on a local drive to accelerate data access.                                                                                                                               |
-| `networkcache.directory` | string  | Specifies the directory in which textures will be cached. A good default value is `/var/tmp/3DelightCache` on Linux systems.                                                                                                                                                                |
-| `networkcache.write`     | integer | Enables caching for image write operations. This alleviates pressure on networks by first rendering images to a local temporary location and copying them to their final destination at the end of the render. This replaces many small network writes by more efficient larger operations. |
+Specifies the total number of threads to use for a particular render:
 
-global node optional network cache attributes
+- A value of zero lets the render engine choose an optimal thread value. This is the default behaviour.
+- Any positive value directly sets the total number of render threads.
+- A negative value will start as many threads as optimal _plus_ the specified value. This allows for an easy way to decrease the total number of render threads.
 
-|                  |         |                                                                                                                                                                                                                                                                                                                        |
-| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `license.server` | string  | Specifies the name or IP address of the license server to be used.                                                                                                                                                                                                                                                     |
-| `license.wait`   | integer | When no license is available for rendering, the renderer will wait until a license is available if this attribute is set to `1`, but will stop immediately if it is set to `0`. The latter setting is useful when managing a renderfarm and other work could be scheduled instead.                                     |
-| `license.hold`   | integer | By default, the renderer will get new licenses for every render and release them once it is done. This can be undesirable if several frames are rendered in sequence from the same process process. If this option is set to `1`, the licenses obtained for the first frame are held until the last frame is finished. |
+`texturememory` — int\
+`texture.memory` (!)
 
-global node optional attributes for licensing
+Specifies the approximate maximum memory size, in megabytes, the renderer will allocate to accelerate texture access.
 
-<table style="width:14%;">
-<caption>global node optional attributes governing ray tracing quality</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><code>maximumraydepth.diffuse</code></p>
-<p><code>diffuse.ray.depth.max</code> (!)</p></td>
-<td>integer</td>
-<td>Specifies the maximum bounce depth a ray | emitted from a diffuse [closure](<a href="https://www.3delight.com/documentation/display/3DSP/3Delight&#39;s+OSL+Support">https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support</a>) can reach. A depth of <code>1</code> specifies one | additional bounce compared to purely local | illumination. |</td>
-</tr>
-<tr class="even">
-<td><p><code>maximumraylength.diffuse</code></p>
-<p><code>diffuse.ray.length.max</code> (!)</p></td>
-<td>double</td>
-<td>Limits the distance a ray emitted from a | diffuse [closure](<a href="https://www.3delight.com/documentation/display/3DSP/3Delight&#39;s+OSL+Support">https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support</a>) can travel. | Using a relatively low value for this | attribute might improve performance | without significantly affecting the look | of the resulting image, as it restrains | the extent of global illumination. | | Setting this to a negative value disables | the limitation. |</td>
-</tr>
-<tr class="odd">
-<td><p><code>maximumraydepth.reflection</code></p>
-<p><code>reflection.ray.depth.max</code> (!)</p></td>
-<td>integer</td>
-<td>Specifies the maximum bounce depth a | reflection/glossy/specular ray can reach. | | | Setting reflection depth to 0 will only | compute local illumination resulting in | only surfaces with an emission [closure](<a href="https://www.3delight.com/documentation/display/3DSP/3Delight&#39;s+OSL+Support">https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support</a>) to appear in reflections. |</td>
-</tr>
-<tr class="even">
-<td><p><code>maximumraylength.reflection</code></p>
-<p><code>reflection.ray.length.max</code> (!)</p></td>
-<td>double</td>
-<td>Limits the distance a reflection/glossy/specular ray can travel. Setting this to a negative value disables the limitation.</td>
-</tr>
-<tr class="odd">
-<td><p><code>maximumraydepth.refraction</code></p>
-<p><code>refraction.ray.depth.max</code> (!)</p></td>
-<td>integer</td>
-<td><p>Specifies the maximum bounce depth a refraction ray can reach.</p>
-<p>The default value of <code>4</code> allows light to shine through a properly modeled object such as a glass.</p></td>
-</tr>
-<tr class="even">
-<td><p><code>maximumraylength.refraction</code></p>
-<p><code>refraction.ray.length.max</code> (!)</p></td>
-<td>double</td>
-<td>Limits the distance a refraction ray can travel. Setting this to a negative value disables the limitation.</td>
-</tr>
-<tr class="odd">
-<td><p><code>maximumraydepth.hair</code></p>
-<p><code>hair.ray.depth.max</code> (!)</p></td>
-<td>integer</td>
-<td><p>Specifies the maximum bounce depth a hair ray can reach.</p>
-<p>Note that hair are akin to volumetric primitives and might need elevated ray depth to properly capture the illumination.</p></td>
-</tr>
-<tr class="even">
-<td><p><code>maximumraylength.hair</code></p>
-<p><code>hair.ray.length.max</code> (!)</p></td>
-<td>double</td>
-<td>Limits the distance a hair ray can travel. Setting this to a negative value disables the limitation.</td>
-</tr>
-<tr class="odd">
-<td><p><code>maximumraydepth.volume</code></p>
-<p><code>volume.ray.depth.max</code> (!)</p></td>
-<td>integer</td>
-<td>Specifies the maximum bounce depth a volume ray can reach.</td>
-</tr>
-<tr class="even">
-<td><p><code>maximumraylength.volume</code></p>
-<p><code>volume.ray.length.max</code> (!)</p></td>
-<td>double</td>
-<td>Limits the distance a volume ray can travel. Setting this to a negative value disables the limitation.</td>
-</tr>
-</tbody>
-</table>
+`networkcache.size` — int (0)
 
-global node optional attributes governing ray tracing quality
+Specifies the maximum network cache size, in gigabytes, the renderer will use to cache textures on a local drive to accelerate data access.
 
-<table style="width:14%;">
-<caption>global node optional attributes controlling overall image quality</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><code>quality.shadingsamples</code></p>
-<p><code>shading.samples</code> (!)</p></td>
-<td>integer</td>
-<td>Controls the quality of BSDF sampling. Larger values give less visible noise.</td>
-</tr>
-<tr class="even">
-<td><p><code>quality.volumesamples</code></p>
-<p><code>volume.samples</code> (!)</p></td>
-<td>integer</td>
-<td>Controls the quality of volume sampling. Larger values give less visible noise.</td>
-</tr>
-<tr class="odd">
-<td><p><code>show.displacement</code></p>
-<p><code>shading.displacement</code> (!)</p></td>
-<td>integer</td>
-<td>When set to <code>1</code>, enables displacement shading. Otherwise, it must be set to <span class="title-ref">0</span> to ignore any displacement shader in the scene.</td>
-</tr>
-<tr class="even">
-<td><p><code>show.atmosphere</code></p>
-<p><code>shading.atmosphere</code> (!)</p></td>
-<td>integer</td>
-<td>When set to <code>1</code>, enables atmosphere shader(s). Otherwise, it must be set to <span class="title-ref">0</span> to ignore any atmosphere shader in the scene.</td>
-</tr>
-<tr class="odd">
-<td><p><code>show.multiplescattering</code></p>
-<p><code>shading.multiplescattering</code> (!)</p></td>
-<td>double</td>
-<td>This is a multiplier on the multiple scattering of VDB nodes. This parameter is useful to obtain faster draft renders by lowering the value below 1. The range is <span class="title-ref">0</span> to <span class="title-ref">1</span>.</td>
-</tr>
-<tr class="even">
-<td><p><code>show.osl.subsurface</code></p>
-<p><code>shading.osl.subsurface</code> (!)</p></td>
-<td>integer</td>
-<td>When set to <code>1</code>, enables the | <code>subsurface()</code> [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>) [closure](<a href="https://www.3delight.com/documentation/display/3DSP/3Delight&#39;s+OSL+Support">https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support</a>). Otherwise, it must be set to <code>0</code>, which | will ignore this [closure](<a href="https://www.3delight.com/documentation/display/3DSP/3Delight&#39;s+OSL+Support">https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support</a>) in [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>) shaders. |</td>
-</tr>
-</tbody>
-</table>
+`networkcache.directory` — string
 
-global node optional attributes controlling overall image quality
+Specifies the directory in which textures will be cached. A good default value is `/var/tmp/3DelightCache` on Linux systems.
 
-For anti-aliasing quality see the \[screen node\](nodes.md#node-screen).
+`networkcache.mipmap` — int (1)
 
-| **Name** \| **Type** \| **Description/Values** |         |                                                                                                                                                                         |
-| ---------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `statistics.progress`                          | integer | When set to `1`, prints rendering progress as a percentage of completed pixels.                                                                                         |
-| `statistics.filename`                          | string  | Full path of the file where rendering statistics will be written. An empty string will write statistics to standard output. The name `null` will not output statistics. |
+Enables caching of texture mipmaps separately. This makes more efficient use of available cache space.
 
-global node optional attributes for statistics
+`networkcache.write` — string (0)
 
-## The Set Node
+Enables caching for image write operations. This alleviates pressure on networks by first rendering images to a local temporary location and copying them to their final destination at the end of the render. This replaces many small network writes by more efficient larger operations.
 
-This node can be used to express relationships between objects.
+`license.server` — string
 
-An example is to connect many lights to such a node to create a _light set_ and then to connect this node to an \[outputlayer \](nodes.md#node-outputlayer)\'s `lightset` attribute (see also \[light layers\](guidelines.md#section-lightlayers)).
+Specifies the name or address of the license server to be used.
 
-It has the following attributes:
+`license.wait` — int (1)
 
-<table style="width:14%;">
-<caption>set node optional attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>members</code></p>
-<p><code>member</code> (!)</p></td>
-<td>«connection(s)»</td>
-<td>This connection accepts all nodes that are members of the set.</td>
-</tr>
-</tbody>
-</table>
+When no license is available for rendering, the renderer will wait until a license is available if this attribute is set to 1, but will stop immediately if it's set to 0. The latter setting is useful when managing a renderfarm and other work could be scheduled instead.
 
-set node optional attributes
+`license.hold` — int (0)
 
-## The Plane Node
+By default, the renderer will get new licenses for every render and release them once it's done. This can be undesirable if several frames are rendered in sequence from the same process. If this option is set to 1, the licenses obtained for the first frame are held until the last frame is finished.
 
-This node represents an infinite plane, centered at the origin and pointing towards $\mathrm{Z+}$. It has no required attributes. The UV coordinates are defined as the X and Y coordinates of the plane.
+`renderatlowpriority` — int (0)\
+`priority.low` (!)
 
-## The Mesh Node
+If set to 1, start the render with a lower process priority. This can be useful if there are other applications that must run during rendering.
 
-This node represents a polygon mesh or a subdivision surface. It has the following required attributes:
+`bucketorder` — string (horizontal)\
+`bucket.order` (!)
 
-<table style="width:14%;">
-<caption>mesh node required attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>P</code></td>
-<td>point</td>
-<td>The positions of the object’s vertices. Typically, this attribute will be indexed through a <code>P.indices</code> attribute.</td>
-</tr>
-<tr class="even">
-<td><p><code>nvertices</code></p>
-<p><code>vertex.count</code> (!)</p>
-<p><code>face.vertex.count</code> (!)</p></td>
-<td>integer</td>
-<td>The number of vertices for each face of the mesh. The number of values for this attribute specifies total face number (unless <code>nholes</code> is defined).</td>
-</tr>
-</tbody>
-</table>
+Specifies in what order the buckets are rendered. The available values are:
 
-mesh node required attributes
+- `horizontal` — row by row, left to right and top to bottom.
+- `vertical` — column by column, top to bottom and left to right.
+- `zigzag` — row by row, left to right on even rows and right to left on odd rows.
+- `spiral` — in a clockwise spiral from the centre of the image.
+- `circle` — in concentric circles from the centre of the image.
 
-To render a mesh as a subdivision surface, at least the `subdivision.scheme` argument must be set. When rendering as a subdvision surface, the mesh node accepts these optionalattributes:
+`frame` — double (0)
 
-<table style="width:14%;">
-<caption>mesh node as subdivision surface optional attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>subdivision.scheme</code></td>
-<td>string</td>
-<td>A value of <code>"catmull-clark"</code> will cause the mesh to render as a Catmull-Clark subdivision surface.</td>
-</tr>
-<tr class="even">
-<td><p><code>subdivision.cornervertices</code></p>
-<p><code>subdivision.corner.index</code> (!)</p></td>
-<td>integer</td>
-<td>A list of vertices which are sharp corners. The values are indices into the <code>P</code> attribute, like <code>P.indices</code>.</td>
-</tr>
-<tr class="odd">
-<td><p><code>subdivision.cornersharpness</code></p>
-<p><code>subdivision.corner.sharpness</code> (!)</p></td>
-<td>float</td>
-<td>The sharpness of each specified sharp corner. It must have a value for each value given in <code>subdivision.cornervertices</code>.</td>
-</tr>
-<tr class="even">
-<td><p><code>subdivision.smoothcreasecorners</code></p>
-<p><code>subdivision.corner.automatic</code> (!)</p></td>
-<td>integer</td>
-<td><p>This tag requires a single integer argument with a value of <code>1</code> or <code>0</code> indicating whether or not the surface uses enhanced subdivision rules on vertices where <em>more than two</em> creased edges meet.</p>
-<p>With a value of <code>1</code> (<strong>the default</strong>) the vertex is subdivided using an extended crease vertex subdivision rule which yields a <em>smooth</em> crease. With a value of 0 the surface uses enhanced subdivision rules where a vertex <em>becomes a sharp corner</em> when it has more than two incoming creased edges.</p>
-<p>Note that sharp corners can still be explicitly requested using the <code>subdivision.corner.index</code> &amp; <code>subdivision.corner.sharpness</code> tags.</p></td>
-</tr>
-<tr class="odd">
-<td><p><code>subdivision.creasevertices</code></p>
-<p><code>subdivision.crease.index</code> (!)</p></td>
-<td>integer</td>
-<td>A list of crease edges. Each edge is specified as a pair of indices into the <code>P</code> attribute, like <code>P.indices</code>.</td>
-</tr>
-<tr class="even">
-<td><p><code>subdivision.creasesharpness</code></p>
-<p><code>subdivision.crease.sharpness</code> (!)</p></td>
-<td>float</td>
-<td>The sharpness of each specified crease. It must have a value for each pair of values given in <code>subdivision.creasevertices</code>.</td>
-</tr>
-</tbody>
-</table>
+Provides a frame number to be used as a seed for the sampling pattern. See the [screen node](#the-screen-node).
 
-mesh node as subdivision surface optional attributes
+`hidemessages` — int
 
-The mesh node also has these optional attributes:
+This specifies error and warning messages which will not be displayed. The attribute values are the message numbers to ignore.
 
-<table style="width:14%;">
-<caption>mesh node optional attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>nholes</code></p>
-<p><code>hole.count</code> (!)</p></td>
-<td>integer</td>
-<td><p>The number of holes in the polygons.</p>
-<p>When this attribute is defined, the total number of faces in the mesh is defined by the number of values for <code>nholes</code> rather than for <code>nvertices</code>. For each face, there should be (<code>nholes</code> + 1) values in <code>nvertices</code>: the respective first value specifies the number of vertices on the outside perimeter of the face, while additional values describe the number of vertices on perimeters of holes in the face.</p>
-<p>The example below shows the definition of a polygon mesh consisting of three square faces, with one triangular hole in the first one and square holes in the second one.</p></td>
-</tr>
-<tr class="even">
-<td><p><code>clockwisewinding</code></p>
-<p><code>clockwise</code> (!)</p></td>
-<td>integer</td>
-<td><p>A value of <code>1</code> specifies that polygons with clockwise winding order are front facing.</p>
-<p><strong>The default</strong> is <code>0</code>, making counterclockwise polygons front facing.</p></td>
-</tr>
-</tbody>
-</table>
+`maximumraydepth.diffuse` — int (1)\
+`diffuse.ray.depth.max` (!)
 
-mesh node optional attributes
+Specifies the maximum bounce depth a diffuse ray can reach. A depth of 1 specifies one additional bounce compared to purely local illumination.
 
-Below is a sample ɴsɪ stream snippet showing the definition of a mesh with holes.
+`maximumraydepth.hair` — int (4)\
+`hair.ray.depth.max` (!)
 
-```{.shell linenos=""}
-Create "holey" "mesh"
-SetAttribute "holey"
-  "nholes" "int" 3 [ 1 2 0 ]
-  "nvertices" "int" 6 [
-    4 3                 # Square with 1 triangular hole
-    4 4 4               # Square with 2 square holes
-    4 ]                 # Square with no hole
-  "P" "point" 23 [
-     0 0 0    3 0 0    3 3 0    0 3 0
-     1 1 0    2 1 0    1 2 0
+Specifies the maximum bounce depth a hair ray can reach. Note that hair are akin to volumetric primitives and might need elevated ray depth to properly capture the illumination.
 
-     4 0 0    9 0 0    9 3 0    4 3 0
-     5 1 0    6 1 0    6 2 0    5 2 0
-     7 1 0    8 1 0    8 2 0    7 2 0
+`maximumraydepth.reflection` — int (1)\
+`reflection.ray.depth.max` (!)
 
-    10 0 0   13 0 0   13 3 0   10 3 0 ]
-```
+Specifies the maximum bounce depth a reflection ray can reach. Setting the reflection depth to 0 will only compute local illumination meaning that only emissive surfaces will appear in the reflections.
 
-## The Faceset Node
+`maximumraydepth.refraction` — int (4)\
+`refraction.ray.depth.max` (!)
 
-This node is used to provide a way to attach attributes to parts of another geometric primitive, such as faces of a \[mesh \](nodes.md#node-mesh), curves or particles. It has the following attributes:
+Specifies the maximum bounce depth a refraction ray can reach. A value of 4 allows light to shine through a properly modeled object such as a glass.
 
-<table style="width:14%;">
-<caption>faceset node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>faces</code></p>
-<p><code>face.index</code> (!)</p></td>
-<td>integer</td>
-<td>A list of indices of faces. It identifies which faces of the original geometry will be part of this face set.</td>
-</tr>
-</tbody>
-</table>
+`maximumraydepth.volume` — int (0)\
+`volume.ray.depth.max` (!)
 
-faceset node attributes
+Specifies the maximum bounce depth a volume ray can reach.
 
-```{.shell linenos=""}
-Create "subdiv" "mesh"
-SetAttribute "subdiv"
-  "nvertices" "int" 4 [ 4 4 4 4 ]
-  "P" "point" 9 [
-    0 0 0    1 0 0    2 0 0
-    0 1 0    1 1 0    2 1 0
-    0 2 0    1 2 0    2 2 2 ]
-  "P.indices" "int" 16 [
-    0 1 4 3    2 3 5 4    3 4 7 6    4 5 8 7 ]
-  "subdivision.scheme" "string" 1 "catmull-clark"
+`maximumraylength.diffuse` — double (-1)\
+`diffuse.ray.length.max` (!)
 
-Create "set1" "faceset"
-SetAttribute "set1"
-  "faces" "int" 2 [ 0 3 ]
-Connect "set1" "" "subdiv" "facesets"
+Limits the distance a ray emitted from a diffuse material can travel. Using a relatively low value for this attribute might improve performance without significantly affecting the look of the resulting image, as it restrains the extent of global illumination. Setting it to a negative value disables the limitation.
 
-Connect "attributes1" "" "subdiv" "geometryattributes"
-Connect "attributes2" "" "set1" "geometryattributes"
-```
+`maximumraylength.hair` — double (-1)\
+`hair.ray.length.max` (!)
 
-## The Curves Node
+Limits the distance a ray emitted from a hair closure can travel. Setting it to a negative value disables the limitation.
+
+`maximumraylength.reflection` — double (-1)\
+`reflection.ray.length.max` (!)
+
+Limits the distance a ray emitted from a reflective material can travel. Setting it to a negative value disables the limitation.
+
+`maximumraylength.refraction` — double (-1)\
+`refraction.ray.length.max` (!)
+
+Limits the distance a ray emitted from a refractive material can travel. Setting it to a negative value disables the limitation.
+
+`maximumraylength.specular` — double (-1)
+
+Limits the distance a ray emitted from a specular (glossy) material can travel. Setting it to a negative value disables the limitation.
+
+`maximumraylength.volume` — double (-1)
+
+Limits the distance a ray emitted from a volume can travel. Setting it to a negative value disables the limitation.
+
+`quality.denoise` — int (1)
+
+Enables denoising of output. Currently only supported for interactive renders.
+
+`quality.iprglobalupdate` — int (1)
+
+Enables a different method of updating the image for interactive renders.
+
+`quality.iprinterpolate` — int (1)
+
+Enables interpolation of low resolution interactive output, when denoised.
+
+`quality.iprspeedmultiplier` — double (1)
+
+Adjusts targeted render speed when processing multiple scene edits. A higher value will produce faster but lower quality results.
+
+`quality.shadingsamples` — int (1)\
+`shading.samples` (!)
+
+Controls the quality of ʙsᴅꜰ sampling. Larger values give less visible noise.
+
+`quality.volumesamples` — int (1)\
+`volume.samples` (!)
+
+Controls the quality of volume sampling. Larger values give less visible noise.
+
+`referencetime` — double
+
+Specifies a reference time for the frame, where deformation data is most valid. This is the default when the same attribute is not set on a geometry node. It is also the default for the `velocityreferencetime` attribute of the [vdbparticles node](#the-vdbparticles-node) and the [volume node](#the-volume-node). If not set, the center of the camera shutter is used.
+
+`quality.samplevolumeemission` — int (1)
+
+Enables or disables the higher quality sampling of emission of ᴠᴅʙ volumes. The emission is visible either way, this only affects quality and render time.
+
+`show.displacement` — int (1)\
+`shading.displacement` (!)
+
+When set to 1, enables displacement shading. Otherwise, it must be set to 0, which forces the renderer to ignore any displacement shader in the scene.
+
+`show.atmosphere` — int (1)\
+`shading.atmosphere` (!)
+
+When set to 1, enables atmosphere shader(s). Otherwise, it must be set to 0, which forces the renderer to ignore any atmosphere shader in the scene.
+
+`show.multiplescattering` — double (1.0)\
+`shading.multiplescattering` (!)
+
+This is a multiplier on the multiple scattering of ᴠᴅʙ nodes. This parameter is useful to obtain faster draft renders by lowering the value below 1. The range is 0 to 1.
+
+`show.osl.subsurface` — int (1)\
+`shading.osl.subsurface` (!)
+
+When set to 1, enables the `subsurface()` ᴏsʟ closure. Otherwise, it must be set to 0, which will ignore this closure in ᴏsʟ shaders.
+
+`statistics.progress` — int (0)
+
+When set to 1, prints rendering progress as a percentage of completed pixels.
+
+`statistics.filename` — string (null)
+
+Full path of the file where rendering statistics will be written. An empty string will write statistics to standard output. The name `null` will not output statistics.
+
+`exclusiveshading` — \<connection\>
+
+When geometry nodes are connected here, all others in the scene will be rendered as black to the camera. This is meant to be used to speed up rendering when adjusting parameters of specific objects during an [interactive render](#the-global-node). Connected shader nodes will behave in a similar way: objects not using them will be rendered as black. If the connected shader nodes are not the root of their shading network (ie: they are not connected to an [attributes node](#the-attributes-node) and their output is used as another shader node's input), the evaluation of the shading network will end there. This allows fine-tune parts of a shading network in isolation.
+
+`verbose` — int (0)
+
+When set to 1, enables additional informative messages before, during and after rendering.
+
+`messages.timestamp` — int (0)
+
+When set to 1, messages output by the renderer will include the local time.
+
+## The `set` node
+
+This node can be used to express relationships between objects. An example is to connect many lights to such a node to create a _light set_ and then to connect this node to `outputlayer.lightset` ([outputlayer](#the-outputlayer-node) and [light layers](guidelines.md#light-layers)). It has the following attributes:
+
+`members` — \<connection\>\
+`member` (!)
+
+This connection accepts all nodes that are members of the set.
+
+## The `plane` node
+
+This node represents an infinite plane, centered at the origin and pointing towards Z+. It has no required attributes. The UV coordinates are defined as the X and Y coordinates of the plane.
+
+## The `mesh` node
+
+This node represents a polygon mesh. It has the following required attributes:
+
+`P` — point
+
+The positions of the object's vertices. Typically, this attribute will be [addressed indirectly](#passing-optional-arguments) through a `P.indices` attribute.
+
+`nvertices` — int\
+`vertex.count` (!)\
+`face.vertex.count` (!)
+
+The number of vertices for each face of the mesh. The number of values for this attribute specifies total face number (unless `nholes` is defined).
+
+It also has optional attributes:
+
+`nholes` — int\
+`hole.count` (!)
+
+The number of holes in the polygons. When this attribute is defined, the total number of faces in the mesh is defined by the number of values for `nholes` rather than for `nvertices`. For each face, there should be (nholes+1) values in `nvertices`: the respective first value specifies the number of vertices on the outside perimeter of the face, while additional values describe the number of vertices on perimeters of holes in the face.
+
+`clockwisewinding` — int (0)\
+`clockwise` (!)
+
+A value of 1 specifies that polygons with a clockwise winding order are front facing. The default is 0, making counterclockwise polygons front facing.
+
+`subdivision.scheme` — string
+
+A value of `"catmull-clark"` will cause the mesh to render as a Catmull-Clark subdivision surface.
+
+`subdivision.cornervertices` — int\
+`subdivision.corner.index` (!)
+
+This attribute is a list of vertices which are sharp corners. The values are indices into the P attribute, like `P.indices`.
+
+`subdivision.cornersharpness` — float\
+`subdivision.corner.sharpness` (!)
+
+This attribute is the sharpness of each specified sharp corner. It must have a value for each value given in `subdivision.cornervertices`.
+
+`subdivision.creasevertices` — int\
+`subdivision.crease.index` (!)
+
+This attribute is a list of crease edges. Each edge is specified as a pair of indices into the P attribute, like `P.indices`.
+
+`subdivision.creasesharpness` — float\
+`subdivision.crease.sharpness` (!)
+
+This attribute is the sharpness of each specified crease. It must have a value for each pair of values given in `subdivision.creasevertices`.
+
+`subdivision.smoothcreasecorners` — int (1)\
+`subdivision.corner.automatic` (!)
+
+This attribute controls whether or not the surface uses enhanced subdivision rules on vertices where more than two creased edges meet. With a value of 0, the vertex becomes a sharp corner. With a value of 1, the vertex is subdivided using an extended crease vertex subdivision rule which yields a smooth crease.
+
+`referencetime` — double
+
+Specifies a reference time where deformation data is most valid. This is mainly relevant for velocity blur, in which case it should be set to the time at which position data was originally available. If not set, see the same attribute on the [global node](#the-global-node).
+
+`quadraticmotion` — int (0)
+
+A value of 1 will enable curved deformation blur if three equally spaced time samples are provided for the P attribute. Linear deformation is used otherwise.
+
+`outlinecreasethreshold` — float (10)
+
+Controls how sharp a crease must be to be considered for the creation of outlines.
+
+## The `faceset` node
+
+This node is used to provide a way to attach attributes to some faces of another geometric primitive, such as the mesh node. It has the following attributes:
+
+`faces` — int\
+`face.index` (!)
+
+This attribute is a list of indices of faces. It identifies which faces of the original geometry will be part of this face set.
+
+## The `curves` node
 
 This node represents a group of curves. It has the following required attributes:
 
-<table style="width:14%;">
-<caption>curves node required attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>nverts</code></p>
-<p><code>vertex.count</code> (!)</p></td>
-<td>integer</td>
-<td>The number of vertices for each curve. This must be at least <code>4</code> for cubic curves and <code>2</code> for linear curves. There can be either a single value or one value per curve.</td>
-</tr>
-<tr class="even">
-<td><code>P</code></td>
-<td>point</td>
-<td>The positions of the curve vertices. The number of values provided, divided by <code>nvertices</code>, gives the number of curves which will be rendered.</td>
-</tr>
-<tr class="odd">
-<td><code>width</code></td>
-<td>float</td>
-<td>The width of the curves.</td>
-</tr>
-</tbody>
-</table>
+`nvertices` — int\
+`vertex.count` (!)
 
-curves node required attributes
+The number of vertices for each curve. This must be at least 4 for cubic curves and 2 for linear curves. There can be either a single value or one value per curve.
 
-It also has these optional attributes:
+`P` — point
 
-| **Name**      | **Type** | **Description/Values**                                                                                                                                                                                                                                                                                             |                                                           |
-| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
-| `basis`       | string   | The basis functions used for curve interpolation. Possible choices are:                                                                                                                                                                                                                                            |                                                           |
-|               |          | `b-spline`                                                                                                                                                                                                                                                                                                         | B-spline interpolation.                                   |
-|               |          | `catmull-rom`                                                                                                                                                                                                                                                                                                      | Catmull-Rom interpolation. This is **the default** value. |
-|               |          | `linear`                                                                                                                                                                                                                                                                                                           | Linear interpolation.                                     |
-|               |          | `hobby` (!)                                                                                                                                                                                                                                                                                                        | Hobby interpolation.                                      |
-| `N`           | normal   | The presence of a normal indicates that each curve is to be rendered as an oriented ribbon. The orientation of each ribbon is defined by the provided normal which can be constant, a per-curve or a per-vertex attribute. Each ribbon is assumed to always face the camera if a normal is not provided.           |                                                           |
-| `extrapolate` | integer  | By default, when this is set to `0`, cubic curves will not be drawn to their end vertices as the basis functions require an extra vertex to define the curve. If this attribute is set to `1`, an extra vertex is automatically extrapolated so the curves reach their end vertices, as with linear interpolation. |                                                           |
+The positions of the curve vertices. The number of values provided, divided by `nvertices`, gives the number of curves which will be rendered.
 
-curves node optional attributes
+`width` — float
 
-Attributes may also have a single value, one value per curve, one value per vertex or one value per vertex of a single curve, reused for all curves. Attributes which fall in that last category must always specify \[NSIParamPerVertex\](c-api.md#capi-argflags).
+The width of the curves.
 
-> [!NOTE]
-> A single curve is considered a face as far as use of \[NSIParamPerFace\](c-api.md#capi-argflags) is concerned. See also the \[faceset node\](nodes.md#node-faceset).
+`basis` — string (catmull-rom)
 
-## The Particles Node
+The basis functions used for curve interpolation. Possible choices are:
 
-This geometry node represents a collection of _tiny_ particles. Particles are represented by either a disk or a sphere. This primitive is not suitable to render large particles as these should be represented by other means (e.g. instancing).
+- `b-spline` — B-spline interpolation.
+- `catmull-rom` — Catmull-Rom interpolation.
+- `linear` — Linear interpolation.
+- `hobby` (!) — Hobby interpolation.
 
-| **Name** | **Type** | **Description/Values**                                                                                                                                                   |
-| -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `P`      | point    | The center of each particle.                                                                                                                                             |
-| `width`  | float    | The width of each particle. It can be specified for the entire particles node (only one value provided), per-particle or indirectly through a `width.indices` attribute. |
+`extrapolate` — int (0)
 
-particles node required attributes
+By default, cubic curves will not be drawn to their end vertices as the basis functions require an extra vertex to define the curve. If this attribute is set to 1, an extra vertex is automatically extrapolated so the curves reach their end vertices, as with linear interpolation.
 
-It also has these optional attributes:
+Attributes may also have a single value, one value per curve, one value per vertex or one value per vertex of a single curve, reused for all curves. Attributes which fall in that last category must always specify `NSIParamPerVertex`. Note that a single curve is considered a face as far as use of `NSIParamPerFace` is concerned.
 
-|      |         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ---- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `N`  | normal  | The presence of a normal indicates that each particle is to be rendered as an oriented disk. The orientation of each disk is defined by the provided normal which can be constant or a per-particle attribute. Each particle is assumed to be a sphere if a normal is not provided.                                                                                                                                                                                                                                                                             |
-| `id` | integer | This attribute has to be the same length as `P`. It assigns a unique identifier to each particle which must be constant throughout the entire shutter range \| . Its presence is \| necessary in the case where particles are motion blurred and some of them could appear or disappear during the motion interval. Having such identifiers allows the renderer to properly render such transient particles. This implies that the number of `id`\'s might vary for each time step of a motion-blurred particle cloud so the use of is mandatory by definition. |
+## The `particles` node
 
-particles node optional attributes
+This geometry node represents a collection of _tiny_ particles. Particles are represented by either a disk or a sphere. This primitive is not suitable to render large particles as these should be represented by other means (e.g. instancing).
 
-## The Procedural Node
+`P` — point
 
-This node acts as a proxy for geometry that could be defined at a later time than the node's definition, using a procedural supported by . Since the procedural is evaluated in complete isolation from the rest of the scene, it can be done either lazily (depending on its `boundingbox` attribute) or in parallel with other procedural nodes.
+A mandatory attribute that specifies the center of each particle.
 
-The procedural node supports, as its attributes, all the arguments of the \[NSIEvaluate\](c-api.md#capi-nsievaluate) API call, meaning that procedural types accepted by that api call (ɴsɪ archives, dynamic libraries, Lua scripts) are also supported by this node. Those attributes are used to call a procedural that is expected to define a sub-scene, which has to be independent from the other nodes in the scene. The procedural node will act as the sub-scene's local root and, as such, also supports all the attributes of a regular node. In order to connect the nodes it creates to the sub-scene's root, the procedural simply has to connect them to the regular `.root`.
+`width` — float
 
-In the context of an \[interactive render \](c-api.md#section-rendering-interactive), the procedural will be executed again after the node\'s attributes have been edited. All nodes previously connected by the procedural to the sub-scene\'s root will be deleted automatically before the procedural's re-execution.
+A mandatory attribute that specifies the width of each particle. It can be specified for the entire particles node (only one value provided) or per-particle.
 
-Additionally, this node has the following optional attribute :
+`N` — normal
 
-| **Name**      | **Type**   | **Description/Values**                                                                                                                                                     |
-| ------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `boundingbox` | point\[2\] | Specifies a bounding box for the geometry where `boundingbox[0]` and `boundingbox[1]` correspond, respectively, to the \'minimum\' and the \'maximum\' corners of the box. |
+The presence of a normal indicates that each particle is to be rendered as an oriented disk. The orientation of each disk is defined by the provided normal which can be constant or a per-particle attribute. Each particle is assumed to be a sphere if a normal is not provided.
 
-procedural node optional attribute
+`reverseorientation` — int (0)
 
-## The Environment Node
+Setting this to 1 will reverse the orientation of spherical particles. Specifically, their u parametric direction is reversed, which also reverses their normal so it points inwards. It has no effect on particles for which N is provided.
 
-This geometry node defines a sphere of infinite radius. Its only purpose is to render environment lights, solar lights and directional lights; lights which cannot be efficiently modeled using area lights. In practical terms, this node is no different than a geometry node with the exception of shader execution semantics: there is no surface position `P`, only a direction `I` (refer to for more practical details). The following optional node attribute is recognized:
+`id` — int
 
-<table style="width:14%;">
-<caption>environment node optional attribute</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td rowspan="2"><blockquote>
-<p><strong>Name</strong></p>
-</blockquote>
-<dl>
-<dt>==============================</dt>
-<dd>
-<p><code>angle</code></p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Type</strong></p>
-</blockquote>
-<dl>
-<dt>==============</dt>
-<dd>
-<p>double</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Description/Values</strong> |</p>
-</blockquote>
-<dl>
-<dt>==========================================+</dt>
-<dd>
-<p>Specifies the cone angle representing | the region of the sphere to be sampled. | | The angle is measured around the | <span class="math inline">Z+</span> axis. If the angle | is set to <span class="math inline">0</span>, the environment | describes a directional light. | | See [the | guidelines](guidelines.md#section-specifyinglights) for more information on about how to | specify light sources. |</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-</tr>
-</tbody>
-</table>
+This attribute, of the same size as P, assigns a unique identifier to each particle which must be constant throughout the entire shutter range. Its presence is necessary in the case where particles are motion blurred and some of them could appear or disappear during the motion interval. Having such identifiers allows the renderer to properly render such transient particles. This implies that the number of _ids_ might vary for each time step of a motion-blurred particle cloud so the use of `NSISetAttributeAtTime` is mandatory by definition.
 
-environment node optional attribute
+`quadraticmotion` — int (0)
 
-> [!TIP]
-> To position the environment dome one must connect the node to a \[transform node\](nodes.md#node-transform) and apply the desired rotation(s).
+A value of 1 will enable curved deformation blur if three equally spaced time samples are provided for the P attribute. Linear deformation is used otherwise.
 
-## The Shader Node
+## The `procedural` node
 
-This node represents an \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) shader, also called layer when part of a shader group. It has the following required attribute:
+This node acts as a proxy for geometry that could be defined at a later time than the node's definition, using a procedural supported by `NSIEvaluate`. Since the procedural is evaluated in complete isolation from the rest of the scene, it can be done either lazily (depending on its `boundingbox` attribute) or in parallel with other procedural nodes.
 
-| **Name**         | **Type** | **Description/Values**                                                                                     |
-| ---------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
-| `shaderfilename` | string   | This is the name of the file which contains the shader's compiled code.                                    |
-| `shaderobject`   | string   | This contains the complete compiled shader code. It allows specifying shaders without going through files. |
+The procedural node supports, as its attributes, all the parameters of the `NSIEvaluate` API call, meaning that procedural types accepted by that API call (NSI archives, dynamic libraries, LUA scripts) are also supported by this node. Those attributes are used to call a procedural that is expected to define a sub-scene, which has to be independent from the other nodes in the scene. The procedural node will act as the sub-scene's local root and, as such, also supports all the attributes of a regular transform node. In order to connect the nodes it creates to the sub-scene's root, the procedural simply has to connect them to the regular [root node](nodes.md#the-root-node) `.root`.
 
-shader node attributes
+In the context of an [interactive render](#the-global-node), the procedural will be executed again after the node's attributes have been edited. All nodes previously connected by the procedural to the sub-scene's root will be deleted automatically before the procedural's re-execution.
 
-All other attributes on this node are considered arguments of the shader. They may either be given values or connected to attributes of other shader nodes to build shader networks. \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) shader networks must form acyclic graphs or they will be rejected. Refer to \[the guidelines\](guidelines.md#section-creating-osl-networks) for instructions on \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) network creation and usage.
+Additionally, this node has the following optional attribute:
 
-## The Attributes Node
+`boundingbox` — point[2]
 
-This node is a container for various geometry related rendering attributes that are not _intrinsic_ to a particular node (for example, one can't set the topology of a polygonal mesh using this attributes node). Instances of this node must be connected to the `geometryattributes` attribute of either geometric primitives or nodes (to build ). Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the is reached.
+Specifies a bounding box for the geometry where `boundingbox[0]` and `boundingbox[1]` correspond, respectively, to the "minimum" and the "maximum" corners of the box.
 
-When an attribute is defined multiple times along this path, the definition with the highest priority is selected. In case of conflicting priorities, the definition that is the closest to the geometric primitive (i.e. the furthest from the root) is selected. Connections (for shaders, essentially) can also be assigned priorities, which are used in the same way as for regular attributes. Multiple attributes nodes can be connected to the same geometry or transform nodes (e.g. one attributes node can set object visibility and another can set the surface shader) and will all be considered.
+## The `environment` node
 
-This node has the following attributes:
+This geometry node defines a sphere of infinite radius. Its only purpose is to render environment lights, solar lights and directional lights; lights which cannot be efficiently modeled using area lights. In practical terms, this node is no different than a geometry node with the exception of shader execution semantics: there is no surface position P, only a direction I (refer to [lighting guidelines](guidelines.md#lighting-in-the-nodal-scene-interface) for more practical details). The following node attribute is recognized:
 
-<table style="width:14%;">
-<caption>attributes node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td rowspan="2"><blockquote>
-<p><strong>Name</strong></p>
-</blockquote>
-<dl>
-<dt>==============================</dt>
-<dd>
-<p><code>surfaceshader</code></p>
-<p><code>shader.surface</code> (!)</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Type</strong></p>
-</blockquote>
-<dl>
-<dt>==============</dt>
-<dd>
-<p>«connection»</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Description/Values</strong> |</p>
-</blockquote>
-<dl>
-<dt>==========================================+</dt>
-<dd>
-<p>The [shader node](nodes.md#node-shader) | which will be used to shade the surface | is connected to this attribute. A | priority (useful for overriding a shader | from higher in the scene graph) can be | specified by setting the <code>priority</code> | attribute of the connection itself. |</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-</tr>
-<tr class="odd">
-<td><p><code>displacementshader</code></p>
-<p><code>shader.displacement</code> (!)</p></td>
-<td>«connection»</td>
-<td>The [shader node](nodes.md#node-shader) | which will be used to displace the | surface is connected to this attribute. | A priority (useful for overriding a | shader from higher in the scene graph) | can be specified by setting the | <code>priority</code> attribute of the connection | itself. |</td>
-</tr>
-<tr class="even">
-<td><p><code>volumeshader</code></p>
-<p><code>shader.volume</code> (!)</p></td>
-<td>«connection»</td>
-<td>The [shader node](nodes.md#node-shader) | which will be used to shade the volume | inside the primitive is connected to | this attribute. |</td>
-</tr>
-<tr class="odd">
-<td><code>ATTR.priority</code></td>
-<td>integer</td>
-<td>Sets the priority of attribute <code>ATTR</code> when gathering attributes in the scene hierarchy.</td>
-</tr>
-<tr class="even">
-<td><p><code>visibility.camera</code></p>
-<p><code>visibility.diffuse</code></p>
-<p><code>visibility.hair</code></p>
-<p><code>visibility.reflection</code></p>
-<p><code>visibility.refraction</code></p>
-<p><code>visibility.shadow</code></p>
-<p><code>visibility.specular</code></p>
-<p><code>visibility.volume</code></p></td>
-<td>integer</td>
-<td>These attributes set visibility for each | ray type specified in [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>). The same effect could be achieved using shader | code (using the <code>raytype()</code> function) | but it is much faster to filter | intersections at trace time. A value of | <code>1</code> makes the object visible to the | corresponding ray type, while <code>0</code> | makes it invisible. | | | | | | |</td>
-</tr>
-<tr class="odd">
-<td><code>visibility</code></td>
-<td>integer</td>
-<td>This attribute sets the default visibility for all ray types. When visibility is set both per ray type and with this default visibility, the attribute with the highest priority is used. If their priority is the same, the more specific attribute (i.e. per ray type) is used.</td>
-</tr>
-<tr class="even">
-<td><code>matte</code></td>
-<td>integer</td>
-<td>If this attribute is set to 1, the object becomes a matte for camera rays. Its transparency is used to control the matte opacity and all other shading components are ignored.</td>
-</tr>
-<tr class="odd">
-<td><p><code>regularemission</code></p>
-<p><code>emission.regular</code> (!)</p></td>
-<td>integer</td>
-<td>If this is set to <code>1</code>, closures not used with <code>quantize()</code> will use emission from the objects affected by the attribute. If set to 0, they will not.</td>
-</tr>
-<tr class="even">
-<td><p><code>quantizedemission</code></p>
-<p><code>emission.quantized</code> (!)</p></td>
-<td>integer</td>
-<td>If this is set to <code>1</code>, quantized closures will use emission from the objects affected by the attribute. If set to <code>0</code>, they will not.</td>
-</tr>
-<tr class="odd">
-<td><p><code>bounds</code></p>
-<p><code>boundary</code></p></td>
-<td>«connection»</td>
-<td>When a geometry node (usually a | [mesh node](nodes.md#node-mesh)) is | connected to this attribute, it will be | used to restrict the effect of the | attributes node, which will apply only | inside the volume defined by the | connected geometry object. |</td>
-</tr>
-</tbody>
-</table>
+`angle` — double (360)
 
-attributes node attributes
+Specifies the cone angle representing the region of the sphere to be sampled. The angle is measured around the Z+ axis. If the angle is set to 0, the environment describes a directional light. Refer to [lighting guidelines](guidelines.md#lighting-in-the-nodal-scene-interface) for more about how to specify light sources.
 
-## The Transform Node
+## The `shader` node
 
-This node represents a geometric transformation. Transform nodes can be chained together to express transform concatenation, hierarchies and instances.
+This node represents an ᴏsʟ shader, also called layer when part of a shader group. It has the following attributes:
 
-A transform node also accepts attributes to implement \[hierarchical attribute assignment and overrides\](guidelines.md#section-attributes).
+`shaderfilename` — string
 
-It has the following attributes:
+This is the name of the file which contains the shader's compiled code.
 
-<table style="width:14%;">
-<caption>transform node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td rowspan="2"><blockquote>
-<p><strong>Name</strong></p>
-</blockquote>
-<dl>
-<dt>==============================</dt>
-<dd>
-<p><code>tranformationmatrix</code></p>
-<p><code>matrix</code> (!)</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Type</strong></p>
-</blockquote>
-<dl>
-<dt>=================</dt>
-<dd>
-<p>doublematrix</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Description/Values</strong> |</p>
-</blockquote>
-<dl>
-<dt>==========================================+</dt>
-<dd>
-<p>This is a 4×4 matrix which describes | the node's transformation. Matrices | in ɴsɪ <em>post-multiply</em> so column | vectors are of the form: | | .. math:: | | left[ begin{array}{cccc} | <a href="">w</a>{1_1} &amp; <a href="">w</a>{1_2} &amp; <a href="">w</a>{1_3} &amp; 0 \ | <a href="">w</a>{2_1} &amp; <a href="">w</a>{2_2} &amp; <a href="">w</a>{2_3} &amp; 0 \ | <a href="">w</a>{3_1} &amp; <a href="">w</a>{3_2} &amp; <a href="">w</a>{3_3} &amp; 0 \ | Tx &amp; Ty &amp; Tz &amp; 1 end{array} right] |</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-</tr>
-<tr class="odd">
-<td><p><code>objects</code></p>
-<p><code>object</code> (!)</p></td>
-<td>«connection(s)»</td>
-<td>This is where the transformed objects are connected to. This includes geometry nodes, other transform nodes and camera nodes.</td>
-</tr>
-<tr class="even">
-<td><p><code>geometryattributes</code></p>
-<p><code>attribute</code> (!)</p></td>
-<td>«connection(s)»</td>
-<td>This is where | [attributes nodes](nodes.md#node-attributes) | may be connected to affect any geometry | transformed by this node. | | See the guidelines on | [attributes](guidelines.md#section-attributes) and | [instancing](guidelines.md#section-instancing) for explanations on how this connection | is used. |</td>
-</tr>
-</tbody>
-</table>
+`shaderobject` — string
 
-transform node attributes
+This contains the complete compiled shader code. It allows providing custom shaders without going through files.
 
-## The Instances Node
+Either `shaderfilename` or `shaderobject` must be provided. All other attributes on this node are considered parameters of the shader. They may either be given values or connected to attributes of other shader nodes to build shader networks. ᴏsʟ shader networks must form acyclic graphs or they will be rejected. Refer to [creating ᴏsʟ networks](guidelines.md#creating-osl-networks) for instructions on ᴏsʟ network creation and usage.
+
+## The `attributes` node
+
+This node is a generic container for attributes. Its exact purpose depends on where it is connected in the scene. There are currently two uses.
+
+### geometry attributes
+
+This node can provide various geometry related rendering attributes that are not _intrinsic_ to a particular node (for example, one can't set the topology of a polygonal mesh using this attributes node). For this use, instances of this node must be connected to the `geometryattributes` attribute of either geometric primitives or transform nodes (to build [attributes hierarchies](guidelines.md#a-word-or-two-about-attributes)). Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the [scene root](#the-root-node) is reached.
+
+When an attribute is defined multiple times along this path, the definition with the highest priority is selected. In case of conflicting priorities, the definition that is closest to the geometric primitive (i.e. the furthest from the root) is selected. Connections (for shaders, essentially) can also be assigned priorities, which are used in the same way as for regular attributes. Multiple attributes nodes can be connected to the same geometry or transform nodes (e.g. one attributes node can set object visibility and another can set the surface shader) and will all be considered.
+
+In this case, the node has the following attributes:
+
+`surfaceshader` — \<connection\>\
+`shader.surface` (!)
+
+The [shader node](#the-shader-node) which will be used to shade the surface is connected to this attribute. A priority (useful for overriding a shader from higher in the scene graph) can be specified by setting the `priority` attribute of the connection itself.
+
+`displacementshader` — \<connection\>\
+`shader.displacement` (!)
+
+The [shader node](#the-shader-node) which will be used to displace the surface is connected to this attribute. A priority (useful for overriding a shader from higher in the scene graph) can be specified by setting the `priority` attribute of the connection itself.
+
+`volumeshader` — \<connection\>\
+`shader.volume` (!)
+
+The [shader node](#the-shader-node) which will be used to shade the volume inside the primitive is connected to this attribute.
+
+`ATTR.priority` — int (0)
+
+Sets the priority of attribute ATTR when gathering attributes in the scene hierarchy.
+
+`visibility.camera` — int (1)\
+`visibility.diffuse` — int (1)\
+`visibility.hair` — int (1)\
+`visibility.reflection` — int (1)\
+`visibility.refraction` — int (1)\
+`visibility.shadow` — int (1)\
+`visibility.specular` — int (1)\
+`visibility.volume` — int (1)
+
+These attributes set visibility for each ray type specified in ᴏsʟ. The same effect could be achieved using shader code (using the `raytype()` function) but it is much faster to filter intersections at trace time. A value of 1 makes the object visible to the corresponding ray type, while 0 makes it invisible.
+
+`visibility` — int (1)
+
+This attribute sets the default visibility for all ray types. When visibility is set both per ray type and with this default visibility, the attribute with the highest priority is used. If their priority is the same, the more specific attribute (i.e. per ray type) is used.
+
+`visibility.set.subsurface` — \<connection\>
+
+If a [set node](#the-set-node) is connected to this attribute, subsurface rays will only see objects with a connection to that same set node.
+
+`matte` — int (0)
+
+If this attribute is set to 1, the object becomes a matte for camera rays. Its transparency is used to control the matte opacity and all other shading components are ignored.
+
+`regularemission` — int (1)\
+`emission.regular` (!)
+
+If this is set to 1, closures not used with `quantize()` will use emission from the objects affected by the attribute. If set to 0, they will not.
+
+`quantizedemission` — int (1)\
+`emission.quantized` (!)
+
+If this is set to 1, quantized closures will use emission from the objects affected by the attribute. If set to 0, they will not.
+
+`bounds` — \<connection\>
+
+When a geometry node (usually a [mesh node](#the-mesh-node)) is connected to this attribute, it will be used to restrict the effect of the attributes node, which will apply only inside the volume defined by the connected geometry object. It is also possible to connect a transform node to this. It is equivalent to connecting all the geometry nodes connected, even indirectly, to the transform.
+
+### shader attributes
+
+This node can be a container for attributes available to shaders. For this purpose, instances of this node must be connected to the `shaderattributes` attribute of geometric primitives, [transform](#the-transform-node) nodes or [set](#the-set-node) nodes. Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the [scene root](#the-root-node) is reached.
+
+Priority is given to nodes attached closest to the geometric primitive, with the highest priority given to attributes set directly on the geometric primitive. Attributes set on this node may only have a single value.
+
+## The `transform` node
+
+This node represents a geometric transformation. Transform nodes can be chained together to express transform concatenation, hierarchies and instances. Transform nodes also accept attributes to implement [hierarchical attribute assignment and overrides](guidelines.md#a-word-or-two-about-attributes). It has the following attributes:
+
+`transformationmatrix` — doublematrix\
+`matrix` (!)
+
+This is a 4x4 matrix which describes the node's transformation. Matrices in ɴsɪ post-multiply column vectors so are of the form:
+
+```
+| w11  w12  w13  0 |
+| w21  w22  w23  0 |
+| w31  w32  w33  0 |
+| Tx   Ty   Tz   1 |
+```
+
+`objects` — \<connection\>\
+`object` (!)
+
+This is where the transformed objects are connected to. This includes geometry nodes, other transform nodes and camera nodes.
+
+`geometryattributes` — \<connection\>\
+`attribute` (!)
+
+This is where [attributes nodes](#the-attributes-node) may be connected to affect any geometry transformed by this node. Refer to [attributes](guidelines.md#a-word-or-two-about-attributes) and [instancing](guidelines.md#instancing) for explanation on how this connection is used.
+
+`shaderattributes` — \<connection\>
+
+This is where [attributes nodes](#the-attributes-node) may be connected to provide shader attributes for any geometry transformed by this node.
+
+## The `instances` node
 
 This node is an efficient way to specify a large number of instances. It has the following attributes:
 
-<table style="width:14%;">
-<caption>instances node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>sourcemodels</code></p>
-<p><code>object</code> (!)</p></td>
-<td>«connection(s)»</td>
-<td><p>The instanced models should connect to this attribute.</p>
-<p>Connections must have an integer <code>index</code> attribute if there are several, so the models effectively form an ordered list.</p></td>
-</tr>
-<tr class="even">
-<td><p><code>transformationmatrices</code></p>
-<p><code>matrix</code> (!)</p></td>
-<td>doublematrix</td>
-<td>A transformation matrix for each instance.</td>
-</tr>
-</tbody>
-</table>
+`sourcemodels` — \<connection\>\
+`object` (!)
 
-instances node attributes
+The instanced models should connect to this attribute. Connections must have an integer `index` attribute if there are several, so the models effectively form an ordered list.
 
-<table style="width:14%;">
-<caption>instances node optional attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><code>modelindices</code></p>
-<p><code>object.index</code> (!)</p></td>
-<td>integer</td>
-<td>An optional model selector for each instance.</td>
-</tr>
-<tr class="even">
-<td><p><code>disabledinstances</code></p>
-<p><code>disable.index</code> (!)</p></td>
-<td>[integer; ...]</td>
-<td>An optional list of indices of instances which are not to be rendered.</td>
-</tr>
-</tbody>
-</table>
+`transformationmatrices` — doublematrix\
+`matrix` (!)
 
-instances node optional attributes
+A transformation matrix for each instance.
 
-## The Outputdriver Node
+`modelindices` — int (0)\
+`object.index` (!)
 
-An output driver defines how an image is transferred to an output destination. The destination could be a file (e.g. "exr" output driver), frame buffer or a memory address. It can be connected to the `outputdrivers` attribute of an node. It has the following attributes:
+An optional model selector for each instance. The value used is matched to the `index` attribute of the model connection. A negative value will cause an instance to not be rendered.
 
-| **Name**          | **Type** | **Description/Values**                                                                                                            |
-| ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `drivername`      | string   | This is the name of the driver to use. The api of the driver is implementation specific and is not covered by this documentation. |
-| `imagefilename`   | string   | Full path to a file for a file-based output driver or some meaningful identifier depending on the output driver.                  |
-| `embedstatistics` | integer  | A value of 1 specifies that statistics will be embedded into the image file.                                                      |
+`disabledinstances` — int\
+`disable.index` (!)
 
-outputdriver node attributes
+An optional list of indices of instances which are not to be rendered.
+
+## The `outputdriver` node
+
+An output driver defines how an image is transferred to an output destination. The destination could be a file (e.g. "exr" output driver), frame buffer or a memory address. It can be connected to the `outputdrivers` attribute of an [output layer](#the-outputlayer-node) node. It has the following attributes:
+
+`drivername` — string
+
+This is the name of the driver to use. The API of the driver is implementation specific and is not covered by this documentation.
+
+`imagefilename` — string\
+`filename` (!)
+
+Full path to a file for a file-based output driver or some meaningful identifier depending on the output driver.
+
+`embedstatistics` — int (1)
+
+A value of 1 specifies that statistics will be embedded into the image file.
 
 Any extra attributes are also forwarded to the output driver which may interpret them however it wishes.
 
-## The Outputlayer Node
+## The `outputlayer` node
 
 This node describes one specific layer of render output data. It can be connected to the `outputlayers` attribute of a screen node. It has the following attributes:
 
-<table style="width:14%;">
-<caption>outputlayer node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 2%" />
-<col style="width: 5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td rowspan="2"><blockquote>
-<p><strong>Name</strong></p>
-</blockquote>
-<dl>
-<dt>=================================</dt>
-<dd>
-<p><code>variablename</code></p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Type</strong></p>
-</blockquote>
-<dl>
-<dt>=================</dt>
-<dd>
-<p>string</p>
-</dd>
-</dl></td>
-<td colspan="2" rowspan="2"><blockquote>
-<p><strong>Description/Values</strong></p>
-</blockquote>
-<dl>
-<dt>========================================</dt>
-<dd>
-<p>This is the name of a variable to output.</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-</tr>
-<tr class="odd">
-<td rowspan="4"><code>variablesource</code></td>
-<td rowspan="4">string</td>
-<td colspan="2">Indicates where the variable to be output is read from. Possible values are:</td>
-</tr>
-<tr class="even">
-<td><code>shader</code></td>
-<td>computed by a shader | and output through | an [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>) closure s (such a | <code>outputvariable()</code> | or <code>debug()</code>) or | the <code>Ci</code> global | variable. |</td>
-</tr>
-<tr class="odd">
-<td><code>attribute</code></td>
-<td>retrieved directly from an attribute with a matching name attached to a geometric primitive.</td>
-</tr>
-<tr class="even">
-<td><code>builtin</code></td>
-<td>generated automatically by the renderer (e.g. <code>z</code>, <code>alpha</code> <code>N.camera</code>, <code>P.world</code>).</td>
-</tr>
-<tr class="odd">
-<td><code>layername</code></td>
-<td>string</td>
-<td colspan="2">This will be name of the layer as written by the output driver. For example, if the output driver writes to an EXR file then this will be the name of the layer inside that file.</td>
-</tr>
-<tr class="even">
-<td rowspan="8"><code>scalarformat</code></td>
-<td rowspan="8">string</td>
-<td colspan="2">Specifies the format in which data will be encoded (quantized) prior to passing it to the output driver. Possible values are:</td>
-</tr>
-<tr class="odd">
-<td><code>int8</code></td>
-<td>Signed 8-bit integer.</td>
-</tr>
-<tr class="even">
-<td><code>uint8</code></td>
-<td>Unsigned 8-bit integer.</td>
-</tr>
-<tr class="odd">
-<td><code>int16</code></td>
-<td>Signed 16-bit integer.</td>
-</tr>
-<tr class="even">
-<td><code>uint16</code></td>
-<td>Unsigned 16-bit integer.</td>
-</tr>
-<tr class="odd">
-<td><code>int32</code></td>
-<td>Signed 32-bit integer.</td>
-</tr>
-<tr class="even">
-<td><code>half</code></td>
-<td>IEEE 754 half-precision binary floating point (binary16).</td>
-</tr>
-<tr class="odd">
-<td><code>float</code></td>
-<td>IEEE 754 single-precision binary floating point (binary32).</td>
-</tr>
-<tr class="even">
-<td rowspan="6"><code>layertype</code></td>
-<td rowspan="6">string</td>
-<td colspan="2">Specifies the type of data that will be written to the layer. Possible values are:</td>
-</tr>
-<tr class="odd">
-<td><code>scalar</code></td>
-<td>A single quantity. Useful for opacity (<code>alpha</code>) or depth (<code>Z</code>) information.</td>
-</tr>
-<tr class="even">
-<td><code>color</code></td>
-<td>A 3-component color.</td>
-</tr>
-<tr class="odd">
-<td><code>vector</code></td>
-<td>A 3D point or vector. This will help differentiate the data from a color in further processing.</td>
-</tr>
-<tr class="even">
-<td><code>quad</code></td>
-<td>A sequence of 4 values, where the fourth value is <em>not</em> an alpha channel.</td>
-</tr>
-<tr class="odd">
-<td colspan="2">Each component of those types is stored according to the <code>scalarformat</code> attribute set on the same <code>outputlayer</code> node.</td>
-</tr>
-<tr class="even">
-<td><code>colorprofile</code></td>
-<td>string</td>
-<td colspan="2">The name of an OCIO color profile to apply to rendered image data prior to quantization.</td>
-</tr>
-<tr class="odd">
-<td><code>dithering</code></td>
-<td>integer</td>
-<td colspan="2"><p>If set to 1, dithering is applied to integer scalars. Otherwise, it must be set to 0.</p>
-<p><em>It is sometimes desirable to turn off dithering, for example, when outputting object IDs.</em></p></td>
-</tr>
-<tr class="even">
-<td><code>withalpha</code></td>
-<td>integer</td>
-<td colspan="2">If set to 1, an alpha channel is included in the output layer. Otherwise, it must be set to <code>0</code>.</td>
-</tr>
-<tr class="odd">
-<td><code>sortkey</code></td>
-<td>integer</td>
-<td colspan="2">This attribute is used as a sorting | key when ordering multiple output | layer nodes connected to the same | [output driver | ](nodes.md#node-outputdriver) node. | Layers with the lowest <code>sortkey</code> | attribute appear first. |</td>
-</tr>
-<tr class="even">
-<td><code>lightset</code></td>
-<td>«connection(s)»</td>
-<td colspan="2">This connection accepts either | [light sources | ](guidelines.md#section-specifyinglights) or | [set nodes ](nodes.md#node-set) to which | lights are connected. In this case | only listed lights will affect the | render of the output layer. If nothing | is connected to this attribute then | all lights are rendered. |</td>
-</tr>
-<tr class="odd">
-<td><p><code>outputdrivers</code></p>
-<p><code>outputdriver</code> (!)</p></td>
-<td>«connection(s)»</td>
-<td colspan="2">This connection accepts nodes to which the layer’s image will be sent.</td>
-</tr>
-<tr class="even">
-<td><code>filter</code></td>
-<td>string <code>(blackmann- harris)</code></td>
-<td colspan="2"><p>The type of filter to use when reconstructing the final image from sub-pixel samples. Possible values are:</p>
-<ul>
-<li><code>box</code></li>
-<li><code>triangle</code></li>
-<li><code>catmull-rom</code></li>
-<li><code>bessel</code></li>
-<li><code>gaussian</code></li>
-<li><code>sinc</code></li>
-<li><code>mitchell</code></li>
-<li><code>blackman-harris</code> <strong>(default)</strong></li>
-<li><code>zmin</code></li>
-<li><code>zmax</code></li>
-<li><code>cryptomattelayer%u</code> Take two values from those present in each pixel's samples.</li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td rowspan="10"><code>filterwidth</code></td>
-<td rowspan="10">double</td>
-<td colspan="2">Diameter in pixels of the reconstruction filter. It is ignored when filter is <code>box</code> or <code>zmin</code>.</td>
-</tr>
-<tr class="even">
-<td colspan="2">Filter</td>
-</tr>
-<tr class="odd">
-<td colspan="2"><code>box</code></td>
-</tr>
-<tr class="even">
-<td colspan="2"><code>triangle</code></td>
-</tr>
-<tr class="odd">
-<td colspan="2"><code>catmull-rom</code></td>
-</tr>
-<tr class="even">
-<td colspan="2"><code>bessel</code></td>
-</tr>
-<tr class="odd">
-<td colspan="2"><code>gaussian</code></td>
-</tr>
-<tr class="even">
-<td colspan="2"><code>sinc</code></td>
-</tr>
-<tr class="odd">
-<td colspan="2"><code>mitchell</code></td>
-</tr>
-<tr class="even">
-<td colspan="2"><code>blackman-harris</code></td>
-</tr>
-<tr class="odd">
-<td><code>backgroundvalue</code></td>
-<td>float</td>
-<td colspan="2">The value given to pixels where nothing is rendered.</td>
-</tr>
-</tbody>
-</table>
+`variablename` — string
 
-outputlayer node attributes
+This is the name of a variable to output.
+
+`variablesource` — string (shader)
+
+Indicates where the variable to be output is read from. Possible values are:
+
+- `shader` — computed by a shader and output through an ᴏsʟ closure (such as `outputvariable()` or `debug()`) or the `Ci` global variable.
+- `attribute` — retrieved directly from an attribute with a matching name attached to a geometric primitive.
+- `builtin` — generated automatically by the renderer (e.g. `"z"`, `"alpha"`, `"N.camera"`, `"P.world"`).
+
+`layername` — string
+
+This will be name of the layer as written by the output driver. For example, if the output driver writes to an EXR file then this will be the name of the layer inside that file.
+
+`scalarformat` — string (uint8)
+
+Specifies the format in which data will be encoded (quantized) prior to passing it to the output driver. Possible values are:
+
+- `int8` — signed 8-bit integer
+- `uint8` — unsigned 8-bit integer
+- `int16` — signed 16-bit integer
+- `uint16` — unsigned 16-bit integer
+- `int32` — signed 32-bit integer
+- `uint32` — unsigned 32-bit integer
+- `half` — IEEE 754 half-precision binary floating point (binary16)
+- `float` — IEEE 754 single-precision binary floating point (binary32)
+
+`layertype` — string (color)
+
+Specifies the type of data that will be written to the layer. Possible values are:
+
+- `scalar` — A single quantity. Useful for opacity ("alpha") or depth ("Z") information.
+- `color` — A 3-component color.
+- `vector` — A 3D point or vector. This will help differentiate the data from a color in further processing.
+- `quad` — A sequence of 4 values, where the fourth value is not an alpha channel.
+
+Each component of those types is stored according to the `scalarformat` attribute set on the same outputlayer node.
+
+`colorprofile` — string
+
+The name of an OCIO color profile to apply to rendered image data prior to quantization.
+
+`dithering` — integer (0)
+
+If set to 1, dithering is applied to integer scalars. Otherwise, it must be set to 0.
+
+`withalpha` — integer (0)
+
+If set to 1, an alpha channel is included in the output layer. Otherwise, it must be set to 0.
+
+`sortkey` — integer
+
+This attribute is used as a sorting key when ordering multiple output layer nodes connected to the same [output driver](#the-outputdriver-node) node. Layers with the lowest `sortkey` attribute appear first.
+
+`lightset` — \<connection\>
+
+This connection accepts either light sources or [set](#the-set-node) nodes to which lights are connected. In this case only listed lights will affect the render of the output layer. If nothing is connected to this attribute then all lights are rendered.
+
+If an [environment](#the-environment-node) node is connected here, a `component` string attribute can be specified on the connection with a value of either `sun` or `background`. If this is used, only the corresponding part of the environment will contribute to the output layer.
+
+`lightsetname` — string
+
+This can be provided as friendly name for the connected light set. Otherwise, a default name is built from the connected node.
+
+`outputdrivers` — \<connection\>\
+`outputdriver` (!)
+
+This connection accepts [output driver](#the-outputdriver-node) nodes to which the layer's image will be sent.
+
+`filter` — string (blackman-harris)
+
+The type of filter to use when reconstructing the final image from sub-pixel samples. Possible values are: `"box"`, `"triangle"`, `"catmull-rom"`, `"bessel"`, `"gaussian"`, `"sinc"`, `"mitchell"`, `"blackman-harris"`, `"zmin"` and `"zmax"`.
+
+`filterwidth` — double (3.0)
+
+Diameter in pixels of the reconstruction filter. It is not applied when filter is `"box"` or `"zmin"`.
+
+`backgroundvalue` — float (0)
+
+The value given to pixels where nothing is rendered.
+
+`backgroundlayer` — \<connection\>
+
+This connection accepts a single output layer node which is meant to be displayed as a background. Not all [output drivers](#the-outputdriver-node) support this behavior, so it might be ignored.
+
+`lightdepth` — string (auto)
+
+Allows filtering light contributions according to the number of bounces light has made from a light source to the objects in front of the camera. This is only meaningful when the layer's `variablesource` is set to `shader` (otherwise, it's ignored). Possible values are:
+
+- `direct` — Only light coming directly from light sources to visible objects (ie: with no bounce) is included.
+- `indirect` — Only light coming from light sources to visible objects through at least one bounce is shown.
+- `both` — All light is included.
+- `auto` — Selects the appropriate value for lightdepth according to the value of the `variablename` attribute. If it ends with either `.direct` or `.indirect`, the corresponding light depth will be used, and the suffix will be removed from the effective variable name. Otherwise, it will default to `both`.
+
+`cryptomatte.enable` — int (0)
+
+Setting this attribute to 1 enables Cryptomatte encoding of the layer's data. `cryptomatte.level` should also be set properly.
+
+`cryptomatte.level` — int (0)
+
+If this value is negative, the layer will contain a human-readable "Cryptomatte header" image. Otherwise, the value indicates the index of the first Cryptomatte level that will be output. Since Cryptomatte levels are output by pairs, a Cryptomatte file with 4 levels would contain output layers with `cryptomatte.level` set to -1, 0 and 2. This has no effect unless Cryptomatte encoding is enabled using `cryptomatte.enable`.
 
 Any extra attributes are also forwarded to the output driver which may interpret them however it wishes.
 
-## The Screen Node
+## The `screen` node
 
-This node describes how the view from a camera node will be rasterized into an \[output layer \](nodes.md#node-outputlayer) node. It can be connected to the `screens` attribute of a \[camera node \](nodes.md#node-camera).
+This node describes how the view from a camera node will be rasterized into an [output layer](#the-outputlayer-node) node. It can be connected to the `screens` attribute of a camera node.
 
-For an exmplanation of coordinate systems/spaces mentioned below, e.g. `NDC`, `screen`, etc., please refer to the [Open Shading Language specification](https://github.com/imageworks/OpenShadingLanguage/raw/master/src/doc/osl-languagespec.pdf)
+`outputlayers` — \<connection\>\
+`outputlayer` (!)
 
-<table style="width:9%;">
-<caption>screen node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 2%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>outputlayers</code></p>
-<p><code>outputlayer</code> (!)</p></td>
-<td>«connection(s)»</td>
-<td>This connection accepts nodes which will receive a rendered image of the scene as seen by the camera.</td>
-</tr>
-<tr class="even">
-<td><code>resolution</code></td>
-<td>integer[2]</td>
-<td>Horizontal and vertical resolution of the rendered image, in pixels.</td>
-</tr>
-<tr class="odd">
-<td><code>oversampling</code></td>
-<td>integer</td>
-<td>The total number of samples (i.e. camera rays) to be computed for each pixel in the image.</td>
-</tr>
-<tr class="even">
-<td><code>crop</code></td>
-<td>float[2][2]</td>
-<td><p>The region of the image to be rendered. It is defined by a two 2D coordinates. Each represents a point in <span class="title-ref">NDC</span> space:</p>
-<ul>
-<li><code>Top-left</code> corner of the crop region.</li>
-<li><code>Bottom-right</code> corner of the crop region.</li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td><code>prioritywindow</code></td>
-<td>integer[2][2]</td>
-<td><p>For progressive renders, this is the region of the image to be rendered first. It is defined by two coordinates. Each represents a pixel position in <code>raster</code> space:</p>
-<ul>
-<li><code>Top-left</code> corner of the high priority region.</li>
-<li><code>Bottom-right</code> corner of the high priority region.</li>
-</ul></td>
-</tr>
-<tr class="even">
-<td><code>screenwindow</code></td>
-<td>double[2][2]</td>
-<td><p>Specifies the screen space region to be rendered. It is defined by two coordinates. Each represents a point in <code>screen</code> space:</p>
-<ul>
-<li><code>Top-left</code> corner of the region.</li>
-<li><code>Bottom-right</code> corner of the region.</li>
-</ul>
-<p>Note that the default screen window is set implicitely by the frame aspect ratio:</p>
-<p><span class="math display">$$\begin{aligned}
-screenwindow = \begin{bmatrix}-f
-&amp; -1\end{bmatrix},
-\begin{bmatrix}f &amp; 1\end{bmatrix}
-\text{for } f=\dfrac{xres}{yres}\\
-\end{aligned}$$</span></p></td>
-</tr>
-<tr class="odd">
-<td><code>pixelaspectratio</code></td>
-<td>float (<code>1</code>)</td>
-<td>Ratio of the physical width to the height of a single pixel. A value of <code>1</code> corresponds to square pixels.</td>
-</tr>
-<tr class="even">
-<td><code>staticsamplingpattern</code></td>
-<td>integer (<code>0</code>)</td>
-<td><p>This controls whether or not the sampling pattern used to produce the image changes for every frame.</p>
-<p>A nonzero value will cause the same pattern to be used for all frames. A value of <code>0</code> will cause the pattern to change with the frame attribute of the global node . |</p></td>
-</tr>
-</tbody>
-</table>
+This connection accepts [output layer](#the-outputlayer-node) nodes which will receive a rendered image of the scene as seen by the camera.
 
-screen node attributes
+`resolution` — integer[2]
 
-## The Volume Node
+Horizontal and vertical resolution of the rendered image, in pixels.
 
-This node represents a volumetric object defined by [OpenVDB](https:/www.openvdb.org/) data. It has the following attributes:
+`oversampling` — integer
 
-<table style="width:14%;">
-<caption>volume node attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><p><code>vdbfilename</code></p>
-<p><code>filename</code> (!)</p></td>
-<td>string</td>
-<td>The path to an OpenVDB file with the volumetric data.</td>
-</tr>
-<tr class="even">
-<td><code>colorgrid</code></td>
-<td>string</td>
-<td>The name of the OpenVDB grid to use as a scattering color multiplier for the volume shader.</td>
-</tr>
-<tr class="odd">
-<td><code>densitygrid</code></td>
-<td>string</td>
-<td>The name of the OpenVDB grid to use as volume density for the volume shader.</td>
-</tr>
-<tr class="even">
-<td><code>emissionintensitygrid</code></td>
-<td>string</td>
-<td>The name of the OpenVDB grid to use as emission intensity for the volume shader.</td>
-</tr>
-<tr class="odd">
-<td><code>temperaturegrid</code></td>
-<td>string</td>
-<td>The name of the OpenVDB grid to use as temperature for the volume shader.</td>
-</tr>
-<tr class="even">
-<td><code>velocitygrid</code></td>
-<td>double</td>
-<td>The name of the OpenVDB grid to use as motion vectors. This can also name the first of three scalar grids (i.e. "velocityX").</td>
-</tr>
-<tr class="odd">
-<td><code>velocityscale</code></td>
-<td>double (<code>1</code>)</td>
-<td>A scaling factor applied to the motion vectors.</td>
-</tr>
-</tbody>
-</table>
+The total number of samples (i.e. camera rays) to be computed for each pixel in the image.
 
-volume node attributes
+`crop` — 2 × float[2]
+
+The region of the image to be rendered. It's defined by a list of exactly 2 pairs of floating-point number. Each pair represents a point in ɴᴅᴄ space:
+
+- Top-left corner of the crop region
+- Bottom-right corner of the crop region
+
+`prioritywindow` — 2 × int[2]
+
+For progressive renders, this is the region of the image to be rendered first. It is two pairs of integers. Each represents pixel coordinates:
+
+- Top-left corner of the high priority region
+- Bottom-right corner of the high priority region
+
+`screenwindow` — 2 × double[2]
+
+Specifies the screen space region to be rendered. Each pair represents a 2D point in screen space:
+
+- Bottom-left corner of the region
+- Top-right corner of the region
+
+Note that the default screen window is set implicitly by the frame aspect ratio:
+screenwindow = [-f, -1], [f, 1] for f = xres/yres
+
+`overscan` — 2 × int[2]
+
+Specifies how many extra pixels to render around the image. The four values represent the amount of overscan on the left, top, right and bottom of the image.
+
+`pixelaspectratio` — float
+
+Ratio of the physical width to the height of a single pixel. A value of 1.0 corresponds to square pixels.
+
+`staticsamplingpattern` — int (0)
+
+This controls whether or not the sampling pattern used to produce the image change for every frame. A nonzero value will cause the same pattern to be used for all frames. A value of zero will cause the pattern to change with the `frame` attribute of the [global node](#the-global-node).
+
+`importancesamplefilter` — int (0)
+
+This enables a rendering mode where the pixel filter is importance sampled. Quality will be reduced and the same filter will be used for all output layers of the screen. Filters with negative lobes (eg. sinc) are unsupported.
+
+## The `vdbparticles` node
+
+This node represents particles defined by [OpenVDB](https://www.openvdb.org) data. It has the following attributes:
+
+`vdbfilename` — string
+
+The path to an OpenVDB file with the particle data.
+
+`pointsgrid` — string
+
+The name of the OpenVDB grid to use for particle data. It must be of type PointDataGrid.
+
+`velocityreferencetime` — double
+
+The reference time at which the grid data is used directly, without being moved by the velocity attribute. Defaults to the [global node](#the-global-node)'s `referencetime` attribute.
+
+`velocityscale` — double (1)
+
+A scaling factor applied to the velocity data.
+
+`enablepscale` — int (1)
+
+Enables use of the `pscale` attribute in the grid to specify particle radius.
+
+`width` — double (1)
+
+The width of particles, if there is no `pscale` attribute in the file to specify their radius or it is disabled by setting `enablepscale` to 0.
+
+`widthscale` — double (1)
+
+A scaling factor applied to particle width.
+
+The P, v and pscale grid attributes are used to respectively define particle position, velocity and radius. Other grid attributes may be read by shaders.
+
+## The `volume` node
+
+This node represents a volumetric object defined by [OpenVDB](https://www.openvdb.org) data. It has the following attributes:
+
+`vdbfilename` — string
+
+The path to an OpenVDB file with the volumetric data.
+
+`densitygrid` — string
+
+The name of the OpenVDB grid to use as volume density for the volume shader.
+
+`colorgrid` — string
+
+The name of the OpenVDB grid to use as a scattering color multiplier for the volume shader.
+
+`emissiongrid` — string
+
+The name of the OpenVDB grid to use directly as emission for the volume shader.
+
+`emissionintensitygrid` — string
+
+The name of the OpenVDB grid to use as emission intensity for the volume shader.
+
+`temperaturegrid` — string
+
+The name of the OpenVDB grid to use as temperature for the volume shader.
+
+`velocitygrid` — string
+
+The name of the OpenVDB grid to use as motion vectors. This can also name the first of three scalar grids (ie. "velocityX").
+
+`velocityreferencetime` — double
+
+The reference time at which the grid data is used directly, without being moved by the velocity grid. Defaults to the [global node](#the-global-node)'s `referencetime` attribute.
+
+`velocityscale` — double (1)
+
+A scaling factor applied to the motion vectors.
 
 ## Camera Nodes
 
 All camera nodes share a set of common attributes. These are listed below.
 
-<table style="width:14%;">
-<caption>camera nodes shared attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td rowspan="2"><blockquote>
-<p><strong>Name</strong></p>
-</blockquote>
-<dl>
-<dt>==============================</dt>
-<dd>
-<p><code>screens</code></p>
-<p><code>screen</code> (!)</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Type</strong></p>
-</blockquote>
-<dl>
-<dt>=================</dt>
-<dd>
-<p>«connection(s)»</p>
-</dd>
-</dl></td>
-<td rowspan="2"><blockquote>
-<p><strong>Description/Values</strong></p>
-</blockquote>
-<dl>
-<dt>=======================================</dt>
-<dd>
-<p>This connection accepts nodes which will rasterize an image of the scene as seen by the camera. Refer to for more information.</p>
-</dd>
-</dl></td>
-</tr>
-<tr class="even">
-</tr>
-<tr class="odd">
-<td><code>shutterrange</code></td>
-<td>double[2]</td>
-<td><p>Time interval during which the camera shutter is at least partially open. It is defined by a list of exactly two values:</p>
-<ul>
-<li>Time at which the shutter starts <strong>opening</strong>.</li>
-<li>Time at which the shutter finishes <strong>closing</strong>.</li>
-</ul></td>
-</tr>
-<tr class="even">
-<td><code>shutteropening</code></td>
-<td>double[2]</td>
-<td><p>A <em>normalized</em> time interval indicating the time at which the shutter is fully open (a) and the time at which the shutter starts to close (b). These two values define the top part of a trapezoid filter.</p>
-<p>This feature simulates a mechanical shutter on which open and close movements are not instantaneous. Below is an image showing the geometry of such a trapezoid filter.</p>
-<figure>
-<img src="image/aperture.svg" alt="image/aperture.svg" />
-<figcaption>An example shutter opening configuration with <span class="math inline">$a=\frac{1}{3}$</span> and <span class="math inline">$b=\frac{2}{3}$</span>.</figcaption>
-</figure></td>
-</tr>
-<tr class="odd">
-<td><code>clippingrange</code></td>
-<td>double[2]</td>
-<td><p>Distance of the near and far clipping planes from the camera. It’s defined by a list of exactly two values:</p>
-<ul>
-<li>Distance to the <strong>near</strong> clipping plane, in front of which scene objects are clipped.</li>
-<li>Distance to the <strong>far</strong> clipping plane, behind which scene objects are clipped.</li>
-</ul></td>
-</tr>
-<tr class="even">
-<td><code>lensshader</code></td>
-<td>«connection»</td>
-<td>An [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>) shader through which camera rays get sent. See [lens shaders | ](nodes.md#shader-lens). |</td>
-</tr>
-</tbody>
-</table>
+`screens` — \<connection\>\
+`screen` (!)
 
-camera nodes shared attributes
+This connection accepts [screen](#the-screen-node) nodes which will rasterize an image of the scene as seen by the camera. Refer to [defining output drivers and layers](guidelines.md#defining-output-drivers-and-layers) for more information.
 
-### The Orthographiccamera Node
+`shutterrange` — double
 
-This node defines an orthographic camera with a view direction towards the $\mathrm{Z-}$ axis. This camera has no specific attributes.
+Time interval during which the camera shutter is at least partially open. It's defined by a list of exactly two values:
 
-### The Perspectivecamera Node
+- Time at which the shutter starts **opening**.
+- Time at which the shutter finishes **closing**.
 
-This node defines a perspective camera. The canonical camera is viewing in the direction of the $\mathrm{Z-}$ axis. The node is usually connected into a node for camera placement. It has the following attributes:
+`shutteropening` — double
 
-| **Name**                        | **Type**       | **Description/Values**                                                                                                                                                                                                |
-| ------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fov`                           | float          | The field of view angle, in degrees.                                                                                                                                                                                  |
-| `depthoffield.enable`           | integer (`0`)  | Enables depth of field effect for this camera.                                                                                                                                                                        |
-| `depthoffield.fstop`            | double         | Relative aperture of the camera.                                                                                                                                                                                      |
-| `depthoffield.focallength`      | double         | Vertical focal length, in scene units, of the camera lens.                                                                                                                                                            |
-| `depthoffield.focallengthratio` | double (`1.0`) | Ratio of vertical focal length to horizontal focal length. This is the squeeze ratio of an anamorphic lens.                                                                                                           |
-| `depthoffield.focaldistance`    | double         | Distance, in scene units, in front of the camera at which objects will be in focus.                                                                                                                                   |
-| `depthoffield.aperture.enable`  | integer (`0`)  | By default, the renderer simulates a circular aperture for depth of field. Enable this feature to simulate aperture "blades" as on a real camera. This feature affects the look in out-of-focus regions of the image. |
-| `depthoffield.aperture.sides`   | integer (`5`)  | Number of sides of the camera\'s aperture. The mininum number of sides is 3.                                                                                                                                          |
-| `depthoffield.aperture.angle`   | double (`0`)   | A rotation angle (in degrees) to be applied to the camera's aperture, in the image plane.                                                                                                                             |
+A _normalized_ time interval indicating the time at which the shutter is fully open (a) and the time at which the shutter starts to close (b). These two values define the top part of a trapezoid filter. The end goal of this feature it to simulate a mechanical shutter on which open and close movements are not instantaneous.
 
-perspective node attributes
+![An example shutter opening configuration](image/shutter.svg)
 
-|                                     |              |                                                                                                                                                                                                                  |
-| ----------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `depthoffield.aperture.roundness`   | double (`0`) | This shapes the sides of the polygon When set to `0`, the aperture is polygon with flat sides. When set to `1`, the aperture is a perfect circle. When set to `-1`, the aperture sides curve inwards.            |
-| `depthoffield.aperture.density`     | double (`0`) | The slope of the aperture\'s density. A value of `0` gives uniform density. Negative values, up to `-1`, make the aperture brighter near the center. Positive values, up to `1`, make it brighter near the edge. |
-| `depthoffield.aperture.aspectratio` | double (`1`) | Circularity of the aperture. This can be used to simulate anamorphic lenses.                                                                                                                                     |
+`clippingrange` — double
 
-perspective node extra attributes
+Distance of the near and far clipping planes from the camera. It's defined by a list of exactly two values:
 
-### The Fisheyecamera Node
+- Distance to the `near` clipping plane, in front of which scene objects are clipped.
+- Distance to the `far` clipping plane, behind which scene objects are clipped.
 
-Fish eye cameras are useful for a multitude of applications (e.g. virtual reality). This node accepts these attributes:
+### The orthographiccamera node
 
-| **Name**  | **Type**               | **Description/Values**                                                                               |                                                                                                                                |
-| --------- | ---------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `fov`     | float                  | The field of view angle, in degrees.                                                                 |                                                                                                                                |
-| `mapping` | string (`equidistant`) | Defines one of the supported fisheye [mapping functions](WikipediaFisheyeLens). Possible values are: |                                                                                                                                |
-|           |                        | `equidistant`                                                                                        | Maintains angular distances.                                                                                                   |
-|           |                        | `equisolidangle`                                                                                     | Every pixel in the image covers the same solid angle.                                                                          |
-|           |                        | `orthographic`                                                                                       | Maintains planar illuminance. This mapping is limited to a 180 field of view.                                                  |
-|           |                        | `stereographic`                                                                                      | Maintains angles throughout the image. Note that stereographic mapping fails to work with field of views close to 360 degrees. |
+This node defines an orthographic camera with a view direction towards the Z- axis. This camera has no specific attributes.
 
-fisheye camera node attributes
+### The perspectivecamera node
 
-### The Cylindricalcamera Node
+This node defines a perspective camera. The canonical camera is viewing in the direction of the Z- axis. The node is usually connected into a [transform](#the-transform-node) node for camera placement. It has the following attributes:
 
-This node specifies a cylindrical projection camera and has the following attibutes:
+`fov` — float
 
-<table style="width:14%;">
-<caption>cylindrical camera nodes shared attributes</caption>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 1%" />
-<col style="width: 8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Name</strong></th>
-<th><strong>Type</strong></th>
-<th><strong>Description/Values</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>fov</code></td>
-<td><p>float</p>
-<p>(<code>90</code>)</p></td>
-<td>Specifies the <em>vertical</em> field of view, in degrees. The default value is 90.</td>
-</tr>
-<tr class="even">
-<td><p><code>horizontalfov</code></p>
-<p><code>fov.horizontal</code> (!)</p></td>
-<td><p>float</p>
-<p>(<code>360</code>)</p></td>
-<td>Specifies the horizontal field of view, in degrees. The default value is 360.</td>
-</tr>
-<tr class="odd">
-<td><code>eyeoffset</code></td>
-<td>float</td>
-<td>This allows to render stereoscopic cylindrical images by specifying an eye offset</td>
-</tr>
-</tbody>
-</table>
+The field of view angle, in degrees.
 
-cylindrical camera nodes shared attributes
+`depthoffi­eld.enable` — integer (0)
 
-### The Sphericalcamera Node
+Enables depth of field effect for this camera.
+
+`depthoffi­eld.fstop` — double
+
+Relative aperture of the camera.
+
+`depthoffi­eld.focallength` — double
+
+Vertical focal length, in scene units, of the camera lens.
+
+`depthoffi­eld.focallengthratio` — double (1)
+
+Ratio of vertical focal length to horizontal focal length. This is the squeeze ratio of an anamorphic lens.
+
+`depthoffi­eld.focaldistance` — double
+
+Distance, in scene units, in front of the camera at which objects will be in focus.
+
+`depthoffi­eld.aperture.enable` — integer (0)
+
+By default, the renderer simulates a circular aperture for depth of field. Enable this feature to simulate aperture "blades" as on a real camera. This feature affects the look in out-of-focus regions of the image.
+
+`depthoffi­eld.aperture.sides` — integer (5)
+
+Number of sides of the camera's aperture. The minimum number of sides is 3.
+
+`depthoffi­eld.aperture.angle` — double (0)
+
+A rotation angle (in degrees) to be applied to the camera's aperture, in the image plane.
+
+`unitlengthmillimeters` — double
+
+Physical length, in millimeters, of one scene unit. Since NSI only uses virtual scene units, this has no effect on the rendered images. However, this value can be useful if the renderer has to communicate with other software or file formats using physical units. For example, the focal length of the camera, expressed in millimeters, would be the product `depthoffi­eld.focallength * unitlengthmillimeters`.
+
+### The fisheyecamera node
+
+Fish eye cameras are useful for a multitude of applications (e.g. virtual reality). This node accepts these attributes:
+
+`fov` — float
+
+Specifies the field of view for this camera node, in degrees.
+
+`mapping` — string (equidistant)
+
+Defines one of the supported fisheye [mapping functions](https://en.wikipedia.org/wiki/Fisheye_lens):
+
+- `equidistant` — Maintains angular distances.
+- `equisolidangle` — Every pixel in the image covers the same solid angle.
+- `orthographic` — Maintains planar illuminance. This mapping is limited to a 180 field of view.
+- `stereographic` — Maintains angles throughout the image. Note that stereographic mapping fails to work with field of views close to 360 degrees.
+
+### The cylindricalcamera node
+
+This node specifies a cylindrical projection camera and has the following attributes:
+
+`fov` — float (90)
+
+Specifies the _vertical_ field of view, in degrees.
+
+`horizontalfov` — float (360)\
+`fov.horizontal` (!)
+
+Specifies the horizontal field of view, in degrees.
+
+`eyeoffset` — float
+
+This offset allows to render stereoscopic cylindrical images by specifying an eye offset.
+
+### The sphericalcamera node
 
 This node defines a spherical projection camera. This camera has no specific attributes.
 
-### Lens Shaders
+### Lens shaders
 
-A lens shader is an \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) network connected to a camera through the `lensshader` connection. Such shaders receive the position and the direction of each tracer ray and can either change or completely discard the traced ray. This allows to implement distortion maps and cut maps. The following shader variables are provided:
+A lens shader is an ᴏsʟ network connected to a camera through the `lensshader` connection. Such shaders receive the position and the direction of each tracer ray and can either change or completely discard the traced ray. This allows to implement distortion maps and cut maps. The following shader variables are provided:
 
-`P` --- Contains ray's origin.
-
-`I` --- Contains ray's direction. Setting this variable to zero instructs the renderer not to trace the corresponding ray sample.
-
-`time` --- The time at which the ray is sampled.
-
-`(u, v)` --- Coordinates, in screen space, of the ray being traced.
+- `P` — Contains ray's origin.
+- `I` — Contains ray's direction. Setting this variable to zero instructs the renderer not to trace the corresponding ray sample.
+- `time` — The time at which the ray is sampled.
+- `(u, v)` — Coordinates, in screen space, of the ray being traced.

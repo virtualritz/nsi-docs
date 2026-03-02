@@ -4,7 +4,7 @@ It is a design goal to provide an easy to use and flexible scripting language fo
 
 The [Lua](https://www.lua.org/) language has been selected for such a task because of its performance, lightness and features[^1]. A flexible scripting interface greatly reduces the need to have API extensions.
 
-For example, what is known as \'conditional evaluation\' and \'Ri filters\' in the _RenderMan_ API are superseded by the scripting features of ɴsɪ.
+For example, what is known as 'conditional evaluation' and 'Ri filters' in the _RenderMan_ API are superseded by the scripting features of ɴsɪ.
 
 > [!NOTE]
 > Although they go hand in hand, scripting objects are not to be confused with the Lua binding.

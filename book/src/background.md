@@ -1,6 +1,6 @@
 # Background
 
-The Nodal Scene Interface (ɴsɪ) was developed to replace existing APIs in the \[3Delight\](<https://www.3delight.com>) renderer which were showing their age. Particualry the RenderMan Interface and the RenderMan Shading Language.
+The Nodal Scene Interface (ɴsɪ) was developed to replace existing APIs in the [3Delight](https://www.3delight.com) renderer which were showing their age. Particualry the RenderMan Interface and the RenderMan Shading Language.
 
 Having been designed in the 80s and extended several times since, they include features which are no longer relevant and design decisions which do not reflect modern needs.
 
@@ -15,7 +15,7 @@ The design of the ɴsɪ was shaped by multiple goals:
   Scene edit operations should not be a special case. There should be no difference between scene _description_ and scene _edits_. In other words, a scene description is a series of edits and vice versa.
 
 **Tight Integration with Open Shading Language**  
-  \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) integration is not superficial and affects scene definition. For example, there are no explicit light sources in ɴsɪ: light sources are created by connecting shaders with an `emission()` closure to a geometry.
+  [ᴏsʟ](https://opensource.imageworks.com/?p=osl) integration is not superficial and affects scene definition. For example, there are no explicit light sources in ɴsɪ: light sources are created by connecting shaders with an `emission()` closure to a geometry.
 
 **Scripting**  
   The interface should be accessible from a platform independent, efficient and easily accessible scripting language. Scripts can be used to add render time intelligence to a given scene description.

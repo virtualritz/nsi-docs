@@ -9,4 +9,4 @@ build:
       - cargo install mdbook
     build:
       html:
-        - mdbook build book --dest-dir $READTHEDOCS_OUTPUT/html
+        - "$(dirname $(which cargo))/mdbook" build book --dest-dir $READTHEDOCS_OUTPUT/html

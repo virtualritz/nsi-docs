@@ -2,15 +2,12 @@
 
 ## Basic Scene Anatomy
 
-<figure>
-<img src="image/basic_scene_anatomy.svg" class="align-right" alt="image/basic_scene_anatomy.svg" />
-<figcaption>The fundamental building blocks of an ɴsɪ scene</figcaption>
-</figure>
+![The fundamental building blocks of an ɴsɪ scene](image/basic_scene_anatomy.svg)
 
 A minimal (and useful) ɴsɪ scene graph contains the three following components:
 
 1.  Geometry linked to the `.root` node, usually through a transform chain.
-2.  \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) materials linked to scene geometry through an \[attributes\](nodes.md#node-attributes) node.
+2.  [ᴏsʟ](https://opensource.imageworks.com/?p=osl) materials linked to scene geometry through an [attributes](nodes.md#node-attributes) node.
 3.  At least one _outputdriver_ ​ → ​ _outputlayer_ ​ → ​ _screen_ ​ → ​ _camera_ ​ → ​ `.root` chain to describe a view and an output device.
 
 The scene graph in shows a renderable scene with all the necessary elements. Note how the connections always lead to the `.root` node.
@@ -24,17 +21,14 @@ In this view, a node with no output connections is not relevant by definition an
 
 Those familiar with the _RenderMan_ standard will remember the various ways to attach information to elements of the scene (standard attributes, user attributes, primitive variables, construction parameters). E.g parameters passed to RenderMan Interface calls to build certain objects. For example, knot vectors passed to `RiNuPatch()`.
 
-<figure>
-<img src="image/attribute_inheritance.svg" alt="image/attribute_inheritance.svg" />
-<figcaption>Attribute inheritance and override</figcaption>
-</figure>
+![Attribute inheritance and override](image/attribute_inheritance.svg)
 
-In ɴsɪ things are simpler and all attributes are set through the `NSISetAttribute()` mechanism. The only distinction is that some attributes are required (_intrinsic attributes_) and some are optional: a \[mesh node\](nodes.md#node-mesh) needs to have `P` and `nvertices` defined --- otherwise the geometry is invalid.
+In ɴsɪ things are simpler and all attributes are set through the `NSISetAttribute()` mechanism. The only distinction is that some attributes are required (_intrinsic attributes_) and some are optional: a [mesh node](nodes.md#node-mesh) needs to have `P` and `nvertices` defined --- otherwise the geometry is invalid.
 
 > [!NOTE]
 > In this documentation, all intrinsic attributes are documented at the beginning of each section describing a particular node.
 
-In \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) shaders, attributes are accessed using the `getattribute()` function and _this is the only way to access attributes in ɴsɪ_. Having one way to set and to access attributes makes things simpler (a \[design goal\](background.md#chapter-background)) and allows for extra flexibility (another design goal). shows two features of attribute assignment in ɴsɪ:
+In [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shaders, attributes are accessed using the `getattribute()` function and _this is the only way to access attributes in ɴsɪ_. Having one way to set and to access attributes makes things simpler (a [design goal](background.md#chapter-background)) and allows for extra flexibility (another design goal). shows two features of attribute assignment in ɴsɪ:
 
 Attribute inheritance
 
@@ -50,34 +44,28 @@ Note that any non-intrinsic attribute can be inherited and overridden, including
 
 Instancing in ɴsɪ is naturally performed by connecting a geometry to more than one transform (connecting a geometry node into a `transform.objects` attribute).
 
-<figure>
-<img src="image/instancing.svg" alt="image/instancing.svg" />
-<figcaption>Instancing in ɴsɪ with attribute inheritance and per-instance attribute override</figcaption>
-</figure>
+![Instancing in ɴsɪ with attribute inheritance and per-instance attribute override](image/instancing.svg)
 
-The above figure shows a simple scene with a geometry instanced three times. The scene also demonstrates how to override an attribute for one particular geometry instance, an operation very similar to what we have seen in \[the attributes section\](guidelines.md#section-attributes). Note that transforms can also be instanced and this allows for _instances of instances_ using the same semantics.
+The above figure shows a simple scene with a geometry instanced three times. The scene also demonstrates how to override an attribute for one particular geometry instance, an operation very similar to what we have seen in [the attributes section](guidelines.md#section-attributes). Note that transforms can also be instanced and this allows for _instances of instances_ using the same semantics.
 
-Creating \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) Networks \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+## Creating ᴏsʟ Networks
 
-<figure>
-<img src="image/osl_network.svg" alt="image/osl_network.svg" />
-<figcaption>A simple [ᴏsʟ](<a href="https://opensource.imageworks.com/?p=osl">https://opensource.imageworks.com/?p=osl</a>) network connected to an attributes node</figcaption>
-</figure>
+![A simple ᴏsʟ network connected to an attributes node](image/osl_network.svg)
 
-The semantics used to create \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) networks are the same as for scene creation. Each shader node in the network corresponds to a [shader]() node which must be created using [NSICreate](). Each shader node has implicit attributes corresponding to shader\'s parameters and connection between said arguments is done using [NSIConnect](). Above diagran depicts a simple \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) network connected to an [attributes]() node.
+The semantics used to create [ᴏsʟ](https://opensource.imageworks.com/?p=osl) networks are the same as for scene creation. Each shader node in the network corresponds to a [shader](nodes.md#the-shader-node) node which must be created using [NSICreate](c-api.md#node-creation). Each shader node has implicit attributes corresponding to shader's parameters and connection between said arguments is done using [NSIConnect](c-api.md#making-connections). Above diagram depicts a simple [ᴏsʟ](https://opensource.imageworks.com/?p=osl) network connected to an [attributes](nodes.md#the-attributes-node) node.
 
 Some observations:
 
-- Both the source and destination attributes (passed to [NSIConnect]() must be present and map to valid and compatible shader parameters (\[Lines 21--23\](guidelines.md#osl-network-example)).
+- Both the source and destination attributes (passed to [NSIConnect](c-api.md#making-connections)) must be present and map to valid and compatible shader parameters ([Lines 21--23](guidelines.md#osl-network-example)).
 
-> > [!NOTE]
-> > There is an exception to this: any non-shader node can be connected to a string attribute of a shader node. This will result in the non-shader node\'s handle being used as the string\'s value.
-> >
-> > This behavior is useful when the shader needs to refer to another node, in a \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) call to `transform()` or `getattribute()`, for example.
+> [!NOTE]
+> There is an exception to this: any non-shader node can be connected to a string attribute of a shader node. This will result in the non-shader node's handle being used as the string's value.
+>
+> This behavior is useful when the shader needs to refer to another node, in a [ᴏsʟ](https://opensource.imageworks.com/?p=osl) call to `transform()` or `getattribute()`, for example.
 
-- There is no _symbolic linking_ between shader arguments and geometry attributes (a.k.a. primvars). One has to explicitly use the `getattribute()` \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) function to read attributes attached to geometry. In this is done in the `read_attribute` node (\[Lines 11--14\](guidelines.md#osl-network-example)). Also see the section on \[attributes\](guidelines.md#section-attributes).
+- There is no _symbolic linking_ between shader arguments and geometry attributes (a.k.a. primvars). One has to explicitly use the `getattribute()` [ᴏsʟ](https://opensource.imageworks.com/?p=osl) function to read attributes attached to geometry. In this is done in the `read_attribute` node ([Lines 11--14](guidelines.md#osl-network-example)). Also see the section on [attributes](guidelines.md#section-attributes).
 
-```{.shell linenos="" emphasize-lines="11-14, 21-23"}
+```shell
 Create "ggx_metal" "shader"
 SetAttribute "ggx"
     "shaderfilename" "string" 1  ["ggx.oso"]
@@ -108,22 +96,19 @@ Connect "ggx_metal" "Ci" "attr" "surfaceshader"
 
 ## Lighting in the Nodal Scene Interface
 
-<figure>
-<img src="image/lights.svg" class="align-right" alt="image/lights.svg" />
-<figcaption>Creating lights in nsi</figcaption>
-</figure>
+![Creating lights in nsi](image/lights.svg)
 
-There are no special light source nodes in ɴsɪ (although the node, which defines a sphere of infinite radius, could be considered a light in practice).
+There are no special light source nodes in ɴsɪ (although the [environment](nodes.md#the-environment-node) node, which defines a sphere of infinite radius, could be considered a light in practice).
 
-Any scene geometry can become a light source if its surface shader produces an `emission()` \[closure\](<https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support>). Some operations on light sources, such as _light linking_, are done using more \[general approaches\](guidelines.md#section-lightlinking).
+Any scene geometry can become a light source if its surface shader produces an `emission()` [closure](https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support). Some operations on light sources, such as _light linking_, are done using more [general approaches](guidelines.md#section-lightlinking).
 
 Following is a quick summary on how to create different kinds of light in ɴsɪ.
 
 ### Area Lights
 
-Area lights are created by attaching an emissive surface material to geometry. Below is a simple \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) shader for such lights (standard \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) emitter).
+Area lights are created by attaching an emissive surface material to geometry. Below is a simple [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shader for such lights (standard [ᴏsʟ](https://opensource.imageworks.com/?p=osl) emitter).
 
-```{.c caption="Example emitter for area lights" linenos=""}
+```c
 // Copyright (c) 2009-2010 Sony Pictures Imageworks Inc., et al.  All Rights Reserved.
 surface emitter     [[ string help = "Lambertian emitter material" ]]
 (
@@ -140,9 +125,9 @@ surface emitter     [[ string help = "Lambertian emitter material" ]]
 
 ### Spot and Point Lights
 
-Such lights are created using an epsilon sized geometry (a small disk, a particle, etc.) and optionally using extra arguments to the `emission()` \[closure\](<https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support>).
+Such lights are created using an epsilon sized geometry (a small disk, a particle, etc.) and optionally using extra arguments to the `emission()` [closure](https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support).
 
-```{.c caption="An example OSL spot light shader" linenos=""}
+```c
 surface spotlight(
     color i_color = color(1),
     float intenstity = 1,
@@ -173,11 +158,11 @@ surface spotlight(
 
 ### Directional and HDR Lights
 
-Directional lights are created by using the node and setting the `angle` attribute to 0. HDR lights are also created using the environment node, albeit with a 2π cone angle, and reading a high dynamic range texture in the attached surface shader. Other directional constructs, such as _solar lights_, can also be obtained using the environment node.
+Directional lights are created by using the [environment](nodes.md#the-environment-node) node and setting the `angle` attribute to 0. HDR lights are also created using the environment node, albeit with a 2π cone angle, and reading a high dynamic range texture in the attached surface shader. Other directional constructs, such as _solar lights_, can also be obtained using the environment node.
 
-Since the node defines a sphere of infinite radius any connected \[ᴏsʟ\](<https://opensource.imageworks.com/?p=osl>) shader must only rely on the `I` variable and disregard `P`, as is shown below.
+Since the [environment](nodes.md#the-environment-node) node defines a sphere of infinite radius any connected [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shader must only rely on the `I` variable and disregard `P`, as is shown below.
 
-```{.c linenos="" caption="An example OSL shader to do HDR lighting"}
+```c
 shader hdrlight(
     string texturename = ""
 ) {
@@ -198,10 +183,7 @@ shader hdrlight(
 
 ## Defining Output Drivers and Layers
 
-<figure>
-<img src="image/output_channels.svg" style="height:6cm" alt="image/output_channels.svg" />
-<figcaption>ɴsɪ graph showing the image output chain</figcaption>
-</figure>
+![ɴsɪ graph showing the image output chain](image/output_channels.svg)
 
 ɴsɪ allows for a very flexible image output model. All the following operations are possible:
 
@@ -212,16 +194,11 @@ shader hdrlight(
 
 depicts a ɴsɪ scene to create one file with three layers. In this case, all layers are saved to the same file and the render is using one view. A more complex example is shown in : a left and right cameras are used to drive two file outputs, each having two layers (`Ci` and `Diffuse` colors).
 
-<figure>
-<img src="image/output_channels_stereo.svg" style="height:7cm" alt="image/output_channels_stereo.svg" />
-<figcaption>ɴsɪ graph for a stereo image output</figcaption>
-</figure>
+![ɴsɪ graph for a stereo image output](image/output_channels_stereo.svg)
 
 ## Light Layers
 
-<figure>
-<img src="image/multilight.svg" alt="image/multilight.svg" />
-</figure>
+![Light layers](image/multilight.svg)
 
 The ability to render a certain set of lights per output layer has a formal workflow in ɴsɪ. One can use three methods to define the lights used by a given output layer:
 
@@ -235,12 +212,9 @@ Above diagram a scene using method to create an output layer containing only ill
 
 Some common rendering features are difficult to achieve using attributes and hierarchical tree structures. One such example is inter-object visibility in a 3D scene. A special case of this feature is _light linking_ which allows the artist to select which objects a particular light illuminates, or not. Another classical example is a scene in which a ghost character is invisible to camera rays but visible in a mirror.
 
-In ɴsɪ such visibility relationships are implemented using cross-hierarchy connection between one object and another. In the case of the mirror scene, one would first tag the character invisible using the attribute and then connect the attribute node of the receiving object (mirror) to the visibility attribute of the source object (ghost) to _override_ its visibility status. Essentially, this \"injects\" a new value for the ghost visibility for rays coming from the mirror.
+In ɴsɪ such visibility relationships are implemented using cross-hierarchy connection between one object and another. In the case of the mirror scene, one would first tag the character invisible using the attribute and then connect the attribute node of the receiving object (mirror) to the visibility attribute of the source object (ghost) to _override_ its visibility status. Essentially, this "injects" a new value for the ghost visibility for rays coming from the mirror.
 
-<figure>
-<img src="image/vampire.svg" id="fig:vampire" style="height:7cm" alt="image/vampire.svg" />
-<figcaption>Visibility override, both hierarchically and inter-object</figcaption>
-</figure>
+![Visibility override, both hierarchically and inter-object](image/vampire.svg)
 
 Above figure shows a scenario where both hierarchy attribute overrides and inter-object visibility are applied:
 

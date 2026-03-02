@@ -11,12 +11,16 @@ Relationships and data flow between nodes are represented as connections. Connec
 What we refer to as the ɴsɪ has two major components:
 
 - Methods to create nodes, attributes and their connections.
-- \[Node types\](nodes.md#chapter-nodes) understood by the renderer.
+- [Node types](nodes.md#chapter-nodes) understood by the renderer.
 
 Much of the complexity and expressiveness of the interface comes from the supported nodes. The first part was kept deliberately simple to make it easy to support multiple ways of creating nodes. We will list a few of those in the following sections but this list is not meant to be final. New languages and file formats will undoubtedly be supported in the future.
 
 ## APIs
 
-::: {.toctree maxdepth="2"}
-c-api cpp-api rust-api lua-api python-api stream-api procedurals
-:::
+- [The C API](c-api.md)
+- [The C++ API](cpp-api.md)
+- [The Rust API](rust-api.md)
+- [The Lua API](lua-api.md)
+- [The Python API](python-api.md)
+- [The Stream API](stream-api.md)
+- [Procedurals](procedurals.md)

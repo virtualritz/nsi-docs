@@ -4,9 +4,9 @@ The Nodal Scene Interface (NSI) is a simple yet expressive API to describe a sce
 
 ## Geometry Creation
 
-Creating geometry nodes is simple. The content of each node is filled using the [NSISetAttribute]{.title-ref} call.
+Creating geometry nodes is simple. The content of each node is filled using the `NSISetAttribute` call.
 
-```{.shell caption="**Geometry Creation**" linenos=""}
+```shell
 ## Polygonal meshes can be created minimally by specifying "P".
 ## NSI's C++ API provides an easy interface to pass parameters to all NSI
 ## API calls through the Args class.
@@ -16,12 +16,9 @@ SetAttribute "simple polygon"
     "P" "point" 1 [ -1  1  0   1  1  0   1 -1  0   -1 -1  0 ]
 ```
 
-::: {.container .toggle}
-::: {.container .header}
 **Geometry Creation in C++**
-:::
 
-```{.cpp linenos=""}
+```cpp
 /*
     Polygonal meshes can be created minimally by specifying "P".
     NSI's C++ API provides an easy interface to pass parameters
@@ -41,37 +38,30 @@ mesh_args.Add(
 nsi.SetAttribute( k_poly_handle, mesh_args );
 ```
 
-:::
-
 ---
 
 Specifying normals and other texture coordinates follows the same logic. Constant attributes can be declared in a concise form too:
 
-```{.shell caption="**Adding constant attributes**" linenos=""}
+```shell
 SetAttribute "simple polygon"
     "subdivision.scheme" "string" 1 ["catmull-clark"]
 ```
 
-::: {.container .toggle}
-::: {.container .header}
 **Adding constant attributes in C++**
-:::
 
-```{.cpp linenos=""}
+```cpp
 /** Turn our mesh into a subdivision surface */
 nsi.SetAttribute( k_poly_handle,
     NSI::CStringPArg("subdivision.scheme", "catmull-clark") );
 ```
 
-:::
-
 ---
 
 ## Transforming Geometry
 
-In NSI, a geometry is rendered only if connected to the scene\'s root (which has the special handle \".root\"). It is possible to directly connect a geometry node (such as the simple polygon above) to scene\'s root but it wouldn\'t be very useful. To place/instance a geometry anywhere in the 3D world a transform node is used as in the code snippet below.
+In NSI, a geometry is rendered only if connected to the scene's root (which has the special handle ".root"). It is possible to directly connect a geometry node (such as the simple polygon above) to scene's root but it wouldn't be very useful. To place/instance a geometry anywhere in the 3D world a transform node is used as in the code snippet below.
 
-```{.shell caption="**Adding constant attributes**" linenos=""}
+```shell
 Create "my translation" "transform"
 Connect "translation"  "" ".root" "objects"
 Connect "simple polygon" "" "translation" "objects" );
@@ -85,12 +75,9 @@ SetAttribute "my translation"
     0 1 0 1]
 ```
 
-::: {.container .toggle}
-::: {.container .header}
 **Adding constant attributes in C++**
-:::
 
-```{.cpp linenos=""}
+```cpp
 const char *k_instance1 = "my translation";
 
 nsi.Create( k_instance1, "transform" );
@@ -113,13 +100,11 @@ nsi.SetAttribute( k_instance1,
     NSI::DoubleMatrixArg("transformationmatrix", trs) );
 ```
 
-:::
-
 ---
 
 Instancing is as simple as connecting a geometry to different attributes. Instances of instances do work as expected too.
 
-```{.cpp linenos=""}
+```cpp
 const char *k_instance2 = "another translation";
 trs[13] += 1.0; /* translate in Y+ */
 
