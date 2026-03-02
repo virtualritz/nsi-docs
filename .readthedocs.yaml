@@ -6,7 +6,7 @@ build:
     rust: latest
   jobs:
     install:
-      - cargo install mdbook
+      - cargo install mdbook --root $HOME/.cargo
     build:
       html:
-        - PATH="$HOME/.cargo/bin:$HOME/.asdf/shims:$PATH" mdbook build book --dest-dir $READTHEDOCS_OUTPUT/html
+        - $HOME/.cargo/bin/mdbook build book --dest-dir $READTHEDOCS_OUTPUT/html
