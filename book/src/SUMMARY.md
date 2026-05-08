@@ -21,6 +21,7 @@
   - [`set`](nodes/set.md)
   - [`plane`](nodes/plane.md)
   - [`mesh`](nodes/mesh.md)
+  - [`nurbs`](nodes/nurbs.md)
   - [`faceset`](nodes/faceset.md)
   - [`curves`](nodes/curves.md)
   - [`particles`](nodes/particles.md)
