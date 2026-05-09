@@ -240,6 +240,18 @@ When set to 1, prints rendering progress as a percentage of completed pixels.
 
 Full path of the file where rendering statistics will be written. An empty string will write statistics to standard output. The name `null` will not output statistics.
 
+| Name                   | Type         | Default |
+| ---------------------- | ------------ | ------- |
+| `texture.missingcolor` | _`float[4]`_ |         |
+
+If specified, this is used as a default value for the `missingcolor` parameter of the ᴏsʟ `texture()` function. The fourth value is used as `missingalpha`.
+
+| Name                         | Type    | Default |
+| ---------------------------- | ------- | ------- |
+| `texture.missingcolorerrors` | _`int`_ | `0`     |
+
+If nonzero, errors are reported even when the `missingcolor` of the ᴏsʟ `texture()` function is used. This goes against the documented behavior.
+
 | Name               | Type             | Default |
 | ------------------ | ---------------- | ------- |
 | `exclusiveshading` | _`<connection>`_ |         |

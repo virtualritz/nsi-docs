@@ -366,6 +366,32 @@ Every attribute across all node types, with current → new name and the ruling(
 
 **Unchanged:** `subdivision.scheme`
 
+### `nurbs` node
+
+The `u` and `v` axes each have three related attributes (count, order, knot), so per R3 each axis becomes a group.
+
+| Current              | New                       | Rules                              |
+| -------------------- | ------------------------- | ---------------------------------- |
+| `nu`                 | `u.count`                 | R3 (axis group), R5, R6            |
+| `nv`                 | `v.count`                 | R3 (axis group), R5, R6            |
+| `uorder`             | `u.order`                 | R3, R6                             |
+| `vorder`             | `v.order`                 | R3, R6                             |
+| `uknot`              | `u.knot`                  | R3, R6                             |
+| `vknot`              | `v.knot`                  | R3, R6                             |
+| `P`                  | `position`                | R5                                 |
+| `Pw`                 | `weighted-position`       | R5, R6 (alternative to `position`) |
+| `trimcurves.nloops`  | `trim-curves.loop-count`  | R5, R6                             |
+| `trimcurves.ncurves` | `trim-curves.curve-count` | R5, R6                             |
+| `trimcurves.n`       | `trim-curves.cv-count`    | R5 (cryptic → descriptive), R6     |
+| `trimcurves.order`   | `trim-curves.order`       | R6 (group prefix only)             |
+| `trimcurves.knot`    | `trim-curves.knot`        | R6                                 |
+| `trimcurves.min`     | `trim-curves.min`         | R6                                 |
+| `trimcurves.max`     | `trim-curves.max`         | R6                                 |
+| `trimcurves.u`       | `trim-curves.u`           | R6                                 |
+| `trimcurves.v`       | `trim-curves.v`           | R6                                 |
+| `trimcurves.w`       | `trim-curves.w`           | R6                                 |
+| `trimcurves.sense`   | `trim-curves.sense`       | R6                                 |
+
 ### `face-set` node
 
 | Current | New          | Rules            |

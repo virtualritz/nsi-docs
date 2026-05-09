@@ -83,6 +83,12 @@ If this is set to 1, quantized closures will use emission from the objects affec
 
 When a geometry node (usually a [mesh node](mesh.md)) is connected to this attribute, it will be used to restrict the effect of the attributes node, which will apply only inside the volume defined by the connected geometry object. It is also possible to connect a transform node to this. It is equivalent to connecting all the geometry nodes connected, even indirectly, to the transform.
 
+| Name                     | Type      | Default |
+| ------------------------ | --------- | ------- |
+| `displacementresolution` | _`float`_ | `1`     |
+
+A multiplier on the level of detail in displacement. Larger values provide more detail; smaller values reduce memory use. It is usually not necessary to set this attribute.
+
 ### shader attributes
 
 This node can be a container for attributes available to shaders. For this purpose, instances of this node must be connected to the `shaderattributes` attribute of geometric primitives, [transform](transform.md) nodes or [set](set.md) nodes. Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the [scene root](root.md) is reached.

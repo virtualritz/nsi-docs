@@ -50,6 +50,10 @@
 - [Rendering Guidelines](guidelines.md)
 - [Cookbook](cookbook.md)
 
+# OSL
+
+- [OSL Extensions](osl-extensions.md)
+
 # Appendices
 
 - [Acknowledgments](acknowledgments.md)
