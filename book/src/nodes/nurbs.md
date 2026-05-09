@@ -38,6 +38,32 @@ Knot vector along `u`. Length must equal `nu + uorder`. Values must be non-decre
 
 Knot vector along `v`. Length must equal `nv + vorder`. Values must be non-decreasing.
 
+The surface's active parameter range can be restricted with the optional `umin`/`umax`/`vmin`/`vmax` attributes. Unlike other geometric primitives, NURBS surfaces do not assume `[0, 1]` parameter ranges — by default, the active range is the full extent of the corresponding knot vector.
+
+| Name   | Type      | Default |
+| ------ | --------- | ------- |
+| `umin` | _`float`_ |         |
+
+Lower bound of the active range along `u`. Must be less than `umax` and at least the `(uorder − 1)`-th value of `uknot`.
+
+| Name   | Type      | Default |
+| ------ | --------- | ------- |
+| `umax` | _`float`_ |         |
+
+Upper bound of the active range along `u`. Must be greater than `umin` and at most the `nu`-th value of `uknot`.
+
+| Name   | Type      | Default |
+| ------ | --------- | ------- |
+| `vmin` | _`float`_ |         |
+
+Lower bound of the active range along `v`. Must be less than `vmax` and at least the `(vorder − 1)`-th value of `vknot`.
+
+| Name   | Type      | Default |
+| ------ | --------- | ------- |
+| `vmax` | _`float`_ |         |
+
+Upper bound of the active range along `v`. Must be greater than `vmin` and at most the `nv`-th value of `vknot`.
+
 One of `P` or `Pw` must be supplied to provide the control points. `P` defines a polynomial surface; `Pw` defines a rational one.
 
 | Name | Type      | Default |
@@ -54,7 +80,7 @@ Rational alternative to `P`: each control point is four floats `(x, y, z, w)`, e
 
 ## Trim Curves
 
-Trim curves carve a region out of the surface's parameter domain. They are NURBS curves in homogeneous `(u, v, w)` parameter space — the actual `(u, v)` of a control point is `(u/w, v/w)`. Curves are organised into loops: within a loop they connect head-to-tail, and the loop must be explicitly closed (the last point of the last curve coincides with the first point of the first curve).
+Trim curves carve a region out of the surface's parameter domain. They are NURBS curves in homogeneous `(u, v, w)` parameter space — the actual `(u, v)` of a control point is `(u/w, v/w)`. Curves are organised into loops: within a loop they connect head-to-tail. Each loop must be explicitly closed — the last point of the last curve must coincide with the first point of the first curve.
 
 The `trimcurves.*` attributes are all-or-nothing: supply the full set or omit it entirely.
 

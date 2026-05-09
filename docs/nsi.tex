@@ -1266,34 +1266,49 @@ SetAttribute "holey"
 \label{section:nurbsnode}
 \index{node!nurbs}
 \index{NURBS surface}
-This node represents a \acronym{NURBS} surface patch. It has the following required attributes:
+This node represents a \acronym{NURBS} surface patch --- a tensor-product spline defined by a grid of control points, two knot vectors, and an order in each parametric direction. It has the following required attributes:
 \begin{paramlist}
 \paramlistitemTN{int}{nu}
-The control-point count along \lstinline|u|.
+Control-point count along \lstinline|u|. Total control-point count is \lstinline|nu * nv|. Should be at least \lstinline|uorder|; if smaller, the surface is rendered with order equal to \lstinline|nu|.
 \paramlistitemTN{int}{nv}
-The control-point count along \lstinline|v|.
+Control-point count along \lstinline|v|. Same constraint as \lstinline|nu| relative to \lstinline|vorder|.
 \paramlistitemTN{int}{uorder}
-The order along \lstinline|u| (degree + 1). Must be at least 2.
+Order along \lstinline|u|: degree + 1, so 2 is linear, 3 quadratic, 4 cubic. Must be at least 2. May differ from \lstinline|vorder|.
 \paramlistitemTN{int}{vorder}
-The order along \lstinline|v| (degree + 1). Must be at least 2.
+Order along \lstinline|v|. See \lstinline|uorder|.
 \paramlistitemTN{float}{uknot}
-The knot vector along \lstinline|u|.
-Its length must equal \lstinline|nu + uorder|.
+Knot vector along \lstinline|u|. Length must equal \lstinline|nu + uorder|. Values must be non-decreasing.
 \paramlistitemTN{float}{vknot}
-The knot vector along \lstinline|v|.
-Its length must equal \lstinline|nv + vorder|.
-\paramlistitemTN{point}{P}
-The \lstinline|nu * nv| control points (xyz), stored row-major such that \lstinline|P[i*nu + j]| addresses the control point at row \lstinline|i|, column \lstinline|j|.
-\paramlistitemTN{float\lbrack{}4\rbrack{}}{Pw}
-A rational alternative to \lstinline|P|.
-Each control point is four floats (xyzw); supplying \lstinline|Pw| instead of \lstinline|P| enables rational \acronym{NURBS}.
+Knot vector along \lstinline|v|. Length must equal \lstinline|nv + vorder|. Values must be non-decreasing.
 \end{paramlist}
-Either \lstinline|P| or \lstinline|Pw| must be provided.
 
-The node also accepts an optional set of trim curves.
-Trim curves are \acronym{NURBS} curves in the surface's homogeneous parameter space (\lstinline|u|, \lstinline|v|, \lstinline|w|); the actual \lstinline|(u, v)| position of a control point is \lstinline|(u/w, v/w)|.
-They are organised into loops: within a loop, curves connect head-to-tail, and the loop must be explicitly closed --- the last point of the last curve in a loop must coincide with the first point of the first curve.
-The \lstinline|trimcurves.*| attributes are all-or-nothing: if any one of them is present, the full set must be supplied.
+The surface's active parameter range can be restricted with the optional \lstinline|umin|/\lstinline|umax|/\lstinline|vmin|/\lstinline|vmax| attributes. Unlike other geometric primitives, NURBS surfaces do not assume \lstinline|[0, 1]| parameter ranges --- by default the active range is the full extent of the corresponding knot vector.
+
+\begin{paramlist}
+\paramlistitemTN{float}{umin}
+Lower bound of the active range along \lstinline|u|. Must be less than \lstinline|umax| and at least the \lstinline|(uorder - 1)|-th value of \lstinline|uknot|.
+\paramlistitemTN{float}{umax}
+Upper bound of the active range along \lstinline|u|. Must be greater than \lstinline|umin| and at most the \lstinline|nu|-th value of \lstinline|uknot|.
+\paramlistitemTN{float}{vmin}
+Lower bound of the active range along \lstinline|v|. Must be less than \lstinline|vmax| and at least the \lstinline|(vorder - 1)|-th value of \lstinline|vknot|.
+\paramlistitemTN{float}{vmax}
+Upper bound of the active range along \lstinline|v|. Must be greater than \lstinline|vmin| and at most the \lstinline|nv|-th value of \lstinline|vknot|.
+\end{paramlist}
+
+One of \lstinline|P| or \lstinline|Pw| must be supplied to provide the control points. \lstinline|P| defines a polynomial surface; \lstinline|Pw| defines a rational one.
+
+\begin{paramlist}
+\paramlistitemTN{point}{P}
+The \lstinline|nu * nv| control points (xyz), stored row-major: \lstinline|P[i*nu + j]| is the point at row \lstinline|i|, column \lstinline|j|.
+\paramlistitemTN{float\lbrack{}4\rbrack{}}{Pw}
+Rational alternative to \lstinline|P|: each control point is four floats (xyzw), enabling rational \acronym{NURBS}. Pass as a single flat array of \lstinline|4 * nu * nv| floats --- do \emph{not} declare it with \lstinline|array_len(4)|.
+\end{paramlist}
+
+\subsection*{Trim Curves}
+
+Trim curves carve a region out of the surface's parameter domain. They are \acronym{NURBS} curves in homogeneous \lstinline|(u, v, w)| parameter space --- the actual \lstinline|(u, v)| of a control point is \lstinline|(u/w, v/w)|. Curves are organised into loops: within a loop they connect head-to-tail. Each loop must be explicitly closed --- the last point of the last curve must coincide with the first point of the first curve.
+
+The \lstinline|trimcurves.*| attributes are all-or-nothing: supply the full set or omit it entirely.
 
 \begin{paramlist}
 \paramlistitemTN{int}{trimcurves.nloops}
