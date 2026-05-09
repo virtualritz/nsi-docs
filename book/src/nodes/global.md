@@ -52,7 +52,7 @@ Specifies the name or address of the license server to be used.
 | -------------- | ------- | ------- |
 | `license.wait` | _`int`_ | `1`     |
 
-When no license is available for rendering, the renderer will wait until a license is available if this attribute is set to 1, but will stop immediately if it's set to 0. The latter setting is useful when managing a renderfarm and other work could be scheduled instead.
+When no license is available for rendering, the behaviour depends on this attribute. Set to `1`, the renderer waits until a license becomes available. Set to `0`, it stops immediately — useful when managing a renderfarm so other work can be scheduled instead.
 
 | Name           | Type    | Default |
 | -------------- | ------- | ------- |
@@ -124,7 +124,7 @@ Specifies the maximum bounce depth a volume ray can reach.
 | -------------------------- | ---------- | ------- |
 | `maximumraylength.diffuse` | _`double`_ | `-1`    |
 
-Limits the distance a ray emitted from a diffuse material can travel. Using a relatively low value for this attribute might improve performance without significantly affecting the look of the resulting image, as it restrains the extent of global illumination. Setting it to a negative value disables the limitation.
+Limits the distance a ray emitted from a diffuse material can travel. A relatively low value can improve performance with minimal impact on the look, since it restrains the extent of global illumination. A negative value disables the limit.
 
 | Name                    | Type       | Default |
 | ----------------------- | ---------- | ------- |
@@ -256,7 +256,7 @@ If nonzero, errors are reported even when the `missingcolor` of the ᴏsʟ `text
 | ------------------ | ---------------- | ------- |
 | `exclusiveshading` | _`<connection>`_ |         |
 
-When geometry nodes are connected here, all others in the scene will be rendered as black to the camera. This is meant to be used to speed up rendering when adjusting parameters of specific objects during an [interactive render](global.md). Connected shader nodes will behave in a similar way: objects not using them will be rendered as black. If the connected shader nodes are not the root of their shading network (ie: they are not connected to an [attributes node](attributes.md) and their output is used as another shader node's input), the evaluation of the shading network will end there. This allows fine-tune parts of a shading network in isolation.
+When geometry nodes are connected here, all others in the scene will be rendered as black to the camera. This is meant to be used to speed up rendering when adjusting parameters of specific objects during an [interactive render](global.md). Connected shader nodes will behave in a similar way: objects not using them will be rendered as black. If the connected shader nodes are not the root of their shading network, evaluation of the network ends at them. "Not the root" means they are not connected to an [attributes node](attributes.md), and their output is used as another shader node's input. This allows fine-tune parts of a shading network in isolation.
 
 | Name      | Type    | Default |
 | --------- | ------- | ------- |

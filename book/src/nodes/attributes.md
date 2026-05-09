@@ -81,7 +81,7 @@ If this is set to 1, quantized closures will use emission from the objects affec
 | -------- | ---------------- | ------- |
 | `bounds` | _`<connection>`_ |         |
 
-When a geometry node (usually a [mesh node](mesh.md)) is connected to this attribute, it will be used to restrict the effect of the attributes node, which will apply only inside the volume defined by the connected geometry object. It is also possible to connect a transform node to this. It is equivalent to connecting all the geometry nodes connected, even indirectly, to the transform.
+When a geometry node (usually a [mesh node](mesh.md)) is connected to this attribute, it restricts the effect of the attributes node. The node then applies only inside the volume defined by the connected geometry. A transform node may be connected here instead, which is equivalent to connecting every geometry node reachable through that transform.
 
 | Name                     | Type      | Default |
 | ------------------------ | --------- | ------- |

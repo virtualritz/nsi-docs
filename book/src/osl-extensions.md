@@ -8,7 +8,7 @@ A complication that often arises when using this feature is the problem of inter
 This results in a third volume, also bounded by a composite closed surface.
 
 3Delight handles overlapping SSS volumes that don't have the same properties by mixing them together, thus creating a hybrid material inside the intersection.
-In order for this to work properly, the ᴏsʟ `subsurface()` closure must be used on both entry _and_ exit of the volume, which means it shouldn't depend on the orientation of the bounding surface normal.
+For this to work properly, the ᴏsʟ `subsurface()` closure must be used on both entry _and_ exit of the volume. As a consequence, it shouldn't depend on the orientation of the bounding surface normal.
 
 > _Figure (placeholder): Cross-section of overlapping red and blue SSS volumes - a hybrid material is used inside the intersection._
 
@@ -20,7 +20,7 @@ Inside the intersection, the SSS shader with the highest intersection priorities
 > _Figure (placeholder): Cross-section of overlapping SSS volumes - highest priority to either red or blue object._
 
 This tends to be useful when the intersection is not accidental, but rather the result of a decision made when defining the scene geometry.
-For example, in a model of a mouth, a set of teeth could be designed to penetrate the geometry of the gums, thus eliminating the need to define additional geometry on the gums in order to create a little "pocket" around each tooth.
+For example, in a model of a mouth a set of teeth can be designed to penetrate the geometry of the gums. This avoids modelling a small "pocket" on the gums around each tooth.
 In that case, the teeth should be assigned a higher priority than the gums in order for their roots to use only the tooth shader.
 
 The `intersectionpriority` parameter is an integer between -60 and 60.
@@ -28,8 +28,8 @@ Its default value is 0.
 
 ### Merge sets
 
-Even when overlapping SSS objects use the same shader, 3Delight will still consider the intersection as a separate volume with its own surface, which might not give the desired effect.
-Since the geometry of the intersecting objects is still intact, it will hinder the propagation of light inside the volumes, which might result in darker or brighter areas on the surface, along the boundary.
+Even when overlapping SSS objects use the same shader, 3Delight still treats the intersection as a separate volume with its own surface. This is often not the desired effect.
+The geometry of the intersecting objects is still intact, so it hinders the propagation of light inside the volumes. The result is darker or brighter areas on the surface along the boundary.
 
 > _Figure (placeholder): Cross-section of overlapping SSS volumes - internal surfaces are still present on the left, while they have been removed on the right using a Merge Set._
 
