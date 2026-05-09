@@ -53,7 +53,11 @@ _pdf-images:
 
 # Build a PDF from docs/nsi.tex into docs/build/. Requires latexmk + TeX Live.
 pdf: _pdf-images
-    cd docs && TEXINPUTS=.:build/images:: latexmk -pdf -outdir=build nsi.tex
+    cd docs && TEXINPUTS=.:build/images:: latexmk -pdf -f -outdir=build nsi.tex
+
+# Remove all PDF build artefacts (docs/build/).
+pdf-clean:
+    rm -rf docs/build
 
 # Install latexmk + a minimal TeX Live set sufficient to build docs/nsi.tex.
 install:
