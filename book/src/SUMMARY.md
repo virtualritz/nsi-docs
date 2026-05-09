@@ -63,5 +63,4 @@
 - [`nsi.py`](nsi.py.md)
 - [`nsi_procedural.h`](nsi_procedural.h.md)
 - [`gear.cpp`](gear.cpp.md)
-- [The Component Node](component.md)
 - [Naming Convention Redesign](naming-convention.md)
