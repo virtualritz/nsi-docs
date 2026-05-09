@@ -1,58 +1,62 @@
 # `nurbs`
 
-This node represents a NURBS surface patch. It has the following required attributes:
+This node represents a NURBS surface patch — a tensor-product spline defined by a grid of control points, two knot vectors, and an order in each parametric direction. It has the following required attributes:
 
 | Name | Type    | Default |
 | ---- | ------- | ------- |
 | `nu` | _`int`_ |         |
 
-Control-point count along `u`.
+Control-point count along `u`. Total control-point count is `nu * nv`. Should be at least `uorder`; if smaller, the surface is rendered with order equal to `nu`.
 
 | Name | Type    | Default |
 | ---- | ------- | ------- |
 | `nv` | _`int`_ |         |
 
-Control-point count along `v`.
+Control-point count along `v`. Same constraint as `nu` relative to `vorder`.
 
 | Name     | Type    | Default |
 | -------- | ------- | ------- |
 | `uorder` | _`int`_ |         |
 
-Order along `u` (degree + 1). Must be at least 2.
+Order along `u`: degree + 1, so `2` is linear, `3` quadratic, `4` cubic. Must be at least 2. May differ from `vorder`.
 
 | Name     | Type    | Default |
 | -------- | ------- | ------- |
 | `vorder` | _`int`_ |         |
 
-Order along `v` (degree + 1). Must be at least 2.
+Order along `v`. See `uorder`.
 
 | Name    | Type      | Default |
 | ------- | --------- | ------- |
 | `uknot` | _`float`_ |         |
 
-Knot vector along `u`. Its length must equal `nu + uorder`.
+Knot vector along `u`. Length must equal `nu + uorder`. Values must be non-decreasing.
 
 | Name    | Type      | Default |
 | ------- | --------- | ------- |
 | `vknot` | _`float`_ |         |
 
-Knot vector along `v`. Its length must equal `nv + vorder`.
+Knot vector along `v`. Length must equal `nv + vorder`. Values must be non-decreasing.
 
-One of `P` or `Pw` must be supplied to provide the control points:
+One of `P` or `Pw` must be supplied to provide the control points. `P` defines a polynomial surface; `Pw` defines a rational one.
 
 | Name | Type      | Default |
 | ---- | --------- | ------- |
 | `P`  | _`point`_ |         |
 
-The `nu * nv` control points (xyz), stored row-major such that `P[i*nu + j]` addresses the control point at row `i`, column `j`.
+The `nu * nv` control points (xyz), stored row-major: `P[i*nu + j]` is the point at row `i`, column `j`.
 
 | Name | Type         | Default |
 | ---- | ------------ | ------- |
 | `Pw` | _`float[4]`_ |         |
 
-A rational alternative to `P`. Each control point is four floats (xyzw); supplying `Pw` instead of `P` enables rational NURBS.
+Rational alternative to `P`: each control point is four floats `(x, y, z, w)`, enabling rational NURBS. Pass as a single flat array of `4 * nu * nv` floats — do **not** declare it with `array_len(4)`.
 
-The node also accepts an optional set of trim curves. Trim curves are NURBS curves in the surface's homogeneous parameter space (`u`, `v`, `w`); the actual `(u, v)` position of a control point is `(u/w, v/w)`. They are organised into loops: within a loop, curves connect head-to-tail, and the loop must be explicitly closed — the last point of the last curve in a loop must coincide with the first point of the first curve. The `trimcurves.*` attributes are all-or-nothing: if any one of them is present, the full set must be supplied.
+## Trim curves
+
+Trim curves carve a region out of the surface's parameter domain. They are NURBS curves in homogeneous `(u, v, w)` parameter space — the actual `(u, v)` of a control point is `(u/w, v/w)`. Curves are organised into loops: within a loop they connect head-to-tail, and the loop must be explicitly closed (the last point of the last curve coincides with the first point of the first curve).
+
+The `trimcurves.*` attributes are all-or-nothing: supply the full set or omit it entirely.
 
 | Name                | Type    | Default |
 | ------------------- | ------- | ------- |
