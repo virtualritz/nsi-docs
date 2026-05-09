@@ -17,17 +17,26 @@ table thead {
   display: none;
 }
 
-/* Column widths: Name 50%, Type 25%, Default 25% */
-table td:first-child {
+/* 3-column attribute tables: Name 50%, Type 25%, Default 25% */
+table:has(td:nth-child(3)) td:first-child {
   width: 50%;
 }
 
-table td:nth-child(2) {
+table:has(td:nth-child(3)) td:nth-child(2) {
   width: 25%;
 }
 
-table td:nth-child(3) {
+table:has(td:nth-child(3)) td:nth-child(3) {
   width: 25%;
+}
+
+/* 2-column tables (rationale section): narrower first column */
+table:not(:has(td:nth-child(3))) td:first-child {
+  width: 40%;
+}
+
+table:not(:has(td:nth-child(3))) td:nth-child(2) {
+  width: 60%;
 }
 
 /* Alternating row colors */
