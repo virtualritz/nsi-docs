@@ -1,0 +1,2273 @@
+\documentclass[oneside,ebook]{memoir}
+
+% Better font and font encoding.
+\usepackage{lmodern}
+\usepackage{textcomp}
+% More flexible lists.
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[bottom]{footmisc}
+\usepackage{amsmath}
+% To use [H] for figure placement.
+\usepackage{float}
+
+% So we get more color choices for links.
+\usepackage[svgnames]{xcolor}
+\usepackage{tikz}
+% Listings package for code.
+\usepackage{listings}
+\lstloadlanguages{C,C++}
+\lstset{basicstyle=\normalfont\ttfamily}
+\lstset{tabsize=4,columns=flexible}
+\lstset{language=C}
+\lstset{captionpos=b}
+\lstset{showstringspaces=false}
+% Define a style for the C API.
+\lstdefinestyle{CAPI}{xleftmargin=\parindent}
+
+% for non-floating figures and tables
+\usepackage{caption}
+
+% Get links in PDF.
+\usepackage[pdfusetitle,linktocpage,colorlinks,linkcolor=DarkRed]{hyperref}
+
+
+% Fixup for old hyperref package with memoir class.
+\usepackage{memhfixc}
+
+% Smaller than default margins. This isn't meant for printing but viewing on a screen.
+\setlrmarginsandblock{0.4in}{*}{*}
+\setulmarginsandblock{1in}{*}{*}
+\checkandfixthelayout
+
+% To fix some overfull hbox caused by \lstinline
+\emergencystretch 2em
+
+% Other memoir options
+\setsecnumdepth{subsection}
+\setcounter{tocdepth}{2}
+
+\title{Nodal Scene Interface}
+\author{Olivier Paquet}
+
+%Copyright \copyright{} 2015 The \delight{} Team.
+
+% A few useful macros.
+\newcommand*{\acronym}[1]{\textsc{\lowercase{#1}}}
+\newcommand*{\smallrule}{\begin{center}\rule{3cm}{.1pt}\end{center}}
+
+% List format for our parameter lists (without enumitem).
+%\newcommand{\paramlabel}[1]{\hspace\labelsep\normalfont\itshape #1}
+%\newenvironment{paramlist}{%
+%	\list{}{%
+%		\addtolength{\leftmargin}{-\labelwidth}
+%		\addtolength{\leftmargin}{1em}
+%		\setlength{\labelwidth}{1em}
+%		\let\makelabel\paramlabel}}{\endlist}
+
+% List format for a parameter list.
+\newlist{paramlist}{description}{1}
+\setlist[paramlist]{style=nextline,format=\normalfont\ttfamily}
+% One item in the parameter list, with a name only.
+\newcommand{\paramlistitemN}[1]{\item[#1]}
+% One item in the parameter list. Parameters are 'type' and 'name'.
+\newcommand{\paramlistitemTN}[2]{\item[#2\textcolor{lightgray}{\dotfill}#1]}
+% Similar to \paramlistitemTN but with a 3rd parameter to specify the default value.
+\newcommand{\paramlistitemTND}[3]{\paramlistitemTN{#1 {\rmfamily({\ttfamily#3})}}{#2}}
+
+% Support for multiple items with a single description.
+% Uses a \parbox{\texwidth}{} to fill the item space and then redefines the
+% item macros to use \newline instead of a separate item for each.
+% I have not found how to delay expansion of the above macros so I could
+% redefine only one. To use this, you can do something like:
+% \paramlistitems{
+%   \paramlistitemN{item1}
+%   \paramlistitemTN{int}{item2}
+% }
+% Don't leave a blank line or that will end the paragraph and cause errors.
+\newcommand{\paramlistitems}[1]{{
+	\renewcommand{\paramlistitemN}[1]{##1\newline}
+	\renewcommand{\paramlistitemTN}[2]{##2\textcolor{lightgray}{\dotfill}##1\newline}
+	\renewcommand{\paramlistitemTND}[3]{\paramlistitemTN{##1 {\rmfamily({\ttfamily##3})}}{##2}}
+	\item[\parbox{\textwidth}{#1}]
+}}
+
+% List format for values of a parameter in the parameter list.
+\newlist{paramvaluelist}{description}{1}
+\setlist[paramvaluelist]{style=standard,topsep=0pt,itemsep=0pt,format=\normalfont\ttfamily}
+% One item in the value list.
+\newcommand{\paramvalueitem}[1]{\item[#1]$\rightarrow$}
+
+% Build the index and enable indexing commands.
+\IfFileExists{./\jobname.idx}{\immediate\write18{makeindex -q \jobname.idx}}{}
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+% Title page
+\begin{titlingpage}
+\vspace*{1in}
+
+\begin{center}
+\includegraphics[scale=0.80]{nsi_logo}
+\end{center}
+
+
+\begin{center}
+\sffamily
+{\Huge \thetitle}
+
+\vspace{0.50in}
+{\Large A flexible, modern API for renderers\par}
+\end{center}
+\vspace{0.50in}
+\begin{center}
+Authors\\[\baselineskip]
+{Olivier Paquet, Aghiles Kheffache, Fran\c{c}ois Colbert, Berj Bannayan} 
+\end{center}
+\begin{center}
+\today\par
+\end{center}
+\vspace*{\fill}
+\begin{center}
+{\small\textcopyright{} 2015-\the\year\ The 3Delight Team. All rights reserved.}
+\end{center}
+
+%\maketitle
+\eject
+\end{titlingpage}
+\addtocounter{page}{1}
+
+% Table of contents.
+\tableofcontents
+\clearpage
+
+\savepagenumber
+\mainmatter
+\restorepagenumber
+
+
+\chapter{Background}
+
+The Nodal Scene Interface (\acronym{NSI}) was developed to replace existing \acronym{API}s in our renderer which are showing their age. Having been designed in the 80s and extended several times since, they include features which are no longer relevant and design decisions which do not reflect modern needs. This makes some features more complex to use than they should be and prevents or greatly increases the complexity of implementing other features.
+
+The design of the \acronym{NSI} was shaped by multiple goals:\index{design goals}\label{designgoal}
+\begin{description}
+\item[Simplicity]
+\index{nsi!simplicity}
+The interface itself should be simple to understand and use, even if complex things can be done with it. This simplicity is carried into everything which derives from the interface.
+
+\item[Interactive rendering and scene edits]
+\index{nsi!interactive rendering}\index{live rendering}
+Scene edit operations should not be a special case. There should be no difference between scene \emph{description} and scene \emph{edits}. In other words, a scene description is a series of edits and vice versa.
+\item[Tight integration with \textit{Open Shading Language}]
+\index{osl integration@\acronym{OSL} integration}
+\index{lights}
+\acronym{OSL} integration is not superficial and affects scene definition. For example, there are no explicit light sources in \acronym{NSI}: light sources are created by connected shaders with an \lstinline|emission()| closure to a geometry.
+\item[Scripting]
+\index{nsi!scripting}\index{scripting}\index{lua scripting}
+The interface should be accessible from a platform independent, efficient and easily accessible scripting language. Scripts can be used to add render time intelligence to a given scene description.
+\item[Performance and multi-threading]
+\index{nsi!performance}\index{multi-threading}
+All \acronym{API} design decisions are made with performance in mind and this includes the possibility to run all  \acronym{API} calls in a concurrent, multi-threaded environment.  Nearly all software today which deals with large data sets needs to use multiple threads at some point. It is important for the interface to support this directly so it does not become a single thread communication bottleneck. This is why commands are self-contained and do not rely on a current state. Everything which is needed to perform an action is passed in on every call.
+\begin{comment}
+\item[Multiple language support]
+The interface should be easy to implement in multiple languages. Scripting languages are common in computer graphics tools and it is useful to have the interface accessible to them. We believe the relative simplicity of the interface will help achieve this goal. Some features were deliberately left out because the problems they typically solve are better dealt with by scripting.
+\end{comment}
+\item[Support for serialization]
+\index{nsi!serialization}
+\index{serialization}
+The interface calls should be serializable. This implies a mostly unidirectional dataflow from the client application to the renderer and allows greater implementation flexibility.
+
+\item[Extensibility]
+\index{nsi!extensibility}
+The interface should have as few assumptions as possible built-in about which features the renderer supports. It should also be abstract enough that new features can be added without looking out of place.
+
+\end{description}
+
+\chapter{The Interface}
+
+\section{The interface abstraction}
+
+The Nodal Scene Interface is built around the concept of nodes. Each node has a unique handle to identify it and a type which describes its intended function in the scene. Nodes are abstract containers for data for which the interpretation depends on the node type. Nodes can also be connected to each other to express relationships.
+
+Data is stored on nodes as attributes. Each attribute has a name which is unique on the node and a type which describes the kind of data it holds (strings, integer numbers, floating point numbers, etc).
+
+Relationships and data flow between nodes are represented as connections. Connections have a source and a destination. Both can be either a node or a specific attribute of a node. There are no type restrictions for connections in the interface itself. It is acceptable to connect attributes of different types or even attributes to nodes. The validity of such connections depends on the types of the nodes involved.
+
+What we refer to as the \acronym{NSI} has two major components:
+\begin{itemize}
+\item Methods to create nodes, attributes and their connections.
+\item Node types understood by the renderer. These are described in \autoref{chapter:Nodes}.
+\end{itemize}
+
+Much of the complexity and expressiveness of the interface comes from the supported nodes. The first part was kept deliberately simple to make it easy to support multiple ways of creating nodes. We will list a few of those in the following sections but this list is not meant to be final. New languages and file formats will undoubtedly be supported in the future.
+
+\section{The C API}
+
+This section will describe in detail the \acronym{C} implementation of the \acronym{NSI}, as provided in the \lstinline|nsi.h| file. This will also be a reference for the interface in other languages as all concepts are the same.
+
+% This rule sometimes appear at the top of the page and looks strange.
+% \noindent\rule{\textwidth}{0.4pt}
+\begin{lstlisting}[style=CAPI]
+#define NSI_VERSION 1
+\end{lstlisting}
+The \lstinline|NSI_VERSION| macro exists in case there is a need at some point to break source compatibility of the \acronym{C} interface.
+
+\begin{lstlisting}[style=CAPI]
+#define NSI_SCENE_ROOT ".root"
+\end{lstlisting}
+The \lstinline|NSI_SCENE_ROOT| macro defines the handle of the \hyperref[section:rootnode]{root node}.
+
+\label{NSI_ALL_NODES}
+\begin{lstlisting}[style=CAPI]
+#define NSI_ALL_NODES ".all"
+\end{lstlisting}
+The \lstinline|NSI_ALL_NODES| macro defines a special handle to refer to all nodes in some contexts, such as \hyperref[CAPI:nsidisconnect]{removing connections}.
+
+\label{NSI_ALL_ATTRIBUTES}
+\begin{lstlisting}[style=CAPI]
+#define NSI_ALL_ATTRIBUTES ".all"
+\end{lstlisting}
+The \lstinline|NSI_ALL_ATTRIBUTES| macro defines a special handle to refer to all attributes in some contexts, such as \hyperref[CAPI:nsidisconnect]{removing connections}.
+
+\subsection{Context handling}
+\label{CAPI:contexthandling}
+\begin{lstlisting}[style=CAPI]
+NSIContext_t NSIBegin(
+	int nparams,
+	const NSIParam_t *params );
+
+void NSIEnd( NSIContext_t ctx );
+\end{lstlisting}
+These two functions control creation and destruction of a \acronym{NSI} context, identified by a handle of type \lstinline|NSIContext_t|. A context must be given explicitly when calling all other functions of the interface. Contexts may be used in multiple threads at once. The \lstinline|NSIContext_t| is a convenience typedef and is defined as such:
+\begin{lstlisting}[style=CAPI]
+typedef int NSIContext_t;
+\end{lstlisting}
+If \lstinline|NSIBegin| fails for some reason, it returns \lstinline|NSI_BAD_CONTEXT| which is defined in nsi.h:
+\begin{lstlisting}[style=CAPI]
+#define NSI_BAD_CONTEXT ((NSIContext_t)0)
+\end{lstlisting}
+Optional parameters may be given to \lstinline|NSIBegin()| to control the creation of the context:
+\begin{paramlist}
+\paramlistitemTND{string}{type}{render}
+Sets the type of context to create. The possible types are:
+\begin{paramvaluelist}
+\paramvalueitem{render} To execute the calls directly in the renderer.
+\paramvalueitem{apistream} To write the interface calls to a stream, for later execution. The target for writing the stream must be specified in another parameter.
+\end{paramvaluelist}
+
+\paramlistitemTN{string}{streamfilename}
+The file to which the stream is to be output, if the context type is apistream. Specify \lstinline|"stdout"| to write to standard output and \lstinline|"stderr"| to write to standard error.
+
+\paramlistitemTND{string}{streamformat}{nsi}
+The format of the command stream to write. Possible formats are:
+\begin{paramvaluelist}
+\paramvalueitem{nsi}
+Produces a \hyperref[section:nsistream]{\acronym{NSI} stream}\index{nsi stream}.
+\paramvalueitem{binarynsi}
+Produces a binary encoded \hyperref[section:nsistream]{\acronym{NSI} stream}\index{binary nsi stream}.
+\paramvalueitem{autonsi}
+Behaves like \lstinline|"nsi"| if \lstinline|streamfilename| ends with ".nsia", and like \lstinline|"binarynsi"| otherwise.
+\begin{comment} % This is not yet implemented.
+\paramvalueitem{lua}
+Produces Lua \acronym{API} calls (refer to \autoref{section:Lua}).
+\end{comment}
+\end{paramvaluelist}
+\paramlistitemTN{string}{streamcompression}
+The type of compression to apply to the written command stream.
+\paramlistitemTND{int}{streampathreplacement}{1}
+Use 0 to disable replacement of path prefixes by references to environment variables which begin by \lstinline|NSI_PATH_| in an \acronym{NSI} stream. This should generally be left enabled to ease creation of files which can be moved between systems.
+\paramlistitemTN{pointer}{errorhandler}
+A function which is to be called by the renderer to report errors. The default handler will print messages to the console.
+\paramlistitemTN{pointer}{errorhandlerdata}
+The \lstinline|userdata| parameter of the error reporting function.
+\paramlistitemTN{string}{executeprocedurals}
+A list of procedural types that should be executed immediately when a call to \hyperref[CAPI:nsievaluate]{NSIEvaluate} or a procedural node is encountered and \lstinline|NSIBegin|'s output \lstinline|type| is \lstinline|apistream|.
+This will replace any matching call to \lstinline|NSIEvaluate| with the results of the procedural's execution.
+\paramlistitemTND{int}{separateprocess}{0}
+A non-zero value will make rendering occur in a separate process.
+This can reduce the effect of rendering on the host application.
+\end{paramlist}
+
+\subsection{Passing optional parameters}
+\label{CAPI:optionalparam}
+\begin{lstlisting}[style=CAPI]
+struct NSIParam_t
+{
+	const char *name;
+	const void *data;
+	int type;
+	int arraylength;
+	size_t count;
+	int flags;
+};
+\end{lstlisting}
+
+\index{struct!\texttt{NSIParam\_t}}
+This structure is used to pass variable parameter lists through the \acronym{C} interface. Most functions accept an array of the structure in a \lstinline|params| parameter along with its length in a \lstinline|nparams| parameter. The meaning of these two parameters will not be documented for every function. Instead, they will document the parameters which can be given in the array.
+
+The \lstinline|name| member is a \acronym{C} string which gives the parameter's name. The \lstinline|type| member identifies the parameter's type, using one of the following constants:
+\index{type for attribute data}
+\index{enum!attribute types}
+\firmlists
+\begin{itemize}
+	\item \lstinline|NSITypeFloat| for a single 32-bit floating point value.
+	\item \lstinline|NSITypeDouble| for a single 64-bit floating point value.
+	\item \lstinline|NSITypeInteger| for a single 32-bit integer value.
+	\item \lstinline|NSITypeInt64| for a single 64-bit integer value.
+	\item \lstinline|NSITypeString| for a string value, given as a pointer to a \acronym{C} string.
+	\item \lstinline|NSITypeColor| for a color, given as three 32-bit floating point values.
+	\item \lstinline|NSITypePoint| for a point, given as three 32-bit floating point values.
+	\item \lstinline|NSITypeVector| for a vector, given as three 32-bit floating point values.
+	\item \lstinline|NSITypeNormal| for a normal vector, given as three 32-bit floating point values.
+	\item \lstinline|NSITypeMatrix| for a transformation matrix, given as 16 32-bit floating point values.
+	\item \lstinline|NSITypeDoubleMatrix| for a transformation matrix, given as 16 64-bit floating point values.
+	\item \lstinline|NSITypePointer| for a \acronym{C} pointer.
+\end{itemize}
+\defaultlists
+Array types are specified by setting the bit defined by the \lstinline|NSIParamIsArray| constant in the \lstinline|flags| member and the length of the array in the \lstinline|arraylength| member.
+The \lstinline|count| member gives the number of data items given as the value of the parameter.
+The \lstinline|data| member is a pointer to the data for the parameter.
+The \lstinline|flags| member is a bit field with a number of constants defined to communicate more information about the parameter:
+\label{Interface:parameterflags}
+\index{enum!attribute flags}
+\firmlists
+\begin{itemize}
+	\item \lstinline|NSIParamIsArray| to specify that the parameter is an array type, as explained previously.
+	\item \lstinline|NSIParamPerFace| to specify that the parameter has different values for every face of a geometric primitive, where this might be ambiguous.
+	\item \lstinline|NSIParamPerVertex| to specify that the parameter has different values for every vertex of a geometric primitive, where this might be ambiguous.
+	\item \lstinline|NSIParamInterpolateLinear| to specify that the parameter is to be interpolated linearly instead of using some other default method.
+\end{itemize}
+\defaultlists
+\label{parameter:indirect}
+Indirect lookup of parameters is achieved by giving an integer parameter of the same name, with the \lstinline|.indices| suffix added.
+This is read to know which values of the other parameter to use.
+\goodbreak
+\subsection{Node creation}
+\label{CAPI:nsicreate}
+\begin{lstlisting}[style=CAPI]
+void NSICreate(
+	NSIContext_t context,
+	NSIHandle_t handle,
+	const char *type,
+	int nparams,
+	const NSIParam_t *params );
+\end{lstlisting}
+This function is used to create a new node. Its parameters are:
+\begin{paramlist}
+\paramlistitemN{context}
+The context returned by \lstinline|NSIBegin|. See \autoref{CAPI:contexthandling}
+\paramlistitemN{handle}
+A node handle. This string will uniquely identify the node in the scene.
+
+If the supplied handle matches an existing node, the function does nothing if all other parameters match the call which created that node. Otherwise, it emits an error. Note that handles need only be unique within a given interface context. It is acceptable to reuse the same handle inside different contexts. The \lstinline|NSIHandle_t| typedef is defined in nsi.h:
+\begin{lstlisting}[style=CAPI]
+typedef const char * NSIHandle_t;
+\end{lstlisting}
+
+\paramlistitemN{type}
+The type of node to create. See \autoref{chapter:Nodes}.
+\paramlistitemN{nparams, params}
+This pair describes a list of optional parameters. \emph{There are no optional parameters defined as of now}. The \lstinline|NSIParam_t| type is described in \autoref{CAPI:optionalparam}.
+\end{paramlist}
+\smallrule
+\begin{lstlisting}[style=CAPI]
+void NSIDelete(
+	NSIContext_t ctx,
+	NSIHandle_t handle,
+	int nparams,
+	const NSIParam_t *params );
+\end{lstlisting}
+This function deletes a node from the scene.
+All connections to and from the node are also deleted.
+Note that it is not possible to delete the \hyperref[section:rootnode]{root} or the \hyperref[section:globalnode]{global} node.
+Its parameters are:
+\begin{paramlist}
+\paramlistitemN{context}
+The context returned by \lstinline|NSIBegin|. See \autoref{CAPI:contexthandling}
+\paramlistitemN{handle}
+A node handle. It identifies the node to be deleted.
+\end{paramlist}
+
+It accepts the following optional parameters:
+\begin{paramlist}
+\paramlistitemTND{int}{recursive}{0}
+Specifies whether deletion is recursive.
+By default, only the specified node is deleted.
+If a value of 1 is given, then nodes which connect to the specified node are recursively removed, unless they meet one of the following conditions :
+\begin{itemize}
+\item They also have connections which do not eventually lead to the specified node.
+\item Their connection to the deleted node was created with a \hyperref[CAPI:nsiconnect]{strength} greater than 0.
+\end{itemize}
+This allows, for example, deletion of an entire shader network in a single call.
+\end{paramlist}
+
+\subsection{Setting attributes}
+\index{setting attributes}
+\label{CAPI:nsisetattribute}
+\label{CAPI:nsisetattributeattime}
+\begin{lstlisting}[style=CAPI]
+void NSISetAttribute(
+	NSIContext_t ctx,
+	NSIHandle_t object,
+	int nparams,
+	const NSIParam_t *params );
+\end{lstlisting}
+This functions sets attributes on a previously \hyperref[CAPI:nsicreate]{created} node. All \hyperref[CAPI:optionalparam]{optional parameters} of the function become attributes of the node. On a \hyperref[section:shadernode]{shader} node, this function is used to set the implicitly defined shader parameters.
+Setting an attribute using this function replaces any value previously set by \lstinline|NSISetAttribute| or \lstinline|NSISetAttributeAtTime|.
+To reset an attribute to its default value, use \hyperref[CAPI:nsideleteattribute]{\lstinline|NSIDeleteAttribute|}.
+\smallrule
+\begin{lstlisting}[style=CAPI]
+void NSISetAttributeAtTime(
+	NSIContext_t ctx,
+	NSIHandle_t object,
+	double time,
+	int nparams,
+	const NSIParam_t *params );
+\end{lstlisting}
+This function sets time-varying\index{motion blur} attributes (i.e.\ motion blurred). The \lstinline|time| parameter specifies at which time the attribute is being defined. It is not required  to set time-varying attributes in any particular order. In most uses, attributes that are motion blurred must have the same specification throughout the time range. A notable exception is the \lstinline|P| attribute on \hyperref[section:particlesnode]{particles} which can be of different size for each time step because of appearing or disappearing particles.
+Setting an attribute using this function replaces any value previously set by \lstinline|NSISetAttribute|.
+\smallrule
+\label{CAPI:nsideleteattribute}
+\begin{lstlisting}[style=CAPI]
+void NSIDeleteAttribute(
+	NSIContext_t ctx,
+	NSIHandle_t object,
+	const char *name );
+\end{lstlisting}
+This function deletes any attribute with a name which matches the \lstinline|name| parameter on the specified object. There is no way to delete an attribute only for a specific time value.
+
+Deleting an attribute resets it to its default value.
+For example, after deleting the \lstinline|transformationmatrix| attribute on a \hyperref[section:transformnode]{transform} node, the transform will be an identity.
+Deleting a previously set attribute on a \hyperref[section:shadernode]{shader} node will default to whatever is declared inside the shader.
+
+\subsection{Making connections}
+\label{CAPI:nsiconnect}\label{CAPI:nsidisconnect}
+\begin{lstlisting}[style=CAPI]
+void NSIConnect(
+	NSIContext_t ctx,
+	NSIHandle_t from,
+	const char *from_attr,
+	NSIHandle_t to,
+	const char *to_attr,
+	int nparams,
+	const NSIParam_t *params );
+
+void NSIDisconnect(
+	NSIContext_t ctx,
+	NSIHandle_t from,
+	const char *from_attr,
+	NSIHandle_t to,
+	const char *to_attr );
+\end{lstlisting}
+These two functions respectively create or remove a connection between two elements. It is not an error to create a connection which already exists or to remove a connection which does not exist but the nodes on which the connection is performed must exist. The parameters are:
+\begin{paramlist}
+\paramlistitemN{from}
+The handle of the node from which the connection is made.
+\paramlistitemN{from\_attr}
+The name of the attribute from which the connection is made. If this is an empty string then the connection is made from the node instead of from a specific attribute of the node.
+\paramlistitemN{to}
+The handle of the node to which the connection is made.
+\paramlistitemN{to\_attr}
+The name of the attribute to which the connection is made. If this is an empty string then the connection is made to the node instead of to a specific attribute of the node.
+\end{paramlist}
+\lstinline|NSIConnect| also accepts the following optional parameters:
+\begin{paramlist}
+\paramlistitemN{value}
+Could be used to change the value of a node's attribute in some contexts.
+Refer to \autoref{section:lightlinking} for more about the utility of this parameter.
+\paramlistitemTND{int}{priority}{0}
+When connecting \hyperref[section:attributesnode]{attributes} nodes, indicates in which order the nodes should be considered when evaluating the value of an attribute.
+\paramlistitemTND{int}{strength}{0}
+A connection with a strength greater than 0 will block the progression of a recursive \hyperref[CAPI:nsidelete]{\lstinline|NSIDelete|}.
+\end{paramlist}
+With \lstinline|NSIDisconnect|, the handle for either node, as well as any or all of the attributes, may be the special value \hyperref[NSI_ALL_NODES]{\lstinline|".all"|}.
+This will remove all connections which match the other parameters. For example, to disconnect everything from the \hyperref[section:rootnode]{scene root}:
+\begin{lstlisting}[style=CAPI]
+NSIDisconnect( NSI_ALL_NODES, "", NSI_SCENE_ROOT, "objects" );
+\end{lstlisting}
+Similarly, the special value \hyperref[NSI_ALL_ATTRIBUTES]{\lstinline|".all"|} may be used for any or all of the attribute names.
+\goodbreak
+\subsection{Evaluating procedurals}
+\label{CAPI:nsievaluate}
+\begin{lstlisting}[style=CAPI]
+void NSIEvaluate(
+	NSIContext_t ctx,
+	int nparams,
+	const NSIParam_t *params );
+\end{lstlisting}
+This function includes a block of interface calls from an external source into the current scene. It blends together the concepts of a straight file include, commonly known as an archive\index{archive}\index{inline archive}, with that of  procedural include which is traditionally a compiled executable. Both are really the same idea expressed in a different language (note that for delayed procedural evaluation one should use the \hyperref[section:proceduralnode]{procedural} node).
+
+The \acronym{NSI} adds a third option which sits in-between---Lua scripts (\autoref{section:Lua})\index{evaluating Lua scripts}. They are much more powerful than a simple included file yet they are also much easier to generate as they do not require compilation. It is, for example, very realistic to export a whole new script for every frame of an animation. It could also be done for every character in a frame. This gives great flexibility in how components of a scene are put together.
+
+The ability to load \acronym{NSI} command straight from memory is also provided.
+
+The optional parameters accepted by this function are:
+\begin{paramlist}
+\paramlistitemTN{string}{type}
+The type of file which will generate the interface calls. This can be one of:
+\begin{paramvaluelist}
+\paramvalueitem{apistream}
+To read in a \hyperref[section:nsistream]{\acronym{NSI} stream}. This requires either \lstinline|filename|, \lstinline|script| or \lstinline|buffer/size| to be provided as source for \acronym{NSI} commands.
+\paramvalueitem{lua}
+To execute a Lua script, either from file or inline. See \autoref{section:Lua} and more specifically \autoref{subsection:luaevaluation}.
+\paramvalueitem{dynamiclibrary}
+To execute native compiled code in a loadable library.
+See \autoref{section:dllprocedurals} for about the implementation of such a library.
+\end{paramvaluelist}
+\paramlistitemTN{string}{filename}
+The name of the file which contains the interface calls to include.
+\paramlistitemTND{int}{replacensidir}{1}
+When evaluating an \lstinline|apistream|, this controls if \lstinline|${NSIDIR}| references are replaced by the path to the directory in which \lstinline|filename| is.
+\paramlistitemTN{string}{script}
+A valid Lua script to execute when \lstinline|type| is set to \lstinline|"lua"|.
+%\paramlistitemTN{point\lbrack{}2\rbrack{}}{bound}
+%Provides bounds for delayed loading.
+\paramlistitems{
+	\paramlistitemTN{pointer}{buffer}
+	\paramlistitemTN{int64}{size}
+}
+These two parameters define a memory block that contain \acronym{NSI} commands to execute.
+\paramlistitemTND{int}{backgroundload}{0}
+If this is nonzero, the object may be loaded in a separate thread, at some later time. This requires that further interface calls not directly reference objects defined in the included file. The only guarantee is that the file will be loaded before rendering begins.
+\end{paramlist}
+
+\subsection{Error reporting}
+\label{subsection:errors}
+\index{error reporting}
+\begin{lstlisting}[style=CAPI]
+enum NSIErrorLevel
+{
+	NSIErrMessage = 0,
+	NSIErrInfo = 1,
+	NSIErrWarning = 2,
+	NSIErrError = 3
+};
+
+typedef void (*NSIErrorHandler_t)(
+	void *userdata, int level, int code, const char *message );
+\end{lstlisting}
+This defines the type of the error handler callback given to the \lstinline|NSIBegin| function. When it is called, the \lstinline|level| parameter is one of the values defined by the \lstinline|NSIErrorLevel| enum. The \lstinline|code| parameter is a numeric identifier for the error message, or 0 when irrelevant. The \lstinline|message| parameter is the text of the message.
+
+The text of the message will not contain the numeric identifier nor any reference to the error level. It is usually desirable for the error handler to present these values together with the message. The identifier exists to provide easy filtering of messages.
+
+The intended meaning of the error levels is as follows:
+\index{enum!error levels}
+\firmlists
+\begin{itemize}
+	\item \lstinline|NSIErrMessage| for general messages, such as may be produced by printf in shaders. The default error handler will print this type of messages without an \acronym{EOL} terminator as it's the duty of the caller to format the message.
+	\item \lstinline|NSIErrInfo| for messages which give specific information. These might simply inform about the state of the renderer, files being read, settings being used and so on.
+	\item \lstinline|NSIErrWarning| for messages warning about potential problems. These will generally not prevent producing images and may not require any corrective action. They can be seen as suggestions of what to look into if the output is broken but no actual error is produced.
+	\item \lstinline|NSIErrError| for error messages. These are for problems which will usually break the output and need to be fixed.
+\end{itemize}
+\defaultlists
+
+\subsection{Rendering}
+\label{section:rendering}
+\begin{lstlisting}[style=CAPI]
+void NSIRenderControl(
+	NSIContext_t ctx,
+	int nparams,
+	const NSIParam_t *params );
+\end{lstlisting}
+This function is the only control function of the \acronym{API}.
+It is responsible of starting, suspending and stopping the render.
+It also allows for synchronizing the render with interactive calls that might have been issued.
+The function accepts \hyperref[CAPI:optionalparam]{optional parameters}:
+\begin{paramlist}
+\paramlistitemTN{string}{action}\index{render!action}
+Specifies the operation to be performed, which should be one of the following:
+\begin{paramvaluelist}
+\paramvalueitem{start}
+This starts rendering the scene in the provided context. The render starts in parallel and the control flow is not blocked.\index{start render}\index{render!start}
+\paramvalueitem{wait}
+Wait for a render to finish.\index{wait for render}\index{render!wait}
+\paramvalueitem{synchronize}
+For an interactive render, apply all the buffered calls to scene's state.\index{synchronize render}\index{render!synchronize}
+\paramvalueitem{suspend}
+Suspends render in the provided context.\index{suspend render}\index{pause render}\index{render!pause}
+\paramvalueitem{resume}
+Resumes a previously suspended render.\index{render!resume}\index{resume render}
+\paramvalueitem{stop}
+Stops rendering in the provided context without destroying the scene\index{cancel render}\index{render!stop}\index{stop render}
+\end{paramvaluelist}
+\paramlistitemTND{int}{progressive}{0}\index{render!progressive}\index{progressive render}
+If set to 1, render the image in a progressive fashion.
+\paramlistitemTND{int}{interactive}{0}\index{render!interactive}\index{interactive render}\index{ipr}\label{interactive render}
+If set to 1, the renderer will accept commands to edit scene's state while rendering. The difference with a normal render is that the render task will not exit even if rendering is finished. Interactive renders are by definition progressive.\index{progressive render}\index{render!progressive}
+\paramlistitemTN{pointer}{stoppedcallback}
+A pointer to a user function that should be called on rendering status changes.
+This function must have no return value and accept a pointer argument, a \acronym{NSI} context argument and an integer argument :
+\begin{lstlisting}[style=CAPI]
+void StoppedCallback(
+	void* stoppedcallbackdata,
+	NSIContext_t ctx,
+	int status);
+\end{lstlisting}
+The third parameter is an integer which can take the following values:
+\begin{itemize}
+	\item \lstinline|NSIRenderCompleted| indicates that rendering has completed normally.
+	\item \lstinline|NSIRenderAborted| indicates that rendering was interrupted before completion.
+	\item \lstinline|NSIRenderSynchronized| indicates that an interactive render has produced an image which reflects all changes to the scene.
+	\item \lstinline|NSIRenderRestarted| indicates that an interactive render has received new changes to the scene and no longer has an up to date image.
+\end{itemize}
+\paramlistitemTN{pointer}{stoppedcallbackdata}
+A pointer that will be passed back to the \lstinline|stoppedcallback| function.
+\end{paramlist}
+
+\section{The Lua API}
+\label{section:Lua}
+\index{Lua}
+The scripted interface is slightly different than its C counterpart since it has been adapted to take advantage of the niceties of Lua. The main differences with the C \acronym{API} are:
+\begin{itemize}
+\item No need to pass a \acronym{NSI} context to function calls since it's already embodied in the \acronym{NSI} Lua table (which is used as a class).
+\item The \lstinline|type| parameter specified can be omitted if the parameter is an integer, real or string (as with the \lstinline|Kd| and \lstinline|filename|  in the example below).
+\item \acronym{NSI} parameters can either be passed as a variable number of arguments or as a single argument representing an array of parameters (as in the \lstinline|"ggx"| shader below)
+\item There is no need to call \lstinline|NSIBegin| and \lstinline|NSIEnd| equivalents since the  Lua script is run in a valid context.
+\end{itemize}
+\autoref{fig:lua_shader} shows an example shader creation logic in Lua
+
+\index{creating a shader in Lua}
+\index{shader creation in Lua}
+{
+\footnotesize
+\begin{lstlisting}[caption={Shader creation example in Lua},label={fig:lua_shader}, frame=top, frame=bottom]
+nsi.Create( "lambert", "shader" );
+nsi.SetAttribute(
+    "lambert",
+    {name="filename", data="lambert_material.oso"},
+    {name="Kd", data=.55},
+    {name="albedo", data={1, 0.5, 0.3}, type=nsi.TypeColor} );
+
+nsi.Create( "ggx", "shader" );
+nsi.SetAttribute(
+    "ggx",
+    {
+        {name="filename", data="ggx_material.oso"},
+        {name="anisotropy_direction", data={0.13, 0 ,1}, type=nsi.TypeVector}
+    } );
+\end{lstlisting}
+}
+
+\subsection{API calls}
+\index{lua!functions}
+All useful (in a scripting context) \acronym{NSI} functions are provided and are listed in \autoref{fig:luafunctions}. There is also a \lstinline|nsi.utilities| class which, for now, only contains a method to print errors. See \autoref{subsection:luaerrors}.
+\begin{table}[ht]
+	\centering
+	\begin{tabular}[c]{ll} \toprule
+	\textbf{Lua Function} & \textbf{C equivalent} \\ \midrule
+	nsi.SetAttribute & NSISetAttribute \\
+	nsi.SetAttributeAtTime & NSISetAttributeAtTime \\
+	nsi.Create & NSICreate \\
+	nsi.Delete & NSIDelete \\
+	nsi.DeleteAttribute & NSIDeleteAttribute\\
+	nsi.Connect & NSIConnect \\
+	nsi.Disconnect & NSIDisconnect \\
+	Evaluate & NSIEvaluate \\ \bottomrule
+	\end{tabular}
+	\caption{\acronym{NSI} functions}\label{fig:luafunctions}
+\end{table}
+
+\subsection{Function parameters format}
+\index{Lua!parameters}
+Each single parameter is passed as a Lua table containing the following key values:
+\begin{itemize}
+\item name - contains the name of the parameter.
+\item data - The actual parameter data. Either a value (integer, float or string) or an array.
+\item type - specifies the type of the parameter. Possible values are shown in \autoref{fig:luatypes}.
+\begin{table}[ht]
+	\centering
+	\begin{tabular}[c]{ll} \toprule
+	\textbf{Lua Type} & \textbf{C equivalent} \\ \midrule
+	nsi.TypeFloat & NSITypeFloat\\
+	nsi.TypeInteger & NSITypeInteger\\
+	nsi.TypeString & NSITypeString\\
+	nsi.TypeNormal & NSITypeNormal\\
+	nsi.TypeVector & NSITypeVector \\
+	nsi.TypePoint & NSITypePoint \\
+	nsi.TypeMatrix & NSITypeMatrix \\ \bottomrule
+	\end{tabular}
+	\caption{\acronym{NSI} types}\label{fig:luatypes}
+\end{table}
+\item arraylength - specifies the length of the array for each element.
+\index{Lua!param.count|(}
+\begin{quote}
+\textsc{note} --- There is no count parameter in Lua since it can be obtained from the size of the provided data, its type and array length.
+\end{quote}
+\index{Lua!param.count|)}
+\end{itemize}
+Here are some example of well formed parameters:
+\footnotesize
+\begin{lstlisting}
+--[[ strings, floats and integers do not need a 'type' specifier ]] --
+p1 = {name="shaderfilename", data="emitter"};
+p2 = {name="power", data=10.13};
+p3 = {name="toggle", data=1};
+
+--[[ All other types, including colors and points, need a
+     type specified for disambiguation. ]]--
+p4 = {name="Cs", data={1, 0.9, 0.7}, type=nsi.TypeColor};
+
+--[[ An array of 2 colors ]] --
+p5 = {name="vertex_color", arraylength=2,
+	data={1, 1, 1, 0, 0, 0}, type=nsi.TypeColor};
+
+--[[ Create a simple mesh and connect it root ]] --
+nsi.Create( "floor", "mesh" )
+nsi.SetAttribute( "floor",
+	{name="nvertices", data=4},
+	{name="P", type=nsi.TypePoint,
+		data={-2, -1, -1, 2, -1, -1, 2, 0, -3, -2, 0, -3}} )
+nsi.Connect( "floor", "", ".root", "objects" )
+\end{lstlisting}
+\normalsize
+
+\subsection{Evaluating a Lua script}
+\label{subsection:luaevaluation}
+Script evaluation is started using \hyperref[CAPI:nsievaluate]{\lstinline|NSIEvaluate|} in C, \acronym{NSI} stream or even another Lua script.
+Here is an example using \acronym{NSI} stream:
+\begin{quote}
+\begin{lstlisting}
+Evaluate
+	"filename" "string" 1 ["test.nsi.lua"]
+	"type" "string" 1 ["lua"]
+\end{lstlisting}
+\end{quote}
+It is also possible to evaluate a Lua script \emph{inline} using the \lstinline|script| parameter. For example:
+\begin{quote}
+\begin{lstlisting}
+Evaluate
+	"script" "string" 1 ["nsi.Create(\"light\", \"shader\");"]
+	"type" "string" 1 ["lua"]
+\end{lstlisting}
+\end{quote}
+Both ``filename'' and ``script'' can be specified to \lstinline|NSIEvaluate| in one go, in which case the inline script will be evaluated before the file and both scripts will share the same \acronym{NSI} and Lua contexts.
+Any error during script parsing or evaluation will be sent to \acronym{NSI}'s error handler.
+Note that all Lua scripts are run in a sandbox in which all Lua system libraries are disabled.
+Some utilities, such as error reporting, are available through the \lstinline|nsi.utilities| class.
+
+\subsection{Passing parameters to a Lua script}
+All parameters passed to \lstinline|NSIEvaluate| will appear in the \lstinline|nsi.scriptparameters| table. For example, the following call:
+\begin{quote}
+\begin{lstlisting}
+Evaluate
+	"filename" "string" 1 ["test.lua"]
+	"type" "string" 1 ["lua"]
+	"userdata" "color[2]" 1 [1 0 1 2 3 4]
+\end{lstlisting}
+\end{quote}
+Will register a \lstinline|userdata| entry in the \lstinline|nsi.scriptparameters| table. So executing the following line in \lstinline|test.lua|:
+\begin{quote}
+\begin{lstlisting}
+print( nsi.scriptparameters.userdata.data[5] );
+\end{lstlisting}
+\end{quote}
+Will print 3.0.
+
+\subsection{Reporting errors from a Lua script}
+\label{subsection:luaerrors}
+\index{lua!utilities.ReportError}
+Use \lstinline|nsi.utilities.ReportError| to send error messages to the error handler defined in the current \acronym{NSI} context. For example:
+\begin{quote}
+\begin{lstlisting}
+nsi.utilities.ReportError( nsi.ErrWarning, "Watch out!" );
+\end{lstlisting}
+\end{quote}
+The \hyperref[subsection:errors]{error codes are the same as in the C \acronym{API}} and are shown in \autoref{fig:luaerrorcodes}.
+
+\index{lua!error types}
+\begin{table}[ht]
+	\centering
+	\begin{tabular}[c]{ll} \toprule
+	\textbf{Lua Error Codes} & \textbf{C equivalent} \\ \midrule
+	nsi.ErrMessage & NSIErrMessage \\
+	nsi.ErrWarning & NSIErrMessage \\
+	nsi.ErrInfo & NSIErrInfo \\
+	nsi.ErrError & NSIErrError \\ \bottomrule
+	\end{tabular}
+	\caption{NSI error codes}\label{fig:luaerrorcodes}
+\end{table}
+
+\section{The C++ API wrappers}
+The \lstinline|nsi.hpp| file provides \textsc{C++} wrappers which are less tedious to use than the low level \textsc{C} interface. All the functionality is inline so no additional libraries are needed and there are no \acronym{ABI} issues to consider.
+
+\subsection{Creating a context}
+The core of these wrappers is the \lstinline|NSI::Context| class. Its default construction will require linking with the renderer.
+\begin{lstlisting}
+#include "nsi.hpp"
+
+NSI::Context nsi;
+\end{lstlisting}
+
+\label{dynamicapi}
+The \lstinline|nsi_dynamic.hpp| file provides an alternate \acronym{API} source which will load the renderer at runtime and thus requires no direct linking.
+\begin{lstlisting}
+#include "nsi.hpp"
+#include "nsi_dynamic.hpp"
+
+NSI::DynamicAPI nsi_api;
+NSI::Context nsi(nsi_api);
+\end{lstlisting}
+
+In both cases, a new \acronym{NSI} context can then be created with the \lstinline|Begin| method.
+\begin{lstlisting}
+nsi.Begin();
+\end{lstlisting}
+
+This will be bound to the \lstinline|NSI::Context| object and released when the object is deleted. It is also possible to bind the object to a handle from the \acronym{C} \acronym{API}, in which case it will not be released unless the \lstinline|End| method is explicitly called.
+
+\subsection{Argument passing}
+The \lstinline|NSI::Context| class has methods for all the other \acronym{NSI} calls. The optional parameters of those can be set by several accessory classes and given in many ways. The most basic is a single argument.
+\begin{lstlisting}
+nsi.SetAttribute("handle", NSI::FloatArg("fov", 45.0f));
+\end{lstlisting}
+
+It is also possible to provide static lists:
+\begin{lstlisting}
+nsi.SetAttribute("handle",(
+    NSI::FloatArg("fov", 45.0f),
+    NSI::DoubleArg("depthoffield.fstop", 4.0)
+    ));
+\end{lstlisting}
+
+And finally a class supports dynamically building a list.
+\begin{lstlisting}
+NSI::ArgumentList args;
+args.Add(new NSI::FloatArg("fov", 45.0f));
+args.Add(new NSI::DoubleArg("depthoffield.fstop", 4.0));
+nsi.SetAttribute("handle", args);
+\end{lstlisting}
+
+The \lstinline|NSI::ArgumentList| object will delete all the objects added to it when it is deleted.
+
+\subsection{Argument classes}
+To be continued \ldots
+
+\section{The Python API}
+\label{section:Python}
+\index{Python}
+The \lstinline|nsi.py| file provides a python wrapper to the \textsc{C} interface.
+It is compatible with both python 2.7 and python 3.
+An example of how to us it is provided in \lstinline|python/examples/live_edit/live_edit.py|
+
+\section{The interface stream}
+\label{section:nsistream}
+\index{nsi!stream}
+It is important for a scene description \acronym{API} to be streamable. This allows saving scene description into files, communicating scene state between processes\index{rendering in a different process} and provide extra flexibility when sending commands to the renderer\footnote{The streamable nature of the \textit{RenderMan} \acronym{API}, through \acronym{RIB}, is an undeniable advantage. \mbox{RenderMan\textregistered{}}\ is a registered trademark of Pixar.}.
+
+Instead of re-inventing the wheel, the authors have decided to use exactly the same format as is used by the \textit{RenderMan} Interface Bytestream (\acronym{RIB}). This has several advantages:
+\begin{itemize}
+\item Well defined \acronym{ASCII} and binary formats.
+\item The \acronym{ASCII} format is human readable and easy to understand.
+\item Easy to integrate into existing renderers (writers and readers already available).
+\end{itemize}
+Note that since Lua is part of the \acronym{API}, one can use Lua files for \acronym{API} streaming\footnote{Preliminary tests show that the Lua parser is as fast as an optimized \acronym{ASCII} \acronym{RIB} parser.}.
+\label{section:rib}
+
+\section{Dynamic library procedurals}
+\label{section:dllprocedurals}
+\hyperref[CAPI:nsievaluate]{\lstinline|NSIEvaluate|} and \hyperref[section:proceduralnode]{procedural} nodes can execute code loaded from a dynamically loaded library that defines a procedural.
+Executing the procedural is expected to result in a series of \acronym{NSI} \acronym{API} calls that contribute to the description of the scene.
+For example, a procedural could read a part of the scene stored in a different file format and translate it directly into \acronym{NSI} calls.
+
+This section describes how to use the definitions from the \lstinline|nsi_procedural.h| header to write such a library in C or C++.
+However, the process of compiling and linking it is specific to each operating system and out of the scope of this manual.
+\subsection{Entry point}
+The renderer expects a dynamic library procedural to contain a \lstinline|NSIProceduralLoad| symbol, which is an entry point for the library's main function:
+\begin{lstlisting}[style=CAPI]
+struct NSIProcedural_t* NSIProceduralLoad(
+	NSIContext_t ctx,
+	NSIReport_t report,
+	const char* nsi_library_path,
+	const char* renderer_version);
+\end{lstlisting}
+It will be called only once per render and has the responsibility of initializing the library and returning a description of the functions implemented by the procedural.
+However, it is not meant to generate \acronym{NSI} calls.
+For that reason, it's passed a unique \lstinline|NSIContext_t| that should be used only in that function, usually to call the \lstinline|report| function.
+
+It returns a pointer to an descriptor object of type \lstinline|struct NSIProcedural_t| (see \autoref{fig:nsiprocedural_t}).
+
+\lstinline|NSIProceduralLoad| receives the following parameters:
+\begin{paramlist}
+\paramlistitemTN{NSIContext\_t}{ctx}
+The \acronym{NSI} context into which the procedural is being loaded.
+\paramlistitemTN{NSIReport\_t}{report}
+A function that can be used to display informational, warning or error messages through the renderer.
+\paramlistitemTN{const char*}{nsi\_library\_path}
+The path to the \acronym{NSI} implementation that is loading the procedural.
+This allows the procedural to explicitly make its \acronym{NSI} \acronym{API} calls through the same implementation (for example, by using \hyperref[dynamicapi]{\lstinline|NSI::DynamicAPI|} defined in \lstinline|nsi_dynamic.hpp|).
+It's usually not required if only one implementation of \acronym{NSI} is installed on the system.
+\paramlistitemTN{const char*}{renderer\_version}
+A character string describing the current version of the renderer.
+\end{paramlist}
+\subsection{Procedural description}
+\begin{figure}
+\footnotesize
+\begin{lstlisting}[frame=top,frame=bottom,caption={Definition of \lstinline|NSIProcedural_t|},style=CAPI,label={fig:nsiprocedural_t}]
+typedef void (*NSIProceduralUnload_t)(
+	NSIContext_t ctx,
+	NSIReport_t report,
+	struct NSIProcedural_t* proc);
+
+typedef void (*NSIProceduralExecute_t)(
+	NSIContext_t ctx,
+	NSIReport_t report,
+	struct NSIProcedural_t* proc,
+	int nparams,
+	const struct NSIParam_t* params);
+
+struct NSIProcedural_t
+{
+	unsigned nsi_version;
+	NSIProceduralUnload_t unload;
+	NSIProceduralExecute_t execute;
+};
+\end{lstlisting}
+\end{figure}
+The \hyperref[fig:nsiprocedural_t]{\lstinline|NSIProcedural_t|} structure returned by \lstinline|NSIProceduralLoad| contains information needed by the renderer to use the procedural. Note that its allocation is managed entirely from within the procedural and it will never be copied or modified by the renderer. This means that it's possible for a procedural to extend the structure (by over-allocating memory or subclassing, for example) in order to store any extra information that it might need later.
+
+The \lstinline|nsi_version| member must be set to \lstinline|NSI_VERSION| (defined in \lstinline|nsi.h|), so the renderer is able to determine which version of \acronym{NSI} was used when compiling the procedural.
+
+The function pointers types used in the definition are :
+\begin{itemize}
+\item \lstinline|NSIProceduralUnload_t| is a function that cleans-up after the last execution of the procedural.
+This is the dual of \lstinline|NSIProceduralLoad|.
+In addition to parameters \lstinline|ctx| and \lstinline|report|, also received by \lstinline|NSIProceduralLoad|, it receives the description of the procedural returned by \lstinline|NSIProceduralLoad|.
+\item \lstinline|NSIProceduralExecute_t| is a function that contributes to the description of the scene by generating \acronym{NSI} \acronym{API} calls.
+Since \lstinline|NSIProceduralExecute_t| might be called multiple times in the same render, it's important that it uses the context \lstinline|ctx| it receives as a parameter to make its \acronym{NSI} calls, and not the context previously received by \lstinline|NSIProceduralLoad|.
+It also receives any extra parameters sent to \hyperref[CAPI:nsievaluate]{\lstinline|NSIEvaluate|} , or any extra attributes set on a \hyperref[section:proceduralnode]{procedural} node.
+They are stored in the \lstinline|params| array (of length \lstinline|nparams|).
+\lstinline|NSIParam_t| is described in \autoref{CAPI:optionalparam}.
+\end{itemize}
+
+\subsection{Error reporting}
+All functions of the procedural called by \acronym{NSI} receive a parameter of type \lstinline|NSIReport_t|.
+It's a pointer to a function which should be used by the procedural to report errors or display any informational message.
+\begin{lstlisting}[style=CAPI]
+typedef void (*NSIReport_t)(
+	NSIContext_t ctx, int level, const char* message);
+\end{lstlisting}
+It receives the current context, the error level (as described in \autoref{subsection:errors}) and the message to be displayed.
+This information will be forwarded to any error handler attached to the current context, along with other regular renderer messages.
+Using this, instead of a custom error reporting mechanism, will benefit the user by ensuring that all messages are displayed in a consistent manner.
+
+\subsection{Preprocessor macros}
+Some convenient C preprocessor macros are also defined in \lstinline|nsi_procedural.h| :
+
+\begin{itemize}
+\item
+\begin{lstlisting}[style=CAPI]
+NSI_PROCEDURAL_UNLOAD(name)
+\end{lstlisting}
+and
+\begin{lstlisting}[style=CAPI]
+NSI_PROCEDURAL_EXECUTE(name)
+\end{lstlisting}
+declare functions of the specified name that match \lstinline|NSIProceduralUnload_t| and \lstinline|NSIProceduralExecute_t|, respectively.
+\item
+\begin{lstlisting}[style=CAPI]
+NSI_PROCEDURAL_LOAD
+\end{lstlisting}
+declares a \lstinline|NSIProceduralLoad| function.
+\item
+\begin{lstlisting}[style=CAPI]
+NSI_PROCEDURAL_INIT(proc, unload_fct, execute_fct)
+\end{lstlisting}
+initializes a \lstinline|NSIProcedural_t| (passed as \lstinline|proc|) using the addresses of the procedural's main functions.
+It also initializes \lstinline|proc.nsi_version|.
+\end{itemize}
+
+So, a skeletal dynamic library procedural (that does nothing) could be implemented as in \autoref{fig:minimal_procedural}.
+
+Please note, however, that the \lstinline|proc| static variable in this example contains only constant values, which allows it to be allocated as a static variable.
+In a more complex implementation, it could have been over-allocated (or subclassed, in C++) to hold additional, variable data\footnote{A good example of this is available in the \textit{3Delight} installation, in file \lstinline|examples/procedurals/gear.cpp|.}.
+In that case, it would have been better to allocate the descriptor dynamically -- and release it in \lstinline|NSI_PROCEDURAL_UNLOAD| -- so the procedural could be loaded independently from multiple parallel renders, each using its own instance of the \lstinline|NSIProcedural_t| descriptor.
+
+\begin{figure}
+\footnotesize
+\begin{lstlisting}[frame=top,frame=bottom,caption={A minimal dynamic library procedural},style=CAPI,label={fig:minimal_procedural}]
+#include "nsi_procedural.h"
+
+NSI_PROCEDURAL_UNLOAD(min_unload)
+{
+}
+
+NSI_PROCEDURAL_EXECUTE(min_execute)
+{
+}
+
+NSI_PROCEDURAL_LOAD
+{
+	static struct NSIProcedural_t proc;
+	NSI_PROCEDURAL_INIT(proc, min_unload, min_execute);
+	return &proc;
+}
+\end{lstlisting}
+\end{figure}
+
+
+\chapter{Nodes}
+\label{chapter:Nodes}
+The following sections describe available nodes in technical terms. Refer to \autoref{chapter:guidelines} for usage details.
+\index{lua!nodes}
+\begin{table}[ht]
+	\centering
+	\begin{tabular}[c]{lp{18pc}l} \toprule
+	\textbf{Node} & \textbf{Function} & \textbf{Reference} \\ \midrule
+	root & Scene's root & \autoref{section:rootnode} \\
+	global & Global settings node & \autoref{section:globalnode} \\
+	set & To express relationships to groups of nodes & \autoref{section:setnode} \\
+	shader & \acronym{OSL} shader or layer in a shader group & \autoref{section:shadernode} \\
+	attributes & Container for generic attributes (e.g.\ visibility) & \autoref{section:attributesnode} \\
+	transform & Transformation to place objects in the scene & \autoref{section:transformnode} \\
+	mesh & Polygonal mesh or subdivision surface & \autoref{section:meshnode} \\
+	plane & Infinite plane \autoref{section:planenode} \\
+	faceset & Assign attributes to part of a mesh & \autoref{section:facesetnode} \\
+	curves & Linear, B-spline and Catmull-Rom curves & \autoref{section:curvesnode} \\
+	particles & Collection of particles & \autoref{section:particlesnode} \\
+	procedural & Geometry to be loaded in delayed fashion & \autoref{section:proceduralnode} \\
+	environment & Geometry type to define environment lighting & \autoref{section:environmentnode} \\
+	*camera & Set of nodes to create viewing cameras & \autoref{section:camera}  \\
+	outputdriver & Location where to output rendered pixels & \autoref{section:outputdrivernode}  \\
+	outputlayer & Describes one render layer to be connected to an \lstinline|outputdriver| node & \autoref{section:outputlayernode} \\
+	screen & Describes how the view from a camera will be rasterized into an \lstinline|outputlayer| node & \autoref{section:screennode} \\ \bottomrule
+	\end{tabular}
+	\caption{\acronym{nsi} nodes overview}
+\end{table}
+
+\subsection*{Common attributes}
+\begin{paramlist}
+\paramlistitemTN{string}{nicename}
+This is an optional identifier which may be used by the renderer instead of the node handle for various identification purposes.
+\end{paramlist}
+
+\section{The root node}
+\label{section:rootnode}
+\index{root node}\index{node!root}
+The root node is much like a transform node with the particularity that it is the end connection for all renderable scene elements (see \autoref{section:basicscene}). A node can exist in an \acronym{NSI} context without being connected to the root note but in that case it won't affect the render in any way. The root node has the reserved handle name \lstinline|.root|\index{.root node} and doesn't need to be created using \lstinline|NSICreate|. The root node has two defined attributes: \lstinline|objects| and \lstinline|geometryattributes|. Both are explained in \autoref{section:transformnode}.
+
+\section{The global node}
+\label{section:globalnode}
+\index{global node|(}
+\index{node!global|(}
+This node contains various global settings for a particular \acronym{nsi} context.
+Note that these attributes are for the most case implementation specific.
+This node has the reserved handle name \lstinline|.global|\index{.global node} and doesn't need to be created using \lstinline|NSICreate|. The following attributes are recognized by \textit{3Delight}:
+\begin{paramlist}
+\paramlistitemTND{int}{numberofthreads}{0} \index{numberofthreads}\index{.global.numberofthreads}
+Specifies the total number of threads to use for a particular render:
+\begin{itemize}
+\item A value of zero lets the render engine choose an optimal thread value. This is the default behaviour.
+\item Any positive value directly sets the total number of render threads.
+\item A negative value will start as many threads as optimal \textit{plus} the specified value. This allows for an easy way to decrease the total number of render threads.
+\end{itemize}
+\paramlistitemTN{int}{texturememory}\index{texturememory}\index{.global.texturememory}
+Specifies the approximate maximum memory size, in megabytes, the renderer will allocate to accelerate texture access.
+\paramlistitemTND{int}{networkcache.size}{0}\index{networkcache.size}\index{.global.networkcache.size}
+Specifies the maximum network cache size, in gigabytes, the renderer will use to cache textures on a local drive to accelerate data access.
+\paramlistitemTN{string}{networkcache.directory}\index{networkcache.directory}\index{.global.networkcache.directory}
+Specifies the directory in which textures will be cached. A good default value is /var/tmp/3DelightCache on Linux systems.
+\paramlistitemTND{int}{networkcache.mipmap}{1}\index{networkcache.index}
+Enables caching of texture mipmaps separately. This makes more efficient use of available cache space.
+\paramlistitemTND{string}{networkcache.write}{0}\index{networkcache.write}\index{.global.networkcache.write}
+Enables caching for image write operations. This alleviates pressure on networks by first rendering images to a local temporary location and copying them to their final destination at the end of the render. This replaces many small network writes by more efficient larger operations.
+\paramlistitemTN{string}{license.server}\index{license.server}\index{.global.license.server}
+Specifies the name or address of the license server to be used.
+\paramlistitemTND{int}{license.wait}{1}\index{license.wait}\index{.global.license.wait}
+When no license is available for rendering, the renderer will wait until a license is available if this attribute is set to \lstinline|1|, but will stop immediately if it's set to \lstinline|0|. The latter setting is useful when managing a renderfarm and other work could be scheduled instead.
+\paramlistitemTND{int}{license.hold}{0}\index{license.hold}\index{.global.license.hold}
+By default, the renderer will get new licenses for every render and release them once it's done. This can be undesirable if several frames are rendered in sequence from the same process. If this option is set to \lstinline|1|, the licenses obtained for the first frame are held until the last frame is finished.
+\paramlistitemTND{int}{renderatlowpriority}{0}
+If set to 1, start the render with a lower process priority.
+This can be useful if there are other applications that must run during rendering.
+\paramlistitemTND{string}{bucketorder}{horizontal}\index{bucketorder}\index{.global.bucketorder}
+Specifies in what order the buckets are rendered. The available values are:
+\begin{paramvaluelist}
+\paramvalueitem{horizontal}
+row by row, left to right and top to bottom.
+\paramvalueitem{vertical}
+column by column, top to bottom and left to right.
+\paramvalueitem{zigzag}
+row by row, left to right on even rows and right to left on odd rows.
+\paramvalueitem{spiral}
+in a clockwise spiral from the centre of the image.
+\paramvalueitem{circle}
+in concentric circles from the centre of the image.
+\end{paramvaluelist}
+\paramlistitemTND{double}{frame}{0}
+Provides a frame number to be used as a seed for the sampling pattern. See the \hyperref[section:screennode]{screen node}.
+\paramlistitemTN{int}{hidemessages}
+This specifies error and warning messages which will not be displayed.
+The attribute values are the message numbers to ignore.
+\paramlistitemTND{int}{maximumraydepth.diffuse}{1}\index{.global.maximumraydepth.diffuse}
+Specifies the maximum bounce depth a diffuse ray can reach. A depth of 1 specifies one additional bounce compared to purely local illumination.
+\paramlistitemTND{int}{maximumraydepth.hair}{4}\index{.global.maximumraydepth.hair}
+Specifies the maximum bounce depth a hair ray can reach. Note that hair are akin to volumetric primitives and might need elevated ray depth to properly capture the illumination.
+\paramlistitemTND{int}{maximumraydepth.reflection}{1}\index{.global.maximumraydepth.reflection}
+Specifies the maximum bounce depth a reflection ray can reach. Setting the reflection depth to 0 will only compute local illumination meaning that only emissive surfaces will appear in the reflections.
+\paramlistitemTND{int}{maximumraydepth.refraction}{4}\index{.global.maximumraydepth.refraction}
+Specifies the maximum bounce depth a refraction ray can reach. A value of 4 allows light to shine through a properly modeled object such as a glass.
+\paramlistitemTND{int}{maximumraydepth.volume}{0}\index{.global.maximumraydepth.volume}
+Specifies the maximum bounce depth a volume ray can reach.
+\paramlistitemTND{double}{maximumraylength.diffuse}{-1}\index{.global.maximumraylength.diffuse}
+Limits the distance a ray emitted from a diffuse material can travel. Using a relatively low value for this attribute might improve performance without significantly affecting the look of the resulting image, as it restrains the extent of global illumination. Setting it to a negative value disables the limitation.
+\paramlistitemTND{double}{maximumraylength.hair}{-1}\index{.global.maximumraylength.hair}
+Limits the distance a ray emitted from a hair closure can travel. Setting it to a negative value disables the limitation.
+\paramlistitemTND{double}{maximumraylength.reflection}{-1}\index{.global.maximumraylength.reflection}
+Limits the distance a ray emitted from a reflective material can travel. Setting it to a negative value disables the limitation.
+\paramlistitemTND{double}{maximumraylength.refraction}{-1}\index{.global.maximumraylength.refraction}
+Limits the distance a ray emitted from a refractive material can travel. Setting it to a negative value disables the limitation.
+\paramlistitemTND{double}{maximumraylength.specular}{-1}\index{.global.maximumraylength.specular}
+Limits the distance a ray emitted from a specular (glossy) material can travel. Setting it to a negative value disables the limitation.
+\paramlistitemTND{double}{maximumraylength.volume}{-1}\index{.global.maximumraylength.volume}
+Limits the distance a ray emitted from a volume can travel. Setting it to a negative value disables the limitation.
+\paramlistitemTND{int}{quality.denoise}{1}
+Enables denoising of output.
+Currently only supported for interactive renders.
+\paramlistitemTND{int}{quality.iprglobalupdate}{1}
+Enables a different method of updating the image for interactive renders.
+\paramlistitemTND{int}{quality.iprinterpolate}{1}
+Enables interpolation of low resolution interactive output, when denoised.
+\paramlistitemTND{double}{quality.iprspeedmultiplier}{1}
+Ajusts targeted render speed when processing multiple scene edits. A higher value will produce faster but lower quality results.
+\paramlistitemTND{int}{quality.shadingsamples}{1}
+Controls the quality of \acronym{BSDF} sampling. Larger values give less visible noise.
+\paramlistitemTND{int}{quality.volumesamples}{1}
+Controls the quality of volume sampling. Larger values give less visible noise.
+\paramlistitemTN{double}{referencetime}
+Specifies a reference time for the frame, where deformation data is most valid.
+This is the default when the same attribute is not set on a geometry node.
+It is also the default for the \lstinline|velocityreferencetime| attribute of the \hyperref[section:vdbparticlesnode]{vdbparticles node} and the \hyperref[section:volumenode]{volume node}.
+If not set, the center of the camera shutter is used.
+\paramlistitemTND{int}{quality.samplevolumeemission}{1}
+Enables or disables the higher quality sampling of emission from \acronym{vdb} volumes. The emission is visible either way, this only affects quality and render time.
+\paramlistitemTND{int}{show.displacement}{1}\index{.global.show.displacement}
+When set to \lstinline|1|, enables displacement shading. Otherwise, it must be set to \lstinline|0|, which forces the renderer to ignore any displacement shader in the scene.
+\paramlistitemTND{int}{show.atmosphere}{1}\index{.global.show.atmosphere}
+When set to \lstinline|1|, enables atmosphere shader(s). Otherwise, it must be set to \lstinline|0|, which forces the renderer to ignore any atmosphere shader in the scene.
+\paramlistitemTND{double}{show.multiplescattering}{1.0}\index{.global.show.multiplescattering}
+This is a multiplier on the multiple scattering of \acronym{vdb} nodes. This parameter is useful to obtain faster draft renders by lowering the value below 1. The range is 0 to 1.
+\paramlistitemTND{int}{show.osl.subsurface}{1}\index{.global.show.osl.subsurface}
+When set to \lstinline|1|, enables the \lstinline|subsurface()| \acronym{OSL} closure. Otherwise, it must be set to \lstinline|0|, which will ignore this closure in \acronym{OSL} shaders.
+\paramlistitemTND{int}{statistics.progress}{0}\index{.global.statistics.progress}
+When set to \lstinline|1|, prints rendering progress as a percentage of completed pixels.
+\paramlistitemTND{string}{statistics.filename}{null}\index{.global.statistics.filename}
+Full path of the file where rendering statistics will be written. An empty string will write statistics to standard output. The name \lstinline|null| will not output statistics.
+\paramlistitemTN{float\lbrack{}4\rbrack{}}{texture.missingcolor}
+If specified, this is used as a default value for the \lstinline|missingcolor| parameter of the \lstinline|texture()| osl function.
+The fourth value is used as \lstinline|missingalpha|.
+\paramlistitemTND{int}{texture.missingcolorerrors}{0}
+If nonzero, errors are reported even when the \lstinline|missingcolor| of the \lstinline|texture()| osl function is used.
+This goes against the documented behavior.
+\paramlistitemTN{<connection>}{exclusiveshading}\index{.global.exclusiveshading}\index{solo}
+When geometry nodes are connected here, all others in the scene will be rendered as black to the camera.
+This is meant to be used to speed up rendering when adjusting parameters of specific objects during an \hyperref[interactive render]{interactive render}.
+Connected shader nodes will behave in a similar way : objects not using them will be rendered as black.
+If the connected shader nodes are not the root of their shading network (ie : they are not connected to an \hyperref[section:attributesnode]{attributes nodes} and their output is used as another shader node's input), the evaluation of the shading network will end there.
+This allows fine-tune parts of a shading network in isolation.
+\paramlistitemTND{int}{verbose}{0}\index{.global.verbose}
+When set to \lstinline|1|, enables additional informative messages before, during and after rendering.
+\paramlistitemTND{int}{messages.timestamp}{0}\index{.global.messages.timestamp}
+When set to \lstinline|1|, messages output by the renderer will include the local time.
+\end{paramlist}
+
+\index{node!global|)}
+\index{global node|)}
+
+\section{The set node}
+\label{section:setnode}
+\index{node!set}
+This node can be used to express relationships between objects\index{expressing relatioships}. An example is to connect many lights to such a node to create a \emph{light set} \index{light sets} and then to connect this node to \lstinline|outputlayer.lightset| (\autoref{section:outputlayernode} and \autoref{section:guideline_lightsets}). It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{<connection>}{members}
+This connection accepts all nodes that are members of the set.
+\end{paramlist}
+
+\section{The plane node}
+\label{section:planenode}
+\index{node!plane}
+This node represents an infinite plane, centered at the origin and pointing
+towards \(\mathrm{Z+}\). It has no required attributes. The UV coordinates are
+defined as the X and Y coordinates of the plane.
+
+\section{The mesh node}
+\label{section:meshnode}
+\index{node!mesh}
+This node represents a polygon mesh\index{polygon mesh}. It has the following required attributes:
+\begin{paramlist}
+\paramlistitemTN{point}{P}
+The positions of the object's vertices.
+Typically, this attribute will be \hyperref[parameter:indirect]{addressed indirectly} through a \lstinline|P.indices| attribute.
+\paramlistitemTN{int}{nvertices}
+The number of vertices for each face of the mesh. The number of values for this attribute specifies total face number (unless \lstinline|nholes| is defined).
+\end{paramlist}
+It also has optional attributes:
+\begin{paramlist}
+\paramlistitemTN{int}{nholes}
+The number of holes in the polygons.
+When this attribute is defined, the total number of faces in the mesh is defined by the number of values for \lstinline|nholes| rather than for \lstinline|nvertices|.
+For each face, there should be (\lstinline|nholes|+1) values in \lstinline|nvertices|: the respective first value specifies the number of vertices on the outside perimeter of the face, while additional values describe the number of vertices on perimeters of holes in the face.
+\autoref{fig:holey_mesh} shows the definition of a polygon mesh consisting of 3 square faces, with one triangular hole in the first one and square holes in the second one.
+\paramlistitemTND{int}{clockwisewinding}{0}
+A value of 1 specifies that polygons with a clockwise winding order are front facing. The default is 0, making counterclockwise polygons front facing.
+\paramlistitemTN{string}{subdivision.scheme}
+A value of \lstinline|"catmull-clark"| will cause the mesh to render as a Catmull-Clark subdivision surface.
+\paramlistitemTN{int}{subdivision.cornervertices}
+This attribute is a list of vertices which are sharp corners.
+The values are indices into the \lstinline|P| attribute, like \lstinline|P.indices|.
+\paramlistitemTN{float}{subdivision.cornersharpness}
+This attribute is the sharpness of each specified sharp corner.
+It must have a value for each value given in \lstinline|subdivision.cornervertices|.
+\paramlistitemTN{int}{subdivision.creasevertices}
+This attribute is a list of crease edges.
+Each edge is specified as a pair of indices into the \lstinline|P| attribute, like \lstinline|P.indices|.
+\paramlistitemTN{float}{subdivision.creasesharpness}
+This attribute is the sharpness of each specified crease.
+It must have a value for each pair of values given in \lstinline|subdivision.creasevertices|.
+\paramlistitemTND{int}{subdivision.smoothcreasecorners}{1}
+This attribute controls whether or not the surface uses enhanced subdivision rules on vertices where more than two creased edges meet. With a value of 0, the vertex becomes a sharp corner. With a value of 1, the vertex is subdivided using an extended crease vertex subdivision rule which yields a smooth crease.
+\paramlistitemTN{double}{referencetime}
+Specifies a reference time where deformation data is most valid.
+This is mainly relevant for velocity blur, in which case it should be set to the time at which position data was originally available.
+If not set, see the same attribute on the \hyperref[section:globalnode]{global node}.
+\paramlistitemTND{int}{quadraticmotion}{0}
+A value of 1 will enable curved deformation blur if three equally spaced time samples are provided for the \lstinline|P| attribute. Linear deformation is used otherwise.
+\paramlistitemTND{float}{outlinecreasethreshold}{10}
+Controls how sharp a crease must be to be considered for the creation of outlines.
+\end{paramlist}
+
+\begin{figure}
+\centering
+\footnotesize
+\begin{lstlisting}[caption={Definition of a polygon mesh with holes},label={fig:holey_mesh}, frame=top, frame=bottom]
+Create "holey" "mesh"
+SetAttribute "holey"
+  "nholes" "int" 3 [ 1 2 0 ]
+  "nvertices" "int" 6 [
+    4 3                 # Square with 1 triangular hole
+    4 4 4               # Square with 2 square holes
+    4 ]                 # Square with 0 hole
+  "P" "point" 23 [
+    0 0 0   3 0 0   3 3 0   0 3 0
+    1 1 0   2 1 0   1 2 0
+
+    4 0 0   9 0 0   9 3 0   4 3 0
+    5 1 0   6 1 0   6 2 0   5 2 0
+    7 1 0   8 1 0   8 2 0   7 2 0
+
+    10 0 0   13 0 0   13 3 0   10 3 0 ]
+\end{lstlisting}
+\end{figure}
+
+\section{The nurbs node}
+\label{section:nurbsnode}
+\index{node!nurbs}
+\index{NURBS surface}
+This node represents a \acronym{NURBS} surface patch. It has the following required attributes:
+\begin{paramlist}
+\paramlistitemTN{int}{nu}
+The control-point count along \lstinline|u|.
+\paramlistitemTN{int}{nv}
+The control-point count along \lstinline|v|.
+\paramlistitemTN{int}{uorder}
+The order along \lstinline|u| (degree + 1). Must be at least 2.
+\paramlistitemTN{int}{vorder}
+The order along \lstinline|v| (degree + 1). Must be at least 2.
+\paramlistitemTN{float}{uknot}
+The knot vector along \lstinline|u|.
+Its length must equal \lstinline|nu + uorder|.
+\paramlistitemTN{float}{vknot}
+The knot vector along \lstinline|v|.
+Its length must equal \lstinline|nv + vorder|.
+\paramlistitemTN{point}{P}
+The \lstinline|nu * nv| control points (xyz), stored row-major such that \lstinline|P[i*nu + j]| addresses the control point at row \lstinline|i|, column \lstinline|j|.
+\paramlistitemTN{float\lbrack{}4\rbrack{}}{Pw}
+A rational alternative to \lstinline|P|.
+Each control point is four floats (xyzw); supplying \lstinline|Pw| instead of \lstinline|P| enables rational \acronym{NURBS}.
+\end{paramlist}
+Either \lstinline|P| or \lstinline|Pw| must be provided.
+
+The node also accepts an optional set of trim curves.
+Trim curves are \acronym{NURBS} curves in the surface's homogeneous parameter space (\lstinline|u|, \lstinline|v|, \lstinline|w|); the actual \lstinline|(u, v)| position of a control point is \lstinline|(u/w, v/w)|.
+They are organised into loops: within a loop, curves connect head-to-tail, and the loop must be explicitly closed --- the last point of the last curve in a loop must coincide with the first point of the first curve.
+The \lstinline|trimcurves.*| attributes are all-or-nothing: if any one of them is present, the full set must be supplied.
+
+\begin{paramlist}
+\paramlistitemTN{int}{trimcurves.nloops}
+The number of trim loops.
+\paramlistitemTN{int}{trimcurves.ncurves}
+The number of curves in each loop. One value per loop.
+\paramlistitemTN{int}{trimcurves.n}
+The control-point count of each curve. One value per curve.
+\paramlistitemTN{int}{trimcurves.order}
+The order of each curve. One value per curve.
+\paramlistitemTN{float}{trimcurves.knot}
+The concatenated knot vectors for all curves.
+The total length is the sum over curves of \lstinline|n[i] + order[i]|.
+\paramlistitemTN{float}{trimcurves.min}
+The parametric start of each curve. One value per curve.
+\paramlistitemTN{float}{trimcurves.max}
+The parametric end of each curve. One value per curve.
+\paramlistitemTN{float}{trimcurves.u}
+Concatenated \lstinline|u| coordinates of all trim-curve control points.
+The total length is the sum over curves of \lstinline|n[i]|.
+\paramlistitemTN{float}{trimcurves.v}
+Concatenated \lstinline|v| coordinates of all trim-curve control points.
+The total length is the sum over curves of \lstinline|n[i]|.
+\paramlistitemTN{float}{trimcurves.w}
+Concatenated weights of all trim-curve control points.
+The total length is the sum over curves of \lstinline|n[i]|.
+Use \lstinline|1.0| for non-rational curves.
+\paramlistitemTN{int}{trimcurves.sense}
+The sense of each loop. One value per loop. A value of \lstinline|0| keeps the surface inside the loop; a value of \lstinline|1| keeps the surface outside the loop (i.e.\ the loop describes a hole).
+\end{paramlist}
+
+\section{The faceset node}
+\label{section:facesetnode}
+\index{node!faceset}
+\index{face sets}
+This node is used to provide a way to attach attributes to some faces of another geometric primitive, such as the \lstinline|mesh| node, as shown in \autoref{fig:subdiv_faceset}. It has the following attributes:
+
+\begin{paramlist}
+\paramlistitemTN{int}{faces}
+This attribute is a list of indices of faces.
+It identifies which faces of the original geometry will be part of this face set.
+\end{paramlist}
+
+\begin{figure}
+\centering
+\footnotesize
+\begin{lstlisting}[caption={Definition of a face set on a subdivision surface},label={fig:subdiv_faceset}, frame=top, frame=bottom]
+Create "subdiv" "mesh"
+SetAttribute "subdiv"
+  "nvertices" "int" 4 [ 4 4 4 4 ]
+  "P" "i point" 9 [
+    0 0 0    1 0 0    2 0 0
+    0 1 0    1 1 0    2 1 0
+    0 2 0    1 2 0    2 2 2 ]
+  "P.indices" "int" 16 [
+    0 1 4 3    2 3 5 4    3 4 7 6    4 5 8 7 ]
+  "subdivision.scheme" "string" 1 "catmull-clark"
+
+Create "set1" "faceset"
+SetAttribute "set1"
+  "faces" "int" 2 [ 0 3 ]
+Connect "set1" "" "subdiv" "facesets"
+
+Connect "attributes1" "" "subdiv" "geometryattributes"
+Connect "attributes2" "" "set1" "geometryattributes"
+\end{lstlisting}
+\end{figure}
+
+\section{The curves node}
+\label{section:curvesnode}
+\index{node!curves}
+This node represents a group of curves. It has the following required attributes:
+\begin{paramlist}
+\paramlistitemTN{int}{nvertices}
+The number of vertices for each curve. This must be at least 4 for cubic curves and 2 for linear curves. There can be either a single value or one value per curve.
+\paramlistitemTN{point}{P}
+The positions of the curve vertices.
+The number of values provided, divided by \lstinline|nvertices|, gives the number of curves which will be rendered.
+\paramlistitemTN{float}{width}
+The width of the curves.
+\paramlistitemTND{string}{basis}{catmull-rom}
+The basis functions used for curve interpolation. Possible choices are:
+\begin{paramvaluelist}
+\paramvalueitem{b-spline}
+B-spline interpolation.
+\paramvalueitem{catmull-rom}
+Catmull-Rom interpolation.
+\paramvalueitem{linear}
+Linear interpolation.
+\end{paramvaluelist}
+\paramlistitemTND{int}{extrapolate}{0}
+By default, cubic curves will not be drawn to their end vertices as the basis functions require an extra vertex to define the curve. If this attribute is set to 1, an extra vertex is automatically extrapolated so the curves reach their end vertices, as with linear interpolation.
+\end{paramlist}
+
+Attributes may also have a single value, one value per curve, one value per vertex or one value per vertex of a single curve, reused for all curves.
+Attributes which fall in that last category must always specify \hyperref[Interface:parameterflags]{\lstinline|NSIParamPerVertex|}.
+Note that a single curve is considered a face as far as use of \hyperref[Interface:parameterflags]{\lstinline|NSIParamPerFace|} is concerned.
+
+\section{The particles node}
+\label{section:particlesnode}
+This geometry node represents a collection of \emph{tiny} particles.
+Particles are represented by either a disk or a sphere.
+This primitive is not suitable to render large particles as these should be represented by other means (e.g.\ instancing).
+\begin{paramlist}
+\paramlistitemTN{point}{P}
+A mandatory attribute that specifies the center of each particle.
+\paramlistitemTN{float}{width}
+A mandatory attribute that specifies the width of each particle.
+It can be specified for the entire particles node (only one value provided) or per-particle.
+\paramlistitemTN{normal}{N}
+The presence of a normal indicates that each particle is to be rendered as an oriented disk.
+The orientation of each disk is defined by the provided normal which can be constant or a per-particle attribute.
+Each particle is assumed to be a sphere if a normal is not provided.
+\paramlistitemTND{int}{reverseorientation}{0}
+Setting this to 1 will reverse the orientation of spherical particles. Specifically, their u parametric direction is reversed, which also reverses their normal so it points inwards. It has no effect on particles for which \lstinline|N| is provided.
+\paramlistitemTN{int}{id}
+\index{ids, for particles}
+\index{particle ids}
+This attribute, of the same size as \lstinline|P|, assigns a unique identifier to each particle which must be constant throughout the entire shutter range.
+Its presence is necessary in the case where particles are motion blurred and some of them could appear or disappear during the motion interval.
+Having such identifiers allows the renderer to properly render such transient particles. This implies that the number of \textit{id}s might vary for each time step of a motion-blurred particle cloud so the use of \hyperref[CAPI:nsisetattributeattime]{\lstinline|NSISetAttributeAtTime|} is mandatory by definition.
+\paramlistitemTND{int}{quadraticmotion}{0}
+A value of 1 will enable curved deformation blur if three equally spaced time samples are provided for the \lstinline|P| attribute. Linear deformation is used otherwise.
+\end{paramlist}
+
+\section{The procedural node}
+\label{section:proceduralnode}
+This node acts as a proxy for geometry that could be defined at a later time than the node's definition, using a procedural supported by \hyperref[CAPI:nsievaluate]{\lstinline|NSIEvaluate|}.
+Since the procedural is evaluated in complete isolation from the rest of the scene, it can be done either lazily (depending on its \lstinline|boundingbox| attribute) or in parallel with other procedural nodes.
+
+The procedural node supports, as its attributes, all the parameters of the \hyperref[CAPI:nsievaluate]{\lstinline|NSIEvaluate|} \acronym{API} call, meaning that procedural types accepted by that \acronym{API} call (NSI archives, dynamic libraries, LUA scripts) are also supported by this node.
+Those attributes are used to call a procedural that is expected to define a sub-scene, which has to be independent from the other nodes in the scene.
+The procedural node will act as the sub-scene's local root and, as such, also supports all the attributes of a regular \hyperref[section:transform]{transform} node.
+In order to connect the nodes it creates to the sub-scene's root, the procedural simply has to connect them to the regular \hyperref[section:rootnode]{root node} "\lstinline|.root|".
+
+In the context of an \hyperref[interactive render]{interactive render}, the procedural will be executed again after the node's attributes have been edited.
+All nodes previously connected by the procedural to the sub-scene's root will be deleted automatically before the procedural's re-execution.
+
+Additionally, this node has the following optional attribute :
+\begin{paramlist}
+\paramlistitemTN{point\lbrack{}2\rbrack}{boundingbox}
+Specifies a bounding box for the geometry where \lstinline|boundingbox[0]| and \lstinline|boundingbox[1]| correspond, respectively, to the "minimum" and the "maximum" corners of the box.
+\end{paramlist}
+
+\section{The environment node}
+\label{section:environmentnode}
+This geometry node defines a sphere of infinite radius.
+Its only purpose is to render environment lights, solar lights and directional lights; lights which cannot be efficiently modeled using area lights.
+In practical terms, this node is no different than a geometry node with the exception of shader execution semantics: there is no surface position \lstinline|P|, only a direction \lstinline|I| (refer to \autoref{section:specifyinglights} for more practical details).
+The following node attribute is recognized:
+\begin{paramlist}
+\paramlistitemTND{double}{angle}{360}
+Specifies the cone angle representing the region of the sphere to be sampled. The angle is measured around the \(\mathrm{Z+}\) axis\footnote{To position the environment dome one must connect the node to a \hyperref[section:transformnode]{transform} node and apply the desired rotation.}. If the angle is set to \(0\), the environment describes a directional light. Refer to \autoref{section:specifyinglights} for more about how to specify light sources.
+\end{paramlist}
+
+\section{The shader node}
+\label{section:shadernode}
+\index{node!shader}\index{osl!node}\index{shader!node}
+This node represents an \acronym{OSL} shader, also called layer when part of a shader group. It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{string}{shaderfilename}
+This is the name of the file which contains the shader's compiled code.
+\paramlistitemTN{string}{shaderobject}
+This contains the complete compiled shader code. It allows providing custom shaders without going through files.
+\paramlistitemTN{string}{materialxnodedef}
+This is the name of the MaterialX node definition to use.
+\paramlistitemTN{string}{materialxversion}
+This is the MaterialX library version to use to find the node.
+If unspecified, the most up to date version is used.
+\end{paramlist}
+Either \lstinline|shaderfilename|, \lstinline|shaderobject| or \lstinline|materialxnodedef| must be provided.
+All other attributes on this node are considered parameters of the shader.
+They may either be given values or connected to attributes of other shader nodes to build shader networks.
+\acronym{OSL} shader networks must form acyclic graphs or they will be rejected. Refer to \autoref{section:creating_osl_networks} for instructions on \acronym{OSL} network creation and usage.
+
+\section{The attributes node}
+\label{section:attributesnode}
+This node is a generic container for attributes. Its exact purpose depends on where it is connected in the scene. The are currently two uses.
+\subsection{geometry attributes}
+\index{geometry attributes}
+This node can provide various geometry related rendering attributes\index{setting rendering attributes}\index{rendering attributes} that are not \emph{intrinsic}\index{intrinsic attributes} to a particular node (for example, one can't set the topology of a polygonal mesh using this attributes node).
+For this use, instances of this node must be connected to the \lstinline|geometryattributes| attribute of either geometric primitives or \hyperref[section:transform]{transform} nodes (to build \hyperref[section:primvars]{attributes hierarchies}\index{attributes hierarchies}).
+Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the \hyperref[section:rootnode]{scene root} is reached.
+
+\index{attributes lookup order}When an attribute is defined multiple times along this path, the definition with the highest priority is selected.
+In case of conflicting priorities, the definition that is the closest to the geometric primitive (i.e.\ the furthest from the root) is selected.
+Connections (for shaders, essentially) can also be assigned priorities, which are used in the same way as for regular attributes.
+Multiple attributes nodes can be connected to the same geometry or transform nodes (e.g.\ one attributes node can set object visibility and another can set the surface shader) and will all be considered.
+
+In this case, the node has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{<connection>}{surfaceshader}
+The \hyperref[section:shadernode]{shader node} which will be used to shade the surface is connected to this attribute.
+A priority (useful for overriding a shader from higher in the scene graph) can be specified by setting the \lstinline|priority| attribute of the connection itself.
+\paramlistitemTN{<connection>}{displacementshader}
+The \hyperref[section:shadernode]{shader node} which will be used to displace the surface is connected to this attribute.
+A priority (useful for overriding a shader from higher in the scene graph) can be specified by setting the \lstinline|priority| attribute of the connection itself.
+\paramlistitemTN{<connection>}{volumeshader}
+The \hyperref[section:shadernode]{shader node} which will be used to shade the volume inside the primitive is connected to this attribute.
+\paramlistitemTND{int}{ATTR.priority}{0}
+Sets the priority of attribute \lstinline|ATTR| when gathering attributes in the scene hierarchy.
+\paramlistitems{
+	\label{visibilityattributes}\index{visibility}\index{object visibility}
+	\paramlistitemTND{int}{visibility.camera}{1}
+	\paramlistitemTND{int}{visibility.diffuse}{1}
+	\paramlistitemTND{int}{visibility.hair}{1}
+	\paramlistitemTND{int}{visibility.reflection}{1}
+	\paramlistitemTND{int}{visibility.refraction}{1}
+	\paramlistitemTND{int}{visibility.shadow}{1}
+	\paramlistitemTND{int}{visibility.specular}{1}
+	\paramlistitemTND{int}{visibility.volume}{1}
+}
+These attributes set visibility for each ray type specified in \acronym{OSL}. The same effect could be achieved using shader code (using the \lstinline|raytype()| function) but it is much faster to filter intersections at trace time. A value of \lstinline|1| makes the object visible to the corresponding ray type, while \lstinline|0| makes it invisible.
+\paramlistitemTND{int}{visibility}{1}
+This attribute sets the default visibility for all ray types. When visibility is set both per ray type and with this default visibility, the attribute with the highest priority is used. If their priority is the same, the more specific attribute (i.e.\ per ray type) is used.
+\paramlistitemTN{<connection>}{visibility.set.subsurface}
+If a \hyperref[section:setnode]{set node} is connected to this attribute, subsurface rays will only see objects with a connection to that same set node.
+\paramlistitemTND{int}{matte}{0}
+If this attribute is set to 1, the object becomes a matte for camera rays. Its transparency is used to control the matte opacity and all other shading components are ignored.
+\paramlistitemTND{int}{regularemission}{1}
+If this is set to 1, closures not used with \lstinline|quantize()| will use emission from the objects affected by the attribute.
+If set to 0, they will not.
+\paramlistitemTND{int}{quantizedemission}{1}
+If this is set to 1, quantized closures will use emission from the objects affected by the attribute.
+If set to 0, they will not.
+\paramlistitemTN{<connection>}{bounds}
+When a geometry node (usually a \hyperref[section:meshnode]{mesh node}) is connected to this attribute, it will be used to restrict the effect of the attributes node, which will apply only inside the volume defined by the connected geometry object.
+It is also possible to connect a transform node to this.
+It is equivalent to connecting all the geometry nodes connected, even indirectly, to the transform.
+\paramlistitemTND{float}{displacementresolution}{1}
+This is a multiplier on the level of detail in displacement.
+Larger values will provide more detail while smaller values will reduce memory use.
+It is usually not necessary to set this attribute.
+\end{paramlist}
+\subsection{shader attributes}
+\index{shader attributes}
+This node can be a container for attributes available to shaders.
+For this purpose, instances of this node must be connected to the \lstinline|shaderattributes| attribute of geometric primitives, \hyperref[section:transformnode]{transform} nodes or \hyperref[section:setnode]{set} nodes..
+Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the \hyperref[section:rootnode]{scene root} is reached.
+
+Priority is given to nodes attached closest to the geometric primitive, with the highest priority given to attributes set directly on the geometric primitive.
+Attributes set on this node may only have a single value.
+
+\section{The transform node}
+\label{section:transformnode}
+\index{node!transform}
+This node represents a geometric transformation. Transform nodes can be chained together to express transform concatenation, hierarchies and instances.  Transform nodes also accept attributes to implement \hyperref[section:primvars]{hierarchical attribute assignment and overrides}. It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{doublematrix}{transformationmatrix}
+This is a 4x4 matrix which describes the node's transformation. Matrices in \acronym{NSI} post-multiply column vectors so are of the form:
+\[ \left[ \begin{array}{cccc}
+      w_{1_1} & w_{1_2} & w_{1_3} & 0  \\
+      w_{2_1} & w_{2_2} & w_{2_3} & 0  \\
+      w_{3_1} & w_{3_2} & w_{3_3} & 0  \\
+	  Tx & Ty & Tz & 1 \end{array} \right] \]
+\paramlistitemTN{<connection>}{objects}
+This is where the transformed objects are connected to. This includes geometry nodes, other transform nodes and camera nodes.
+\paramlistitemTN{<connection>}{geometryattributes}
+This is where \hyperref[section:attributesnode]{attributes nodes} may be connected to affect any geometry transformed by this node. Refer to \autoref{section:primvars} and \autoref{section:instancing} for explanation on how this connection is used.
+\paramlistitemTN{<connection>}{shaderattributes}
+This is where \hyperref[section:attributesnode]{attributes nodes} may be connected to provide shader attributes for any geometry transformed by this node.
+\end{paramlist}
+
+\section{The instances nodes}
+\label{section:instancesnode}
+\index{node!instances}
+This node is an efficient way to specify a large number of instances. It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{<connection>}{sourcemodels}
+The instanced models should connect to this attribute. Connections must have an integer \lstinline|index| attribute if there are several, so the models effectively form an ordered list.
+\paramlistitemTN{doublematrix}{transformationmatrices}
+A transformation matrix for each instance.
+\paramlistitemTND{int}{modelindices}{0}
+An optional model selector for each instance. The value used is matched to the \lstinline|index| attribute of the model connection. A negative value will cause an instance to not be rendered.
+\paramlistitemTN{int}{disabledinstances}
+An optional list of indices of instances which are not to be rendered.
+\end{paramlist}
+
+\section{The outputdriver node}
+\label{section:outputdrivernode}
+\index{node!outputdriver}
+An output driver defines how an image is transferred to an output destination. The destination could be a file (e.g.\ ``exr'' output driver), frame buffer or a memory address\index{frame buffer output}. It can be connected to the \lstinline|outputdrivers| attribute of an \hyperref[section:outputlayernode]{output layer} node. It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{string}{drivername}
+This is the name of the driver to use. The \acronym{API} of the driver is implementation specific and is not covered by this documentation.\index{output driver api}
+\paramlistitemTN{string}{imagefilename}
+Full path to a file for a file-based output driver or some meaningful identifier depending on the output driver.
+\paramlistitemTND{int}{embedstatistics}{1}
+A value of 1 specifies that statistics will be embedded into the image file.
+\end{paramlist}
+Any extra attributes are also forwarded to the output driver which may interpret them however it wishes.
+
+\section{The outputlayer node}
+\label{section:outputlayernode}
+This node describes one specific layer of render output data. It can be connected to the \lstinline|outputlayers| attribute of a screen node. It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{string}{variablename}
+This is the name of a variable to output.
+\paramlistitemTND{string}{variablesource}{shader}
+Indicates where the variable to be output is read from.
+Possible values are:
+\begin{paramvaluelist}
+\paramvalueitem{shader}
+computed by a shader and output through an \acronym{OSL} closure (such as \lstinline|outputvariable()| or \lstinline|debug()|) or the \lstinline|Ci| global variable.
+\paramvalueitem{attribute}
+retrieved directly from an attribute with a matching name attached to a geometric primitive.
+\paramvalueitem{builtin}
+generated automatically by the renderer (e.g.\ "z", "alpha", "N.camera", "P.world").
+\end{paramvaluelist}
+\paramlistitemTN{string}{layername}
+This will be name of the layer as written by the output driver. For example, if the output driver writes to an EXR file then this will be the name of the layer inside that file.
+\index{quantization|(}
+\paramlistitemTND{string}{scalarformat}{uint8}
+Specifies the format in which data will be encoded (quantized) prior to passing it to the output driver. Possible values are:
+\begin{paramvaluelist}
+\index{int8}\paramvalueitem{int8}
+signed 8-bit integer
+\index{uint8}\paramvalueitem{uint8}
+unsigned 8-bit integer
+\index{int16}\paramvalueitem{int16}
+signed 16-bit integer
+\index{uint16}\paramvalueitem{uint16}
+unsigned 16-bit integer
+\index{int32}\paramvalueitem{int32}
+signed 32-bit integer
+\index{uint32}\paramvalueitem{uint32}
+unsigned 32-bit integer
+\paramvalueitem{half}
+\acronym{IEEE} 754 half-precision binary floating point (binary16)
+\paramvalueitem{float}
+\acronym{IEEE} 754 single-precision binary floating point (binary32)
+\end{paramvaluelist}
+\paramlistitemTND{string}{layertype}{color}
+Specifies the type of data that will be written to the layer. Possible values are:
+\begin{paramvaluelist}
+\paramvalueitem{scalar}
+A single quantity. Useful for opacity ("alpha") or depth ("Z") information.
+\paramvalueitem{color}
+A 3-component color.
+\paramvalueitem{vector}
+A 3D point or vector. This will help differentiate the data from a color in further processing.
+\paramvalueitem{quad}
+A sequence of 4 values, where the fourth value is not an alpha channel.
+\end{paramvaluelist}
+Each component of those types is stored according to the \lstinline|scalarformat| attribute set on the same \lstinline|outputlayer| node.
+\paramlistitemTN{string}{colorprofile}
+\index{color profile}
+\index{ocio@\acronym{OCIO}}
+\index{color profile}
+The name of an \acronym{OCIO} color profile to apply to rendered image data prior to quantization.
+\index{quantization|)}
+\paramlistitemTND{integer}{dithering}{0}
+\index{dithering}
+If set to 1, dithering is applied to integer scalars\footnote{It is sometimes desirable to turn off dithering, for example, when outputting object IDs.}.
+Otherwise, it must be set to 0.
+\paramlistitemTND{integer}{withalpha}{0}
+\index{withalpha}
+If set to 1, an alpha channel is included in the output layer. Otherwise, it must be set to 0.
+\paramlistitemTN{integer}{sortkey}
+\index{sortkey}
+This attribute is used as a sorting key when ordering multiple output layer nodes connected to the same \hyperref[section:outputdrivernode]{output driver} node.
+Layers with the lowest \lstinline|sortkey| attribute appear first.
+\paramlistitemTN{<connection>}{lightset}
+This connection accepts either \hyperref[section:specifyinglights]{light sources} or \hyperref[section:setnode]{set} nodes to which lights are connected.
+In this case only listed lights will affect the render of the output layer.
+If nothing is connected to this attribute then all lights are rendered.
+
+If an \hyperref[section:environmentnode]{environment} node is connected here, a \lstinline|component| string attribute can be specified on the connection with a value of either \lstinline|sun| or \lstinline|background|. If this is used, only the corresponding part of the environment will contribute to the output layer.
+\paramlistitemTN{string}{lightsetname}
+This can be provided as friendly name for the connected light set. Otherwise, a default name is built from the connected node.
+\paramlistitemTN{<connection>}{outputdrivers}
+This connection accepts \hyperref[section:outputdrivernode]{output driver} nodes to which the layer's image will be sent.
+\paramlistitemTND{string}{filter}{blackman-harris}
+The type of filter to use when reconstructing the final image from sub-pixel samples. Possible values are: "box", "triangle", "catmull-rom", "bessel", "gaussian", "sinc", "mitchell", "blackman-harris", "zmin" and "zmax".
+\paramlistitemTND{double}{filterwidth}{3.0}
+Diameter in pixels of the reconstruction filter. It is not applied when filter is "box" or "zmin".
+\paramlistitemTND{float}{backgroundvalue}{0}
+The value given to pixels where nothing is rendered.
+\paramlistitemTN{<connection>}{backgroundlayer}
+This connection accepts a single output layer node which is meant to be displayed as a background.
+Not all \hyperref[section:outputdrivernode]{output drivers} support this behavior, so it might be ignored.
+\paramlistitemTND{string}{lightdepth}{auto}
+Allows filtering light contributions according to the number of bounces light has made from a light source to the objects in front of the camera.
+This is only meaningful when the layer's \lstinline|variablesource| is set to \lstinline|shader| (otherwise, it's ignored).
+Possible values are:
+\begin{paramvaluelist}
+\paramvalueitem{direct}
+Only light coming directly from light sources to visible objects (ie : with no bounce) is included.
+\paramvalueitem{indirect}
+Only light coming from light sources to visible objects through at least one bounce is shown.
+\paramvalueitem{both}
+All light is included.
+\paramvalueitem{auto}
+Selects the appropriate value for lightdepth according to the value of the \lstinline|variablename| attribute.
+If it ends with either ".direct" or ".indirect", the corresponding light depth will be used, and the suffix will be removed from the effective variable name.
+Otherwise, it will default to \lstinline|both|.
+\end{paramvaluelist}
+\paramlistitemTND{int}{cryptomatte.enable}{0}
+Setting this attribute to 1 enables Cryptomatte encoding of the layer's data.
+\lstinline|cryptomatte.level| should also be set properly.
+\paramlistitemTND{int}{cryptomatte.level}{0}
+If this value is negative, the layer will contain a human-readable "Cryptomatte header" image.
+Otherwise, the value indicates the index of the first Cryptomatte level that will be output.
+Since Cryptomatte levels are output by pairs, a Cryptomatte file with 4 levels would contain output layers with \lstinline|cryptomatte.level| set to -1, 0 and 2.
+This has no effect unless Cryptomatte encoding is enabled using \lstinline|cryptomatte.enable|.
+\end{paramlist}
+Any extra attributes are also forwarded to the output driver which may interpret them however it wishes.
+
+\section{The screen node}
+\label{section:screennode}
+This node describes how the view from a camera node will be rasterized into an \hyperref[section:outputlayernode]{output layer} node.
+It can be connected to the \lstinline|screens| attribute of a camera node.
+\begin{paramlist}
+\paramlistitemTN{<connection>}{outputlayers}
+This connection accepts \hyperref[section:outputlayernode]{output layer} nodes which will receive a rendered image of the scene as seen by the camera.
+\paramlistitemTN{integer\lbrack{}2\rbrack{}}{resolution}
+Horizontal and vertical resolution of the rendered image, in pixels.
+\paramlistitemTN{integer}{oversampling}
+The total number of samples (i.e.\ camera rays) to be computed for each pixel in the image.
+\paramlistitemTN{2 $\times$ float\lbrack{}2\rbrack{}}{crop}
+The region of the image to be rendered. It's defined by a list of exactly 2 pairs of floating-point number. Each pair represents a point in \acronym{NDC} space:
+\begin{itemize}
+\item \lstinline|Top-left| corner of the crop region
+\item \lstinline|Bottom-right| corner of the crop region
+\end{itemize}
+\paramlistitemTN{2 $\times$ int\lbrack{}2\rbrack{}}{prioritywindow}
+For progressive renders, this is the region of the image to be rendered first. It is two pairs of integers. Each represents pixel coordinates:
+\begin{itemize}
+\item \lstinline|Top-left| corner of the high priority region
+\item \lstinline|Bottom-right| corner of the high priority region
+\end{itemize}
+\paramlistitemTN{2 $\times$ double\lbrack{}2\rbrack{}}{screenwindow}
+Specifies the screen space region to be rendered. Each pair represents a 2D point in \lstinline|screen| space:
+\begin{itemize}
+\item \lstinline|Bottom-left| corner of the region
+\item \lstinline|Top-right| corner of the region
+\end{itemize}
+Note that the default screen window is set implicitely by the frame aspect ratio:
+\[
+screenwindow = \begin{bmatrix}-f && -1\end{bmatrix}, \begin{bmatrix}f && 1\end{bmatrix} \text{for } f=\dfrac{xres}{yres}\\
+\]
+\paramlistitemTN{2 $\times$ int\lbrack{}2\rbrack{}}{overscan}
+Specifies how many extra pixels to render around the image. The four values represent the amount of overscan on the left, top, right and bottom of the image.
+\paramlistitemTN{float}{pixelaspectratio}
+Ratio of the physical width to the height of a single pixel. A value of 1.0 corresponds to square pixels.
+\paramlistitemTND{int}{staticsamplingpattern}{0}
+This controls whether or not the sampling pattern used to produce the image change for every frame. A nonzero value will cause the same pattern to be used for all frames. A value of zero will cause the pattern to change with the frame attribute of the  \hyperref[section:globalnode]{global node}.
+\paramlistitemTND{int}{importancesamplefilter}{0}
+This enables a rendering mode where the pixel filter is importance sampled. Quality will be reduced and the same filter will be used for all output layers of the screen. Filters with negative lobes (eg. sinc) are unsupported.
+\end{paramlist}
+
+\section{The vdbparticles node}
+\label{section:vdbparticlesnode}
+This node represents particles defined by \href{http:/www.openvdb.org}{OpenVDB} data.
+It has the following attributes:
+
+\begin{paramlist}
+\paramlistitemTN{string}{vdbfilename}
+The path to an OpenVDB file with the particle data.
+\paramlistitemTN{string}{pointsgrid}
+The name of the OpenVDB grid to use for particle data.
+It must be of type \lstinline|PointDataGrid|.
+\paramlistitemTN{double}{velocityreferencetime}
+The reference time at which the grid data is used directly, without being moved by the velocity attribute.
+Defaults to the \hyperref[section:globalnode]{global node}'s \lstinline|referencetime| attribute.
+\paramlistitemTND{double}{velocityscale}{1}
+A scaling factor applied to the velocity data.
+\paramlistitemTND{int}{enablepscale}{1}
+Enables use of the \lstinline|pscale| attribute in the grid to specify particle radius.
+\paramlistitemTND{double}{width}{1}
+The width of particles, if there is no \lstinline|pscale| attribute in the file to specify their radius or it is disabled by setting \lstinline|enablepscale| to 0.
+\paramlistitemTND{double}{widthscale}{1}
+A scaling factor applied to particle width.
+\end{paramlist}
+
+The \lstinline|P|, \lstinline|v| and \lstinline|pscale| grid attributes are used to respectively define particle position, velocity and radius.
+Other grid attributes may be read by shaders.
+
+\section{The volume node}
+\label{section:volumenode}
+This node represents a volumetric object defined by \href{http:/www.openvdb.org}{OpenVDB} data. It has the following attributes:
+
+\begin{paramlist}
+\paramlistitemTN{string}{vdbfilename}
+The path to an OpenVDB file with the volumetric data.
+\paramlistitemTN{string}{densitygrid}
+The name of the OpenVDB grid to use as volume density for the volume shader.
+\paramlistitemTN{string}{colorgrid}
+The name of the OpenVDB grid to use as a scattering color multiplier for the volume shader.
+\paramlistitemTN{string}{emissiongrid}
+The name of the OpenVDB grid to use directly as emission for the volume shader.
+\paramlistitemTN{string}{emissionintensitygrid}
+The name of the OpenVDB grid to use as emission intensity for the volume shader.
+\paramlistitemTN{string}{temperaturegrid}
+The name of the OpenVDB grid to use as temperature for the volume shader.
+\paramlistitemTN{string}{velocitygrid}
+The name of the OpenVDB grid to use as motion vectors. This can also name the first of three scalar grids (ie. "velocityX").
+\paramlistitemTN{double}{velocityreferencetime}
+The reference time at which the grid data is used directly, without being moved by the velocity grid.
+Defaults to the \hyperref[section:globalnode]{global node}'s \lstinline|referencetime| attribute.
+\paramlistitemTND{double}{velocityscale}{1}
+A scaling factor applied to the motion vectors.
+\end{paramlist}
+
+\section{Camera Nodes}
+\label{section:camera}\index{cameras|(}
+All camera nodes share a set of common attributes. These are listed below.
+
+\begin{paramlist}
+\paramlistitemTN{<connection>}{screens}
+This connection accepts \hyperref[section:screennode]{screen} nodes which will rasterize an image of the scene as seen by the camera.
+Refer to \autoref{section:definingoutputdrivers} for more information.
+\paramlistitemTN{double}{shutterrange}
+Time interval during which the camera shutter is at least partially open. It's defined by a list of exactly two values:
+\begin{itemize}
+\item Time at which the shutter starts \lstinline|opening|.
+\item Time at which the shutter finishes \lstinline|closing|.
+\end{itemize}
+\paramlistitemTN{double}{shutteropening}
+A \emph{normalized} time interval indicating the time at which the shutter is fully open (a) and the time at which the shutter starts to close (b).
+These two values define the top part of a trapezoid filter.
+The end goal of this feature it to simulate a mechanical shutter on which open and close movements are not instantaneous.
+\autoref{fig:shutteropening} shows the geometry of such a trapezoid filter.
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+% horizontal axis
+\draw[->] (0,0) -- (7,0) node[anchor=north] {$t$};
+% vertical axis
+\draw[->] (0,0) -- (0,3) node[anchor=east] {$aperture$};
+
+% labels
+\draw	(0,0) node[anchor=north] {0}
+		(2,0) node[anchor=north] {a}
+        (4,0) node[anchor=north] {b}
+        (6,0) node[anchor=north] {1}
+		(0,2) node[anchor=east] {1};
+
+% Shutter action
+\draw[dotted] (2,0) -- (2,2);
+\draw[dotted] (4,0) -- (4,2);
+
+\draw[thick] (0,0) -- (2,2) -- (4,2) -- (6,0);
+\end{tikzpicture}
+
+\caption{An example shutter opening configuration with a=1/3 and b=2/3.}
+\label{fig:shutteropening}
+\end{figure}
+
+\paramlistitemTN{double}{clippingrange}
+Distance of the near and far clipping planes from the camera.  It's defined by a list of exactly two values:
+\begin{itemize}
+\item Distance to the \lstinline|near| clipping plane, in front of which scene objects are clipped.
+\item Distance to the \lstinline|far| clipping plane, behind which scene objects are clipped.
+\end{itemize}
+\end{paramlist}
+
+\subsection{The orthographiccamera node}
+\label{section:orthographiccamera}\index{orthographic camera}\index{cameras!orthographic}
+This node defines an orthographic camera with a view direction towards the \(\mathrm{Z-}\) axis. This camera has no specific attributes.
+
+\subsection{The perspectivecamera node}
+\label{section:perspectivecameranode}\index{perspective camera}\index{cameras!perspective}
+This node defines a perspective camera. The canonical camera is viewing in the direction of the \(\mathrm{Z-}\) axis. The node is usually connected into a \hyperref[section:transformnode]{transform} node for camera placement. It has the following attributes:
+\begin{paramlist}
+\paramlistitemTN{float}{fov}
+The field of view angle, in degrees.
+\paramlistitemTND{integer}{depthoffield.enable}{0}
+Enables depth of field effect for this camera.
+\paramlistitemTN{double}{depthoffield.fstop}
+Relative aperture of the camera.
+\paramlistitemTN{double}{depthoffield.focallength}
+Vertical focal length, in scene units, of the camera lens.
+\paramlistitemTND{double}{depthoffield.focallengthratio}{1}
+Ratio of vertical focal length to horizontal focal length. This is the squeeze ratio of an anamorphic lens.
+\paramlistitemTN{double}{depthoffield.focaldistance}
+Distance, in scene units, in front of the camera at which objects will be in focus.
+\paramlistitemTND{integer}{depthoffield.aperture.enable}{0}
+By default, the renderer simulates a circular aperture for depth of field. Enable this feature to simulate aperture ``blades'' as on a real camera. This feature affects the look in out-of-focus regions of the image.
+\paramlistitemTND{integer}{depthoffield.aperture.sides}{5}
+Number of sides of the camera's aperture. The mininum number of sides is 3.
+\paramlistitemTND{double}{depthoffield.aperture.angle}{0}
+A rotation angle (in degrees) to be applied to the camera's aperture, in the image plane.
+\paramlistitemTN{double}{unitlengthmillimeters}
+Physical length, in millimeters, of one scene unit.
+Since NSI only uses virtual scene units, this has no effect on the rendered images.
+However, this value can be useful if the renderer has to communicate with other software or file formats using physical units.
+For example, the focal length of the camera, expressed in millimeters, would be the product \lstinline|depthoffield.focallength| * \lstinline|unitlengthmillimeters| .
+\end{paramlist}
+\subsection{The fisheyecamera node}
+\label{section:fisheyecameranode}\index{fisheye camera}\index{cameras!fish eye}
+Fish eye cameras are useful for a multitude of applications (e.g.\ virtual reality). This node accepts these attributes:
+\begin{paramlist}
+\paramlistitemTN{float}{fov}
+Specifies the field of view for this camera node, in degrees.
+\paramlistitemTND{string}{mapping}{equidistant}
+Defines one of the supported fisheye \href{https://en.wikipedia.org/wiki/Fisheye_lens}{mapping functions}:
+\begin{paramvaluelist}
+\paramvalueitem{equidistant}\index{equidistant fisheye mapping}
+Maintains angular distances.
+\paramvalueitem{equisolidangle}\index{equisolidangle fisheye mapping}
+Every pixel in the image covers the same solid angle.
+\paramvalueitem{orthographic}\index{orthographic fisheye mapping}
+Maintains planar illuminance. This mapping is limited to a 180 field of view.
+\paramvalueitem{stereographic}\index{stereographic fisheye mapping}
+Maintains angles throughout the image. Note that stereographic mapping fails to work with field of views close to 360 degrees.
+\end{paramvaluelist}
+\end{paramlist}
+
+\subsection{The cylindricalcamera node}
+This node specifies a cylindrical projection camera and has the following attributes:
+\label{section:cylindricalcamera}\index{cylindricalcamera}\index{cameras!cylindrical}
+\begin{paramlist}
+\paramlistitemTND{float}{fov}{90}\index{cylindricalcamera!fov}
+Specifies the \emph{vertical} field of view, in degrees.
+\paramlistitemTND{float}{horizontalfov}{360}\index{horizontalfov}\index{cylindricalcamera!horizontalfov}
+Specifies the horizontal field of view, in degrees.
+\paramlistitemTN{float}{eyeoffset}\index{eyeoffset}\index{cylindricalcamera!eyeoffset}
+This offset allows to render stereoscopic cylindrical images by specifying an eye offset.
+\end{paramlist}
+
+\subsection{The sphericalcamera node}
+\label{section:sphericalcamera}\index{spherical camera}\index{cameras!spherical}
+This node defines a spherical projection camera. This camera has no specific attributes.
+
+\subsection{Lens shaders}
+\index{lens shaders}
+A lens shader is an \acronym{OSL} network connected to a camera through the \lstinline|lensshader| connection.
+Such shaders receive the position and the direction of each tracer ray and can either change or completely discard the traced ray.
+This allows to implement distortion maps and cut maps.
+The following shader variables are provided:
+\begin{description}
+\item{\lstinline|P|} --- Contains ray's origin.
+\item{\lstinline|I|}  --- Contains ray's direction.
+Setting this variable to zero instructs the renderer not to trace the corresponding ray sample.
+\item{\lstinline|time|} --- The time at which the ray is sampled.
+\item{\lstinline|(u, v)|} --- Coordinates, in screen space, of the ray being traced.
+\end{description}
+
+\index{cameras|)}
+
+% ------------------------------------------------
+
+\chapter{Rendering Guidelines}
+\label{chapter:guidelines}
+\section{Basic scene anatomy}
+\label{section:basicscene}
+\begin{figure}[h]
+\centering
+\includegraphics[height=7cm]{basic_scene_anatomy}
+\caption{The fundamental building blocks of an \acronym{NSI} scene}
+\label{fig:basic_scene_anatomy}
+\end{figure}
+
+A minimal (and useful) \acronym{NSI} scene graph contains the three following components:
+\begin{enumerate}
+\item Geometry linked to the \lstinline|.root| node, usually through a transform chain
+\item \acronym{OSL} materials linked to scene geometry through an \hyperref[section:attributesnode]{attributes} node \footnote{For the scene to be visible, at least one of the materials has to be emissive.}
+\item At least one  \textit{outputdriver $\rightarrow$ outputlayer $\rightarrow$ screen $\rightarrow$ camera $\rightarrow$ \lstinline|.root|} chain to describe a view and an output device
+\end{enumerate}
+
+The scene graph in \autoref{fig:basic_scene_anatomy} shows a renderable scene with all the necessary elements. Note how the connections always lead to the \lstinline|.root| node\index{.root node}. In this view, a node with no output connections is not relevant by definition and will be ignored.
+
+\section{A word -- or two -- about attributes}
+\label{section:primvars}
+\begin{figure}[h]
+\centering
+\includegraphics[height=7cm]{attribute_inheritance}
+\caption{Attribute inheritance and override}\label{fig:attribute_inheritance}
+\end{figure}
+\index{renderman!attributes}\index{attributes!renderman}
+Those familiar with the \textit{RenderMan} standard will remember the various ways to attach information to elements of the scene (standard attributes, user attributes\index{user attributes}, primitive variables\index{primitive variables}, construction parameters\footnote{Parameters passed to \lstinline|Ri| calls to build certain objects. For example, knot vectors passed to \lstinline|RiNuPatch|.}).  In \acronym{NSI} things are simpler and all attributes are set through the \lstinline|SetAttribute()| mechanism. The only distinction is that some attributes are required (\textit{intrinsic attributes}\index{attributes!intrinsic}\index{intrinsic attributes}) and some are optional: a \hyperref[section:meshnode]{mesh node} needs to have \lstinline|P| and \lstinline|nvertices| defined --- otherwise the geometry is invalid\footnote{In this documentation, all intrinsic attributes are usually documented at the beginning of each section describing a particular node.}. In \acronym{OSL} shaders, attributes are accessed using the \lstinline|getattribute()| function and \emph{this is the only way to access attributes in \acronym{NSI}}. Having one  way to set and to access attributes makes things simpler (a \hyperref[designgoal]{design goal}) and allows for extra flexibility (another design goal).  \autoref{fig:attribute_inheritance} shows two features of attribute assignment in \acronym{NSI}:
+\newline
+\noprelistbreak
+\begin{description}
+\item[Attributes inheritance]\index{attributes!inheritance}\index{inheritance of attributes}
+Attributes attached at some parent \hyperref[section:transformnode]{transform} (in this case, a \textit{metal} material) affect geometry downstream
+\item[Attributes override]\index{attributes!override}\index{override of attributes}
+It is possible to override attributes for a specific geometry by attaching them to a transform directly upstream (the \textit{plastic} material overrides \textit{metal} upstream)
+\end{description}
+Note that any non-intrinsic attribute can be inherited and overridden, including vertex attributes such as texture coordinates.
+\section{Instancing}
+\label{section:instancing}
+\index{instancing}
+\begin{figure}[h]
+\centering
+\includegraphics[height=7cm]{instancing}
+\caption{Instancing in \acronym{NSI} with attribute inheritance and per-instance attribute override}\label{fig:instancing}
+\end{figure}
+Instancing in \acronym{NSI} is naturally performed by connecting a geometry to more than one transform (connecting a geometry node into a \lstinline|transform.objects| attribute). \autoref{fig:instancing} shows a simple scene with a geometry instanced three times. The scene also demonstrates how to override an attribute for one particular geometry instance, an operation very similar to what we have seen in \autoref{section:primvars}.
+Note that transforms can also be instanced and this allows for \emph{instances of instances}\index{instances of instances} using the same semantics.
+\section{Creating OSL networks}
+\label{section:creating_osl_networks}
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{osl_network}
+\caption{A simple \acronym{OSL} network connected to an attributes node}\label{fig:osl_network}
+\end{figure}
+
+\index{osl!network creation}\index{creating osl network}
+The semantics used to create \acronym{OSL} networks are the same as for scene creation. Each shader node in the network corresponds to a \hyperref[section:shadernode]{shader node} which must be created using \hyperref[CAPI:nsicreate]{\lstinline|NSICreate|}. Each shader node has implicit attributes corresponding to shader's parameters and connection between said parameters is done using \hyperref[CAPI:nsiconnect]{\lstinline|NSIConnect|}. \autoref{fig:osl_network} depicts a simple \acronym{OSL} network connected to an attributes node. Some observations:
+\begin{itemize}
+\item Both the source and destination attributes (passed to \lstinline|NSIConnect|) must be present and map to valid and compatible shader parameters (\hyperref[fig:osl_network_rib]{lines 21-23}).
+\footnote{There is an exception to this : any non-shader node can be connected to a string attribute of a shader node.
+This will result in the non-shader node's handle being used as the string's value.
+This behavior is useful when the shader needs to refer to another node, in a call to \lstinline|transform()| or \lstinline|getattribute()|, for example.}
+\item There is no \textit{symbolic linking} between shader parameters and geometry attributes (a.k.a. primvars). One has to explicitly use the \lstinline|getattribute()| \acronym{OSL} function to read attributes attached to geometry. In \autoref{fig:osl_network_rib} this is done in the \lstinline|read_attribute| node (\hyperref[fig:osl_network_rib]{lines 11-14}). More about this subject in \autoref{section:primvars}.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\footnotesize
+\begin{lstlisting}[frame=top,frame=bottom,numbers=left,caption={NSI stream to create the \acronym{OSL} network in \autoref{fig:osl_network}},label=fig:osl_network_rib]
+Create "ggx_metal" "shader"
+SetAttribute "ggx"
+    "shaderfilename" "string" 1  ["ggx.oso"]
+
+Create "noise" "shader"
+SetAttribute "noise"
+    "shaderfilename" "string" 1 ["simplenoise.oso"]
+    "frequency" "float" 1 [1.0]
+    "lacunarity" "float" 1 [2.0]
+
+Create "read_attribute" "shader"
+SetAttribute "read_attribute"
+    "shaderfilename" "string" 1 ["read_attributes.oso"]
+    "attributename" "string" 1 ["st"]
+
+Create "read_texture" "shader"
+SetAttribute "read_texture"
+    "shaderfilename" "string" 1 ["read_texture.oso"]
+    "texturename" "string" 1 ["dirt.exr"]
+
+Connect "read_attribute" "output" "read_texture" "uv"
+Connect "read_texture" "output" "ggx_metal" "dirtlayer"
+Connect "noise" "output" "ggx_metal" "roughness"
+
+# Connect the OSL network to an attribute node
+Connect "ggx_metal" "Ci" "attr" "surfaceshader"
+\end{lstlisting}
+\end{figure}
+
+\section{Lighting in the nodal scene interface}
+\label{section:specifyinglights}
+\begin{center}
+\includegraphics[height=6cm]{lights}
+\captionof{figure}{Various lights in \acronym{NSI} are specified using the same semantics}\label{fig:lights}
+\end{center}
+There are no special light source nodes in \acronym{NSI} (although the \hyperref[section:environmentnode]{environment} node, which defines a sphere of infinite radius, could be considered as a light in practice).
+Any scene geometry can become a light source if its surface shader produces an \lstinline|emission()| closure. Some operations on light sources, such as \emph{light linking}, are done using more general approaches (see \autoref{section:lightlinking}).
+Follows a quick summary on how to create different kinds of light in \acronym{NSI}.
+\subsection{Area lights}
+Area lights are created by attaching an emissive surface material to geometry. \autoref{fig:arealight} shows a simple \acronym{OSL} shader for such lights (standard \acronym{OSL} emitter).
+\begin{center}
+\footnotesize
+\begin{lstlisting}[caption={Example emitter for area lights},label={fig:arealight},frame=top,frame=bottom]
+// Copyright (c) 2009-2010 Sony Pictures Imageworks Inc., et al.  All Rights Reserved.
+surface emitter [[ string help = "Lambertian emitter material" ]]
+(
+    float power = 1 [[  string help = "Total power of the light" ]],
+    color Cs = 1 [[  string help = "Base color" ]])
+{
+    // Because emission() expects a weight in radiance, we must convert by dividing
+    // the power (in Watts) by the surface area and the factor of PI implied by
+    // uniform emission over the hemisphere. N.B.: The total power is BEFORE Cs
+    // filters the color!
+    Ci = (power / (M_PI * surfacearea())) * Cs * emission();
+}
+\end{lstlisting}
+\end{center}
+
+\subsection{Spot and point lights}
+\index{spot light}\index{light!spot}
+Such lights are created using an epsilon sized geometry (a small disk, a particle, etc.) and optionally using extra parameters to the \lstinline|emission()| closure.
+\begin{center}
+\footnotesize
+\begin{lstlisting}[frame=top,frame=bottom,caption={An example \acronym{OSL} spot light shader},label={fig:spotlight}]
+surface spotLight(
+	color i_color = color(1),
+	float intenstity = 1,
+	float coneAngle = 40,
+	float dropoff = 0,
+	float penumbraAngle = 0 )
+{
+	color result = i_color * intenstity * M_PI;
+
+	/* Cone and penumbra */
+	float cosangle = dot(-normalize(I), normalize(N));
+	float coneangle = radians(coneAngle);
+	float penumbraangle = radians(penumbraAngle);
+
+	float coslimit = cos(coneangle / 2);
+	float cospen = cos((coneangle / 2) + penumbraangle);
+	float low = min(cospen, coslimit);
+	float high = max(cospen, coslimit);
+
+	result *= smoothstep(low, high, cosangle);
+
+	if (dropoff > 0)
+	{
+		result *= clamp(pow(cosangle, 1 + dropoff),0,1);
+	}
+	Ci = result / surfacearea() * emission();
+}
+\end{lstlisting}
+\end{center}
+
+\subsection{Directional and HDR lights}
+\index{hdr lighting}\index[light!hdr]{light!\textsc{hdr}}\index{directional light}\index{light!directional}
+Directional lights are created by using the \hyperref[section:environmentnode]{environment} node and setting the \lstinline|angle| attribute to 0. \acronym{HDR} lights are also created using the environment node, albeit with a \(2\pi\) cone angle, and reading a high dynamic range texture in the attached surface shader. Other directional constructs, such as \emph{solar lights}\index{solar light}\index{light!solar}, can also be obtained using the environment node.
+
+Since the \hyperref[section:environmentnode]{environment} node defines a sphere of infinite radius any connected \acronym{OSL} shader must only rely on the \lstinline|I| variable and disregard \lstinline|P|, as is shown in \autoref{fig:hdrlight}.
+\begin{figure}[h]
+\footnotesize
+\centering
+\begin{lstlisting}[frame=top,frame=bottom,caption={An example \acronym{OSL} shader to do \acronym{HDR} lighting},label={fig:hdrlight}]
+shader hdrlight( string texturename = "" )
+{
+	vector wi = transform("world", I);
+
+	float longitude = atan2(wi[0], wi[2]);
+	float latitude = asin(wi[1]);
+
+	float s = (longitude + M_PI) / M_2PI;
+	float t = (latitude + M_PI_2) / M_PI;
+
+	Ci = emission() * texture (texturename, s, t);
+}
+\end{lstlisting}
+\end{figure}
+
+\begin{quote}
+\textsc{note} --- Environment geometry is visible to camera rays by default so it will appear as a background in renders. To disable this simply switch off camera visibility on the associated \hyperref[section:attributesnode]{attributes} node.
+\end{quote}
+\section{Defining output drivers and layers}
+\label{section:definingoutputdrivers}
+\begin{figure}[!htbp]
+\centering
+\includegraphics[height=6cm]{output_channels}
+\caption{\acronym{NSI} graph showing the image output chain}\label{fig:output_layers}
+\end{figure}
+
+\acronym{NSI} allows for a very flexible image output model. All the following operations are possible:
+\begin{itemize}
+\item Defining many outputs in the same render (e.g.\ many \acronym{exr} outputs)
+\item Defining many output layers per output (e.g.\ multi-layer \acronym{exr}s)
+\item Rendering different scene views per output layer (e.g.\ one pass stereo render)
+\item Rendering images of different resolutions from the same camera (e.g.\ two viewports using the same camera, in an animation software)
+\end{itemize}
+\autoref{fig:output_layers} depicts a \acronym{NSI} scene to create one file with three layers. In this case, all layers are saved to the same file and the render is using one view.
+\index{stereo rendering}
+A more complex example is shown in \autoref{fig:output_layers_stereo}: a left and right cameras are used to drive two file outputs, each having two layers (\lstinline|Ci| and \lstinline|Diffuse| colors).
+\begin{figure}[!htbp]
+\centering
+\includegraphics[height=7cm]{output_channels_stereo}
+\caption{\acronym{NSI} graph for a stereo image output}\label{fig:output_layers_stereo}
+\end{figure}
+
+\section{Light layers}
+\label{section:guideline_lightsets}
+\begin{center}
+\includegraphics[height=7cm]{multilight}
+\captionof{figure}{Gathering contribution of a subset of lights into one output layer}\label{fig:lightsets}
+\end{center}
+
+The ability to render a certain set of lights per output layer has a formal workflow in \acronym{NSI}. One can use three methods to define the lights used by a given output layer:
+\begin{enumerate}
+\item Connect the geometry defining lights directly to the \lstinline|outputlayer.lightset| attribute
+\label{multilight:two}
+\item Create a set of lights using the \lstinline|set| node and connect it into \lstinline|outputlayer.lightset|
+\item A combination of both 1 and 2
+\end{enumerate}
+\autoref{fig:lightsets} shows a scene using method \hyperref[multilight:two]{2} to create an output layer containing only illumination from two lights of the scene. Note that if there are no lights or light sets connected to the \lstinline|lightset| attribute then all lights are rendered. The final output pixels contain the illumination from the considered lights on the specific surface variable specified in \lstinline|outputlayer.variablename| (\autoref{section:outputlayernode}).
+\section{Inter-object visibility}
+\label{section:lightlinking}
+\index{light linking}
+\index{object linking}
+\index{ghost}
+Some common rendering features are difficult to achieve using attributes and hierarchical tree structures. One such example is inter-object visibility in a 3D scene. A special case of this feature is \textit{light linking} which allows the artist to select which objects a particular light illuminates, or not. Another classical example is a scene in which a ghost character is invisible to camera rays but visible in a mirror.
+
+In \acronym{nsi} such visibility relationships are implemented using cross-hierarchy connection between one object and another. In the case of the mirror scene, one would first tag the character invisible using the \hyperref[visibilityattributes]{\lstinline|visibility|} attribute and then connect the attribute node of the receiving object (mirror) to the visibility attribute of the source object (ghost) to \textit{override} its visibility status.
+Essentially, this "injects" a new value for the ghost visibility for rays coming from the mirror.
+
+\begin{figure}[h]
+\centering
+\includegraphics[height=7cm]{vampire}
+\caption{Visibility override, both hierarchically and inter-object}
+\label{fig:vampire}
+\end{figure}
+
+\autoref{fig:vampire} depicts a scenario where both hierarchy attribute overrides and inter-object visibility are applied:
+\begin{itemize}
+\item The ghost transform has a visibility attribute set to 0 which makes the ghost invisible to all ray types
+\item The hat of the ghost has its own attribute with a visibility set to 1 which makes it visible to all ray types
+\item The mirror object has its own attributes node that is used to override the visibility of the ghost as seen from the mirror.
+The \acronym{NSI} stream code to achieve that would look like this:
+\begin{lstlisting}
+Connect "mirror_attribute" "" "ghost_attributes" "visibility"
+	"value" "int" 1 [1]
+	"priority" "int" 1 [2]
+\end{lstlisting}
+Here, a priority of \lstinline|2| has been set on the connection for documenting purposes, but it could have been omitted since connections always override regular attributes of equivalent priority.
+\end{itemize}
+
+% ------------------------------------------------
+
+\appendix
+\chapter{OSL extensions in \textit{3Delight}}
+
+\section{Subsurface scattering inside intersecting volumes}
+\label{section:sss}
+\index{sss}
+\index{subsurface}
+\index{sss overlap}
+Subsurface scattering (\acronym{SSS}) is accessible in \textit{3Delight} through the \acronym{OSL} \lstinline|subsurface()| closure.
+It simulates the scattering of light inside a volume bounded by a closed surface.
+A complication that often arises when using this feature is the problem of intersecting \acronym{SSS} volumes.
+This results in a third volume, also bounded by a composite closed surface.
+
+\textit{3Delight} handles overlapping \acronym{SSS} volumes that don't have the same properties by mixing them together, thus creating a hybrid material inside the intersection.
+In order for this to work properly, the \acronym{OSL} \lstinline|subsurface()| closure must be used on both entry \emph{and} exit of the volume, which means it shouldn't depend on the orientation of the bounding surface normal.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\linewidth]{sss_overlap_default}
+\caption{Cross-section of overlapping red and blue SSS volumes - a hybrid material is used inside the intersection}
+\label{fig:sss_overlap_default}
+\end{figure}
+
+\subsection{Intersection Priorities}
+\index{intersectionpriority}
+However, this behavior can be changed by assigning priorities to \acronym{SSS} shaders through the optional \lstinline|intersectionpriority| parameter of the \lstinline|subsurface()| closure.
+Inside the intersection, the \acronym{SSS} shader with the highest intersection priorities will be used exclusively.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\linewidth]{sss_overlap_priority_red}
+\includegraphics[width=0.4\linewidth]{sss_overlap_priority_blue}
+\caption{Cross-section of overlapping SSS volumes - highest priority to either red or blue object.}
+\label{fig:sss_overlap_priority}
+\end{figure}
+
+This tends to be useful when the intersection is not accidental, but rather the result of a decision made when defining the scene geometry.
+For example, in a model of a mouth, a set of teeth could be designed to penetrate the geometry of the gums, thus eliminating the need to define additional geometry on the gums in order to create a little "pocket" around each tooth.
+In that case, the teeth should be assigned a higher priority than the gums in order for their roots to use only the tooth shader.
+
+The \lstinline|intersectionpriority| parameter is an integer between -60 and 60.
+Its default value is 0.
+
+\subsection{Merge sets}
+\index{mergeset}
+Even when overlapping \acronym{SSS} objects use the same shader, \textit{3Delight} will still consider the intersection as a separate volume with its own surface, which might not give the desired effect.
+Since the geometry of the intersecting objects is still intact, it will hinder the propagation of light inside the volumes, which might result in darker or brighter areas on the surface, along the boundary.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\linewidth]{sss_overlap_no_merge}
+\includegraphics[width=0.4\linewidth]{sss_overlap_merged}
+\caption{Cross-section of overlapping SSS volumes - internal surfaces are still present on the left, while they have been removed on the right using a Merge Set.}
+\label{fig:sss_overlap_merge}
+\end{figure}
+This can be fixed by assigning a Merge Set name to each \acronym{SSS} material through the optional \lstinline|mergeset| parameter of the \lstinline|subsurface()| closure.
+\acronym{SSS} volumes within the same Merge Set will be considered as a single volume, without internal divisions.
+This tends to be useful when a complex object is made up of multiple pieces of geometry that overlap in order to appear as a single object.
+
+\chapter*{Acknowledgements}
+Many thanks to John Haddon, Daniel Dresser, David Minor, Moritz M\oe{}ller and Gregory Ducatel for initiating the first discussions and encouraging us to design a new scene description \acronym{API}. Bo Zhou and Paolo Berto helped immensely with plug-in design which ultimately led to improvements in \acronym{NSI} (e.g.\ adoption of the \lstinline|screen| node).  Jordan Thistlewood opened the way for the first integration of \acronym{NSI} into a commercial plug-in. Stefan Habel did a thorough proofreading of the entire document and gave many suggestions.
+
+The \acronym{NSI} logo was designed by Paolo Berto.
+\newpage
+
+\listoffigures
+\listoftables
+\lstlistoflistings
+
+\printindex
+
+\end{document}
