@@ -52,7 +52,7 @@ The `nu * nv` control points (xyz), stored row-major: `P[i*nu + j]` is the point
 
 Rational alternative to `P`: each control point is four floats `(x, y, z, w)`, enabling rational NURBS. Pass as a single flat array of `4 * nu * nv` floats — do **not** declare it with `array_len(4)`.
 
-## Trim curves
+## Trim Curves
 
 Trim curves carve a region out of the surface's parameter domain. They are NURBS curves in homogeneous `(u, v, w)` parameter space — the actual `(u, v)` of a control point is `(u/w, v/w)`. Curves are organised into loops: within a loop they connect head-to-tail, and the loop must be explicitly closed (the last point of the last curve coincides with the first point of the first curve).
 
