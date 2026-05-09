@@ -10,3 +10,6 @@ wheels/
 
 # mdbook build output
 book/build/
+
+# LaTeX build output
+docs/build/
