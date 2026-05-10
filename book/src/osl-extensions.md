@@ -1,6 +1,6 @@
-# OSL extensions in 3Delight
+# OSL Extensions in 3Delight
 
-## Subsurface scattering inside intersecting volumes
+## Subsurface Scattering Inside Intersecting Volumes
 
 Subsurface scattering (SSS) is accessible in 3Delight through the ᴏsʟ `subsurface()` closure.
 It simulates the scattering of light inside a volume bounded by a closed surface.
@@ -26,7 +26,7 @@ In that case, the teeth should be assigned a higher priority than the gums in or
 The `intersectionpriority` parameter is an integer between -60 and 60.
 Its default value is 0.
 
-### Merge sets
+### Merge Sets
 
 Even when overlapping SSS objects use the same shader, 3Delight still treats the intersection as a separate volume with its own surface. This is often not the desired effect.
 The geometry of the intersecting objects is still intact, so it hinders the propagation of light inside the volumes. The result is darker or brighter areas on the surface along the boundary.

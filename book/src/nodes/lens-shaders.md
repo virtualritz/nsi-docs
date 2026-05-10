@@ -1,4 +1,4 @@
-# Lens shaders
+# Lens Shaders
 
 A lens shader is an ᴏsʟ network connected to a camera through the `lensshader` connection. Such shaders receive the position and the direction of each tracer ray and can either change or completely discard the traced ray. This allows to implement distortion maps and cut maps. The following shader variables are provided:
 

@@ -28,7 +28,7 @@ nsi.SetAttribute(
 );
 ```
 
-## API calls
+## API Calls
 
 All (in a scripting context) useful ɴsɪ functions are provided and are listed below. There is also a `nsi.utilities` class which, for now, only contains a [method to print errors](lua-api.md#luaapi-errors).
 
@@ -45,7 +45,7 @@ All (in a scripting context) useful ɴsɪ functions are provided and are listed 
 
 ɴsɪ functions
 
-## Optional function arguments format
+## Optional Function Arguments Format
 
 Each single argument is passed as a Lua table containing the following key values:
 
@@ -117,7 +117,7 @@ nsi.SetAttribute(
 nsi.Connect( "floor", "", ".root", "objects" )
 ```
 
-## Evaluating a Lua script
+## Evaluating a Lua Script
 
 Script evaluation is done through C, an ɴsɪ stream or even another Lua script. Here is an example using an ɴsɪ stream:
 
@@ -144,7 +144,7 @@ Some utilities, such as error reporting, are available through the `nsi.utilitie
 > [!NOTE]
 > All Lua scripts are run in a sandbox in which all Lua system libraries are _disabled_.
 
-## Passing arguments to a Lua script
+## Passing Arguments to a Lua Script
 
 All arguments passed to `NSIEvaluate()` will appear in the `nsi.scriptarguments` table. For example, the following call:
 
@@ -167,7 +167,7 @@ Will print:
 3.0
 ```
 
-## Reporting errors from a Lua script
+## Reporting Errors from a Lua Script
 
 Use `nsi.utilities.ReportError()` to send error messages to the error handler defined in the current nsi context. For example:
 

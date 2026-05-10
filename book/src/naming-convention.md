@@ -548,7 +548,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 | `velocityreferencetime` | `velocity.reference-time` | R2                        |
 | `velocityscale`         | `velocity.scale`          | R2                        |
 
-### Camera nodes (`perspective-camera`, `fisheye-camera`, `cylindrical-camera`)
+### Camera Nodes (`perspective-camera`, `fisheye-camera`, `cylindrical-camera`)
 
 **Common (all cameras):**
 

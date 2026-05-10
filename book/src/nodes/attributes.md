@@ -2,7 +2,7 @@
 
 This node is a generic container for attributes. Its exact purpose depends on where it is connected in the scene. There are currently two uses.
 
-### geometry attributes
+### Geometry Attributes
 
 This node can provide various geometry related rendering attributes that are not _intrinsic_ to a particular node (for example, one can't set the topology of a polygonal mesh using this attributes node). For this use, instances of this node must be connected to the `geometryattributes` attribute of either geometric primitives or transform nodes (to build [attributes hierarchies](../guidelines.md#a-word-or-two-about-attributes)). Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the [scene root](root.md) is reached.
 
@@ -89,7 +89,7 @@ When a geometry node (usually a [mesh node](mesh.md)) is connected to this attri
 
 A multiplier on the level of detail in displacement. Larger values provide more detail; smaller values reduce memory use. It is usually not necessary to set this attribute.
 
-### shader attributes
+### Shader Attributes
 
 This node can be a container for attributes available to shaders. For this purpose, instances of this node must be connected to the `shaderattributes` attribute of geometric primitives, [transform](transform.md) nodes or [set](set.md) nodes. Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the [scene root](root.md) is reached.
 
