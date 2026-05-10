@@ -339,6 +339,49 @@ This is the most invasive option: every existing scene using subdivision surface
 
 No recommendation in this draft. The decision belongs in the API roadmap, not in a renaming pass.
 
+## Open Question: ᴏsʟ Built-In Variable Alignment
+
+ɴsɪ is designed to feed ᴏsʟ shaders. When the renderer puts the control-point position into an attribute named `P` on a `mesh` node, an ᴏsʟ shader reads it as the built-in global variable `P` without any plumbing in between. That 1:1 mapping is part of what makes ᴏsʟ shaders portable across renderers, and it directly conflicts with R5.
+
+R5 currently renames the legacy single-letter attribute names:
+
+| Current | R5 proposal | ᴏsʟ built-in |
+| ------- | ----------- | ------------ |
+| `P`     | `position`  | `point P`    |
+| `N`     | `normal`    | `normal N`   |
+
+Adopting R5 as written means the attribute name and the ᴏsʟ global diverge. The renderer either has to translate `position` → `P` at the ᴏsʟ binding step — hidden machinery that surprises anyone debugging by attribute name — or the cross-renderer ᴏsʟ contract has to break for ɴsɪ specifically.
+
+The ᴏsʟ globals that overlap with current ɴsɪ attribute names are: `P`, `N`, `Ng`, `u`, `v`, `dPdu`, `dPdv`, `I`.
+
+### Option A — Carve out an exception in R5
+
+Legacy single-letter names that match an ᴏsʟ global stay as-is, even where the surrounding convention would rename them. This preserves the ɴsɪ ↔ ᴏsʟ alignment.
+
+Affected rows revert in the rename mapping:
+
+- `mesh`: `P` stays.
+- `nurbs`: `P` stays. `Pw` stays (semantics flow into the same ᴏsʟ binding).
+- `curves`: `P` stays.
+- `particles`: `P` stays, `N` stays.
+
+`nvertices`, `nholes`, `clockwisewinding` etc. still rename — they aren't ᴏsʟ globals.
+
+### Option B — Rename and translate
+
+Adopt R5 as written. The renderer translates `position` → `P` (and `normal` → `N`, …) when binding attributes to ᴏsʟ shader globals.
+
+This keeps ɴsɪ-level naming uniform but introduces hidden translation. Shader authors writing portable code now read about `P` in the ᴏsʟ docs and `position` in the ɴsɪ docs and have to internalise the mapping. Debugging tools that show attribute names won't match what the shader sees.
+
+### Trade-off
+
+The decision turns on which contract matters more:
+
+- **ᴏsʟ portability** (Option A) — the convention that "the attribute named `P` is what the shader reads as `P`" is sacred.
+- **ɴsɪ-internal consistency** (Option B) — single-letter names are jargon and R5's reasoning applies uniformly; the ᴏsʟ binding layer can absorb the cost.
+
+No recommendation in this draft.
+
 ## Complete Attribute Mapping
 
 Every attribute across all node types, with current → new name and the ruling(s) that apply. Attributes where current = new are omitted.
