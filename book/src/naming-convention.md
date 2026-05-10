@@ -327,7 +327,7 @@ Every scene-graph entity ends up with a single canonical primitive. Migration is
 
 ### Option 3 — Split `mesh` to match the rest
 
-Replace `mesh` with `polygon-mesh` and `subdivision-mesh`. Each carries only the attributes meaningful for its surface kind; `subdivision.scheme` disappears entirely.
+Adopt the honest renames from Option 1 — `volume` → `vdb-volume`, `vdbparticles` → `vdb-particles` — and additionally replace `mesh` with `polygon-mesh` and `subdivision-mesh`. Each mesh node carries only the attributes meaningful for its surface kind; `subdivision.scheme` disappears entirely.
 
 This is the most invasive option: every existing scene using subdivision surfaces has to re-target the new node, and the `subdivision.*` attributes migrate from prefix-grouped on `mesh` to top-level on `subdivision-mesh`.
 
