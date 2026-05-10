@@ -343,7 +343,7 @@ No recommendation in this draft. The decision belongs in the API roadmap, not in
 
 Every attribute across all node types, with current → new name and the ruling(s) that apply. Attributes where current = new are omitted.
 
-### `global` node
+### `global` Node
 
 | Current                        | New                                | Rules                                  |
 | ------------------------------ | ---------------------------------- | -------------------------------------- |
@@ -384,7 +384,7 @@ Every attribute across all node types, with current → new name and the ruling(
 
 **Unchanged:** `license.server`, `license.wait`, `license.hold`, `frame`, `statistics.progress`, `statistics.filename`, `verbose`
 
-### `root` node
+### `root` Node
 
 | Current              | New          | Rules                        |
 | -------------------- | ------------ | ---------------------------- |
@@ -392,11 +392,11 @@ Every attribute across all node types, with current → new name and the ruling(
 
 **Unchanged:** `objects`
 
-### `set` node
+### `set` Node
 
 **Unchanged:** `members`
 
-### `mesh` node
+### `mesh` Node
 
 | Current                           | New                            | Rules                           |
 | --------------------------------- | ------------------------------ | ------------------------------- |
@@ -415,7 +415,7 @@ Every attribute across all node types, with current → new name and the ruling(
 
 **Unchanged:** `subdivision.scheme`
 
-### `nurbs` node
+### `nurbs` Node
 
 The `u` and `v` axes each have five related attributes (count, order, knot, min, max), so per R3 each axis becomes a group.
 
@@ -451,13 +451,13 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 
 Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position` / `weighted-position`.
 
-### `face-set` node
+### `face-set` Node
 
 | Current | New          | Rules            |
 | ------- | ------------ | ---------------- |
 | `faces` | `face-index` | R9 (descriptive) |
 
-### `curves` node
+### `curves` Node
 
 | Current     | New            | Rules  |
 | ----------- | -------------- | ------ |
@@ -466,7 +466,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `width`, `basis`, `extrapolate`
 
-### `particles` node
+### `particles` Node
 
 | Current              | New                   | Rules |
 | -------------------- | --------------------- | ----- |
@@ -477,24 +477,24 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `width`, `id`
 
-### `procedural` node
+### `procedural` Node
 
 | Current       | New            | Rules |
 | ------------- | -------------- | ----- |
 | `boundingbox` | `bounding-box` | R6    |
 
-### `environment` node
+### `environment` Node
 
 **Unchanged:** `angle`
 
-### `shader` node
+### `shader` Node
 
 | Current          | New        | Rules                           |
 | ---------------- | ---------- | ------------------------------- |
 | `shaderfilename` | `filename` | R4 (node type provides context) |
 | `shaderobject`   | `object`   | R4                              |
 
-### `attributes` (geometry) node
+### `attributes` (geometry) Node
 
 | Current                     | New                         | Rules                           |
 | --------------------------- | --------------------------- | ------------------------------- |
@@ -507,7 +507,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `ATTR.priority`, `visibility.camera`, `visibility.diffuse`, `visibility.hair`, `visibility.reflection`, `visibility.refraction`, `visibility.shadow`, `visibility.specular`, `visibility.volume`, `visibility`, `matte`, `bounds`
 
-### `transform` node
+### `transform` Node
 
 | Current                | New                 | Rules  |
 | ---------------------- | ------------------- | ------ |
@@ -517,7 +517,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `objects`
 
-### `instances` node
+### `instances` Node
 
 | Current                  | New              | Rules               |
 | ------------------------ | ---------------- | ------------------- |
@@ -526,7 +526,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 | `modelindices`           | `object-index`   | R6, R9              |
 | `disabledinstances`      | `disabled-index` | R6                  |
 
-### `output-driver` node
+### `output-driver` Node
 
 | Current           | New                | Rules |
 | ----------------- | ------------------ | ----- |
@@ -534,7 +534,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 | `imagefilename`   | `filename`         | R4    |
 | `embedstatistics` | `embed-statistics` | R6    |
 
-### `output-layer` node
+### `output-layer` Node
 
 | Current           | New                | Rules                           |
 | ----------------- | ------------------ | ------------------------------- |
@@ -557,7 +557,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `dithering`, `cryptomatte.enable`, `cryptomatte.level`
 
-### `screen` node
+### `screen` Node
 
 | Current                  | New                        | Rules  |
 | ------------------------ | -------------------------- | ------ |
@@ -570,7 +570,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `resolution`, `oversampling`, `crop`, `overscan`
 
-### `vdb-particles` node
+### `vdb-particles` Node
 
 | Current                 | New                       | Rules                         |
 | ----------------------- | ------------------------- | ----------------------------- |
@@ -583,7 +583,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Unchanged:** `width`
 
-### `volume` node
+### `volume` Node
 
 | Current                 | New                       | Rules                     |
 | ----------------------- | ------------------------- | ------------------------- |
