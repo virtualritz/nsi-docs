@@ -680,3 +680,28 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 | `stoppedcallbackdata` | `callback.stop.data` | R11                          |
 
 **Unchanged:** `action`, `progressive`, `interactive`, `frame`
+
+**Open question — `action` as a positional argument:** Every meaningful `NSIRenderControl` call needs an `action` value — one of `start`, `wait`, `synchronize`, `suspend`, `resume`, `stop`. The call is a no-op without it. Yet the current signature carries `action` inside the optional-parameter bag, peer to the genuinely-optional `progressive` / `interactive` / callback parameters.
+
+Promoting `action` to a required positional argument would make intent visible at the call site:
+
+```c
+typedef enum {
+    NSIRenderStart,
+    NSIRenderWait,
+    NSIRenderSynchronize,
+    NSIRenderSuspend,
+    NSIRenderResume,
+    NSIRenderStop,
+} NSIRenderAction;
+
+void NSIRenderControl(
+    NSIContext_t        ctx,
+    NSIRenderAction     action,
+    int                 nparams,
+    const NSIParam_t   *params);
+```
+
+A string overload can be kept for the Lua and Python bindings, where `"start"` / `"wait"` / `"stop"` read idiomatically. The enum form catches typos at compile time and surfaces the closed set of allowed values to IDE completion.
+
+If adopted, `action` leaves this rename table entirely — there is nothing left to rename.
