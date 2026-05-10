@@ -31,6 +31,14 @@ _pdf-images:
             inkscape --export-filename="$out" "$svg" >/dev/null 2>&1
         fi
     done
+    for png in "$src"/*.png; do
+        [[ -f "$png" ]] || continue
+        name=$(basename "$png" .png)
+        out="$dst/$name.png"
+        if [[ ! -f "$out" || "$png" -nt "$out" ]]; then
+            cp "$png" "$out"
+        fi
+    done
     if [[ ! -f "$dst/placeholder.pdf" ]]; then
         tmp=$(mktemp -d)
         cat > "$tmp/p.tex" <<'EOL'
@@ -47,8 +55,9 @@ _pdf-images:
     fi
     needed=$(rg -o '\\includegraphics(\[[^\]]*\])?\{([^}]+)\}' -r '$2' docs/nsi.tex | sort -u)
     for name in $needed; do
-        out="$dst/$name.pdf"
-        [[ -f "$out" ]] || cp "$dst/placeholder.pdf" "$out"
+        if [[ ! -f "$dst/$name.pdf" && ! -f "$dst/$name.png" && ! -f "$dst/$name.jpg" ]]; then
+            cp "$dst/placeholder.pdf" "$dst/$name.pdf"
+        fi
     done
 
 # Build a PDF from docs/nsi.tex into docs/build/. Requires latexmk + TeX Live.

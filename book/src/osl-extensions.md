@@ -10,14 +10,15 @@ This results in a third volume, also bounded by a composite closed surface.
 3Delight handles overlapping SSS volumes that don't have the same properties by mixing them together, thus creating a hybrid material inside the intersection.
 For this to work properly, the ᴏsʟ `subsurface()` closure must be used on both entry _and_ exit of the volume. As a consequence, it shouldn't depend on the orientation of the bounding surface normal.
 
-> _Figure (placeholder): Cross-section of overlapping red and blue SSS volumes - a hybrid material is used inside the intersection._
+![Cross-section of overlapping red and blue SSS volumes — a hybrid material is used inside the intersection.](image/sss_overlap_default.png)
 
 ### Intersection Priorities
 
 However, this behavior can be changed by assigning priorities to SSS shaders through the optional `intersectionpriority` parameter of the `subsurface()` closure.
 Inside the intersection, the SSS shader with the highest intersection priorities will be used exclusively.
 
-> _Figure (placeholder): Cross-section of overlapping SSS volumes - highest priority to either red or blue object._
+![Cross-section of overlapping SSS volumes — highest priority assigned to the red object (left) or the blue object (right).](image/sss_overlap_priority_red.png)
+![](image/sss_overlap_priority_blue.png)
 
 This tends to be useful when the intersection is not accidental, but rather the result of a decision made when defining the scene geometry.
 For example, in a model of a mouth a set of teeth can be designed to penetrate the geometry of the gums. This avoids modelling a small "pocket" on the gums around each tooth.
@@ -31,7 +32,8 @@ Its default value is 0.
 Even when overlapping SSS objects use the same shader, 3Delight still treats the intersection as a separate volume with its own surface. This is often not the desired effect.
 The geometry of the intersecting objects is still intact, so it hinders the propagation of light inside the volumes. The result is darker or brighter areas on the surface along the boundary.
 
-> _Figure (placeholder): Cross-section of overlapping SSS volumes - internal surfaces are still present on the left, while they have been removed on the right using a Merge Set._
+![Cross-section of overlapping SSS volumes — internal surfaces are still present on the left, removed on the right using a Merge Set.](image/sss_overlap_no_merge.png)
+![](image/sss_overlap_merged.png)
 
 This can be fixed by assigning a Merge Set name to each SSS material through the optional `mergeset` parameter of the `subsurface()` closure.
 SSS volumes within the same Merge Set will be considered as a single volume, without internal divisions.
