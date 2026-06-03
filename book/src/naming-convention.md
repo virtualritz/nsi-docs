@@ -149,7 +149,7 @@ Single-word names that are already clear stay as-is: `width`, `basis`, `id`, `ma
 No concatenated words. All multi-word terms get hyphens:
 
 - `depthoffield` → `depth-of-field`
-- `fstop` → `f-stop`
+- `fstop` → `focal-stop`
 - `focallength` → `focal-length`
 - `focaldistance` → `focal-distance`
 
@@ -157,7 +157,7 @@ This applies within both group names and leaf labels:
 
 ```
 depth-of-field.enable
-depth-of-field.f-stop
+depth-of-field.focal-stop
 depth-of-field.focal-length
 depth-of-field.aperture.enable    ← sub-group (3 attrs: enable, sides, angle)
 depth-of-field.aperture.sides
@@ -222,7 +222,7 @@ This is a **governing principle** that applies across all naming decisions. When
 
 - `ipr` → `preview` (Interactive Progressive Rendering → just "preview")
 - `fov` → `field-of-view`
-- `fstop` → `f-stop` (kept because it's the actual name of the unit, not jargon)
+- `fstop` → `focal-stop` (kept because it's the actual name of the unit, not jargon)
 
 The group `quality.ipr.*` becomes `quality.preview.*`:
 
@@ -237,8 +237,8 @@ quality.preview.speed-multiplier
 When a boolean on/off attribute belongs to a group that also has non-boolean attrs, append `.enable` to distinguish the toggle from the group:
 
 ```
-depth-of-field.enable         ← mixed group (has f-stop, focal-length, etc.)
-depth-of-field.f-stop
+depth-of-field.enable         ← mixed group (has focal-stop, focal-length, etc.)
+depth-of-field.focal-stop
 depth-of-field.focal-length
 
 cryptomatte.enable            ← mixed group (has level)
@@ -657,7 +657,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 | ------------------------------- | ----------------------------------- | ------- |
 | `fov`                           | `field-of-view`                     | R9      |
 | `depthoffield.enable`           | `depth-of-field.enable`             | R6, R10 |
-| `depthoffield.fstop`            | `depth-of-field.f-stop`             | R6      |
+| `depthoffield.fstop`            | `depth-of-field.focal-stop`         | R6      |
 | `depthoffield.focallength`      | `depth-of-field.focal-length`       | R6      |
 | `depthoffield.focallengthratio` | `depth-of-field.focal-length-ratio` | R6      |
 | `depthoffield.focaldistance`    | `depth-of-field.focal-distance`     | R6      |
