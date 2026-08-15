@@ -84,6 +84,8 @@ Rational alternative to `position`: each control point is four floats `(x, y, z,
 
 ## Trim Curves
 
+> How trim data is packaged — inline attributes as specified here, or dedicated nodes — is an open design question. See [Trim Curves: API Alternatives](../design/trim-curves.md) for the alternatives under discussion; this page describes Option 1.
+
 Trim curves carve a region out of the surface's parameter domain. They are NURBS curves in the surface's `(u, v)` parameter space — rational trim curves use homogeneous `(u, v, w)` control points, where the actual `(u, v)` of a control point is `(u/w, v/w)`. Curves are organised into loops: within a loop they connect head-to-tail. Each loop must be explicitly closed — the last point of the last curve must coincide with the first point of the first curve.
 
 The `trim-curves.*` attributes below are all-or-nothing: supply the full set or omit it entirely, with two exceptions. Supply exactly one of `trim-curves.position` and `trim-curves.position-weighted`, never both. And the stitching attributes `trim-curves.edge-id` / `trim-curves.edge-orientation` are optional — see [Stitching](#stitching).
