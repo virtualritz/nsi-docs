@@ -68,7 +68,7 @@ Lower bound of the active range along `v`. Must be less than `v.max` and at leas
 
 Upper bound of the active range along `v`. Must be greater than `v.min` and at most the `v.count`-th value of `v.knot`.
 
-One of `position` or `weighted-position` must be supplied to provide the control points. `position` defines a polynomial surface; `weighted-position` defines a rational one.
+One of `position` or `position-weighted` must be supplied to provide the control points. `position` defines a polynomial surface; `position-weighted` defines a rational one.
 
 | Name       | Type      | Default |
 | ---------- | --------- | ------- |
@@ -78,7 +78,7 @@ The `u.count * v.count` control points (xyz), stored row-major: `position[i * u.
 
 | Name                | Type         | Default |
 | ------------------- | ------------ | ------- |
-| `weighted-position` | _`float[4]`_ |         |
+| `position-weighted` | _`float[4]`_ |         |
 
 Rational alternative to `position`: each control point is four floats `(x, y, z, w)`, enabling rational NURBS. Same ordering as `position`.
 
@@ -86,7 +86,7 @@ Rational alternative to `position`: each control point is four floats `(x, y, z,
 
 Trim curves carve a region out of the surface's parameter domain. They are NURBS curves in the surface's `(u, v)` parameter space — rational trim curves use homogeneous `(u, v, w)` control points, where the actual `(u, v)` of a control point is `(u/w, v/w)`. Curves are organised into loops: within a loop they connect head-to-tail. Each loop must be explicitly closed — the last point of the last curve must coincide with the first point of the first curve.
 
-The `trim-curves.*` attributes below are all-or-nothing: supply the full set or omit it entirely, with two exceptions. Supply exactly one of `trim-curves.position` and `trim-curves.weighted-position`, never both. And the stitching attributes `trim-curves.edge-id` / `trim-curves.edge-orientation` are optional — see [Stitching](#stitching).
+The `trim-curves.*` attributes below are all-or-nothing: supply the full set or omit it entirely, with two exceptions. Supply exactly one of `trim-curves.position` and `trim-curves.position-weighted`, never both. And the stitching attributes `trim-curves.edge-id` / `trim-curves.edge-orientation` are optional — see [Stitching](#stitching).
 
 | Name                     | Type    | Default |
 | ------------------------ | ------- | ------- |
@@ -138,7 +138,7 @@ The concatenated control points of all curves as non-rational `(u, v)` pairs. Th
 
 | Name                            | Type         | Default |
 | ------------------------------- | ------------ | ------- |
-| `trim-curves.weighted-position` | _`float[3]`_ |         |
+| `trim-curves.position-weighted` | _`float[3]`_ |         |
 
 Rational alternative to `trim-curves.position`: the concatenated control points of all curves as homogeneous `(u, v, w)` triples. Same ordering and total length as `trim-curves.position`.
 

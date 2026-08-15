@@ -475,7 +475,7 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `vmin`                     | `v.min`                         | R3, R6                                      |
 | `vmax`                     | `v.max`                         | R3, R6                                      |
 | `P`                        | `position`                      | R5                                          |
-| `Pw`                       | `weighted-position`             | R5, R6 (alternative to `position`)          |
+| `Pw`                       | `position-weighted`             | R5, R6 (alternative to `position`)          |
 | `trimcurves.nloops`        | `trim-curves.loop-count`        | R5, R6                                      |
 | `trimcurves.ncurves`       | `trim-curves.curve-count`       | R5, R6                                      |
 | `trimcurves.n`             | `trim-curves.point-count`       | R5 (`n` and `cv` are jargon), R9            |
@@ -484,7 +484,7 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `trimcurves.min`           | `trim-curves.min`               | R6                                          |
 | `trimcurves.max`           | `trim-curves.max`               | R6                                          |
 | `trimcurves.u`, `.v`       | `trim-curves.position`          | API change (consolidation); mirrors surface |
-| `trimcurves.u`, `.v`, `.w` | `trim-curves.weighted-position` | API change (consolidation); mirrors surface |
+| `trimcurves.u`, `.v`, `.w` | `trim-curves.position-weighted` | API change (consolidation); mirrors surface |
 | `trimcurves.sense`         | `trim-curves.sense`             | R6                                          |
 | —                          | `trim-curves.edge-id`           | New (stitching); `id` is fine per R5        |
 | —                          | `trim-curves.edge-orientation`  | New (stitching)                             |
@@ -494,15 +494,15 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 **Consolidation note (API change, not pure rename).** The current API stores trim-curve control points as three parallel arrays (`trimcurves.u`, `trimcurves.v`, `trimcurves.w`) — a structure-of-arrays layout. The surface stores its control points as one interleaved array (`P` or `Pw`) — an array-of-structures layout. The redesign aligns the two:
 
 - `trim-curves.position` — `float[2]`, non-rational `(u, v)` pairs. Replaces `trimcurves.u` and `trimcurves.v`.
-- `trim-curves.weighted-position` — `float[3]`, rational `(u, v, w)` triples. Replaces `trimcurves.u`, `trimcurves.v`, and `trimcurves.w`.
+- `trim-curves.position-weighted` — `float[3]`, rational `(u, v, w)` triples. Replaces `trimcurves.u`, `trimcurves.v`, and `trimcurves.w`.
 
-Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position` / `weighted-position`.
+Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position` / `position-weighted`.
 
 **Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout — the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
 ### `t-nurcc` Node
 
-New node type (draft, no implementation), introduced directly under the new convention — there are no legacy names to map. Its attributes reuse spellings established elsewhere in this document: `vertex-count`, `position` / `weighted-position` (mirroring `nurbs`), the sparse `group.index` + `group.value` edge-list idiom (mirroring `subdivision.crease.*`) for `knot-interval.*`, and the `stitch.edge-id` identifier space shared with `nurbs`.
+New node type (draft, no implementation), introduced directly under the new convention — there are no legacy names to map. Its attributes reuse spellings established elsewhere in this document: `vertex-count`, `position` / `position-weighted` (mirroring `nurbs`), the sparse `group.index` + `group.value` edge-list idiom (mirroring `subdivision.crease.*`) for `knot-interval.*`, and the `stitch.edge-id` identifier space shared with `nurbs`.
 
 ### `face-set` Node
 

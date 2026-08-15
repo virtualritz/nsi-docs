@@ -14,7 +14,7 @@ The control cage is a polygon mesh, described exactly like the [`mesh`](mesh.md)
 
 The number of vertices for each face of the cage. The number of values for this attribute specifies the total face count. Four-sided faces are the norm; faces of other valences are allowed and behave as in Catmull-Clark subdivision.
 
-One of `position` or `weighted-position` must be supplied to provide the control points. `position` defines a polynomial surface; `weighted-position` defines a rational one.
+One of `position` or `position-weighted` must be supplied to provide the control points. `position` defines a polynomial surface; `position-weighted` defines a rational one.
 
 | Name       | Type      | Default |
 | ---------- | --------- | ------- |
@@ -24,9 +24,9 @@ The positions of the cage's control points. Addressed indirectly through a `posi
 
 | Name                | Type         | Default |
 | ------------------- | ------------ | ------- |
-| `weighted-position` | _`float[4]`_ |         |
+| `position-weighted` | _`float[4]`_ |         |
 
-Rational alternative to `position`: each control point is four floats `(x, y, z, w)`. Addressed indirectly through `weighted-position.indices`.
+Rational alternative to `position`: each control point is four floats `(x, y, z, w)`. Addressed indirectly through `position-weighted.indices`.
 
 ### T-Junctions
 
