@@ -39,6 +39,21 @@ table:not(:has(td:nth-child(3))) td:nth-child(2) {
   width: 60%;
 }
 
+/* Wide tables (4+ columns, e.g. design-draft comparisons): auto layout,
+   natural column widths, and a visible header row. */
+table:has(td:nth-child(4)) {
+  table-layout: auto;
+}
+
+table:has(td:nth-child(4)) thead {
+  display: table-header-group;
+}
+
+table:has(td:nth-child(4)) th,
+table:has(td:nth-child(4)) td {
+  width: auto !important;
+}
+
 /* Alternating row colors */
 table tbody tr:nth-child(odd) {
   background: rgba(128, 128, 128, 0.1) !important;
