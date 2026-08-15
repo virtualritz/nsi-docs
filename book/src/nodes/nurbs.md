@@ -206,6 +206,8 @@ An edge normally has exactly two uses. If more than two boundaries share an iden
 
 Stitching a renderer supports means: along a shared edge, evaluate displacement and shading such that all welded uses produce coincident positions — for example by deriving a single displacement along the edge and applying it to every use — so that no cracks open where the surfaces meet, even where their geometric normals are discontinuous.
 
+The obligation is *visual watertightness*, independent of evaluation strategy. A backend that renders NURBS analytically and dices only displacement-mapped surfaces meets it just as a backend that tessellates everything does — the former by making the welded uses' displaced boundaries agree, the latter by additionally welding its meshes along the shared edges.
+
 ### Design Notes
 
 A renderer can attempt to reconstruct adjacency without these attributes by detecting boundary proximity, and may still do so as a fallback when they are absent. But proximity detection depends on guessed tolerances and cannot distinguish faces that were welded in the source model from faces of separate solids that merely touch — a distinction CAD formats make topologically. Exporters should therefore conserve the topology whenever the source data has it; it maps one-to-one onto these attributes (e.g. STEP's `edge_curve` entities and their oriented uses).

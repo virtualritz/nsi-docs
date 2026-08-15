@@ -22,7 +22,7 @@ The criteria worth weighing:
 | Ordering                | explicit arrays                      | whole loops per node — order-free           | explicit arrays                             |
 | Independent loop edits  | no — resend the block                | yes — swap one node                         | no — resend the block                       |
 | Reuse across faces      | no                                   | yes, for unstitched trims                   | edges shared by construction                |
-| Authoritative 3D edge   | no                                   | no                                          | yes — enables crack-free re-tessellation    |
+| Authoritative 3D edge   | no                                   | no                                          | yes — one exact common boundary             |
 | Exporter complexity     | lowest                               | medium (handles, granularity)               | highest (two curve representations)         |
 | Precedent               | 3Delight ɴꜱɪ `trimcurves.*`          | RenderMan `RiTrimCurve`                     | STEP / BRep kernel topology                 |
 
@@ -33,4 +33,4 @@ Options 2 and 3 are not mutually exclusive: 2 repackages the *per-face* data, 3 
 1. **Granularity** — is trim data an atomic property of the surface (one blob, Option 1) or scene structure (loop-set nodes, Option 2)? Since call overhead is agreed to be negligible, this is a question of editing model and exporter ergonomics, not performance.
 2. **Weld identity** — are welds out-of-band integers (Options 1/2) or graph objects (Option 3)? Integers are trivial to emit; handles cannot collide and can carry geometry.
 3. **Is reuse real?** — Option 2's sharing only pays off for identical trim regions on identically parameterized faces (hole patterns, perforated panels), and conflicts with stitching (edge identities are per-use). Is that case common enough to shape the API?
-4. **Does the renderer want authoritative 3D edges?** — Option 3 is the only one that lets tessellation and displacement reconcile against a single shared curve instead of reconciling two approximations against each other. If the answer is "eventually", Option 3's `edge` node can be specified now and implemented later — it degrades cleanly to Option 1.
+4. **Does the renderer want authoritative 3D edges?** — Option 3 is the only one that lets boundary evaluation and displacement reconcile against a single shared curve instead of two approximations of it — and it does so regardless of evaluation strategy: an analytic backend (3Delight dices only displacement-mapped surfaces) resolves both faces to the exact curve, a tessellating backend (e.g. a GPU renderer) welds its meshes along samples of it. If the answer is "eventually", Option 3's `edge` node can be specified now and implemented later — it degrades cleanly to Option 1.

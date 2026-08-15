@@ -35,7 +35,7 @@ When the node exists, its curve is authoritative: where a face's parametric curv
 
 This is the only option that changes what a renderer can *do*, rather than how data is packaged:
 
-- **Crack-free tessellation.** Adjacent faces tessellate their shared boundary by sampling the *same* curve instead of two floating-point approximations of it — closing the gaps that trim-tolerance drift opens today (the sampled-trim fallback in the monster-step-viewer exporter is exactly such a drift source).
+- **One boundary, whatever the evaluation strategy.** Backends differ in how they realize a NURBS surface: 3Delight renders it analytically, dicing only when a surface is displacement-mapped, while a GPU backend would tessellate everything. Stitching's obligation — visual watertightness — must hold under both. A shared edge curve serves both: an analytic renderer resolves the two faces' common boundary to the same exact curve, and a tessellating backend welds its meshes along samples of that same curve — instead of either reconciling two floating-point approximations that drift apart (the sampled-trim fallback in the monster-step-viewer exporter is exactly such a drift source).
 - **Exact displacement reconciliation.** Welded displacement can be derived once, on the edge curve, and applied to every use.
 - **Reusable topology.** The same nodes serve BRep wireframe rendering and exact re-projection, and `t-nurcc` open borders weld against them identically.
 - **Collision-free identity.** Handles are unique by construction; integer ids from two exporters feeding one scene can collide silently.
