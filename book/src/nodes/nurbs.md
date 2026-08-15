@@ -142,11 +142,11 @@ The concatenated control points of all curves as non-rational `(u, v)` pairs. Th
 
 Rational alternative to `trim-curves.position`: the concatenated control points of all curves as homogeneous `(u, v, w)` triples. Same ordering and total length as `trim-curves.position`.
 
-| Name                | Type    | Default |
-| ------------------- | ------- | ------- |
-| `trim-curves.sense` | _`int`_ |         |
+| Name               | Type    | Default |
+| ------------------ | ------- | ------- |
+| `trim-curves.hole` | _`int`_ |         |
 
-The sense of each loop. One value per loop. A value of `0` keeps the surface inside the loop; a value of `1` keeps the surface outside the loop (i.e. the loop describes a hole).
+Whether each loop is a hole. One value per loop. A value of `0` keeps the surface inside the loop; a value of `1` marks the loop as a hole — the surface inside it is removed. Loops may nest, alternating: an island inside a hole is again `0`.
 
 ## Stitching
 

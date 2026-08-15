@@ -485,7 +485,7 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `trimcurves.max`           | `trim-curves.max`               | R6                                          |
 | `trimcurves.u`, `.v`       | `trim-curves.position`          | API change (consolidation); mirrors surface |
 | `trimcurves.u`, `.v`, `.w` | `trim-curves.position-weighted` | API change (consolidation); mirrors surface |
-| `trimcurves.sense`         | `trim-curves.sense`             | R6                                          |
+| `trimcurves.sense`         | `trim-curves.hole`              | R9 (`sense` is jargon — and CAD uses the word for direction, not region keeping) |
 | —                          | `trim-curves.edge-id`           | New (stitching); `id` is fine per R5        |
 | —                          | `trim-curves.edge-orientation`  | New (stitching)                             |
 | —                          | `stitch.edge-id`                | New (stitching), R2 (group of 2)            |
