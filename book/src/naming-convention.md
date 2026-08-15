@@ -486,8 +486,10 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `trimcurves.u`, `.v`       | `trim-curves.position`          | API change (consolidation); mirrors surface |
 | `trimcurves.u`, `.v`, `.w` | `trim-curves.weighted-position` | API change (consolidation); mirrors surface |
 | `trimcurves.sense`         | `trim-curves.sense`             | R6                                          |
-| `trimcurves.edgeid`        | `trim-curves.edge-id`           | R6 (`id` itself is fine per R5)             |
-| `trimcurves.edgeorientation` | `trim-curves.edge-orientation` | R6                                          |
+| —                          | `trim-curves.edge-id`           | New (stitching); `id` is fine per R5        |
+| —                          | `trim-curves.edge-orientation`  | New (stitching)                             |
+| —                          | `stitch.edge-id`                | New (stitching), R2 (group of 2)            |
+| —                          | `stitch.edge-orientation`       | New (stitching)                             |
 
 **Consolidation note (API change, not pure rename).** The current API stores trim-curve control points as three parallel arrays (`trimcurves.u`, `trimcurves.v`, `trimcurves.w`) — a structure-of-arrays layout. The surface stores its control points as one interleaved array (`P` or `Pw`) — an array-of-structures layout. The redesign aligns the two:
 
@@ -495,6 +497,8 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 - `trim-curves.weighted-position` — `float[3]`, rational `(u, v, w)` triples. Replaces `trimcurves.u`, `trimcurves.v`, and `trimcurves.w`.
 
 Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position` / `weighted-position`.
+
+**Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout — the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
 ### `face-set` Node
 
