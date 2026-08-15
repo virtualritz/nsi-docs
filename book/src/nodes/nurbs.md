@@ -149,3 +149,39 @@ Concatenated weights of all trim-curve control points. The total length is the s
 | `trimcurves.sense` | _`int`_ |         |
 
 The sense of each loop. One value per loop. A value of `0` keeps the surface inside the loop; a value of `1` keeps the surface outside the loop (i.e. the loop describes a hole).
+
+## Stitching
+
+CAD solid formats (STEP, IGES, Parasolid) represent a solid as a shell of faces sewn together along shared edges: each edge of the model is stored once and referenced by the faces it bounds — typically two — each of which carries its own parameter-space curve for that edge. When such a model is exported as one `nurbs` node per face, the trim curves of adjacent nodes are two views of the same model edge.
+
+The two attributes below conserve that shared-edge topology. They declare which trim curves — on the same or on different `nurbs` nodes — trace the same edge and were welded in the source model, so the renderer can keep the geometry watertight across the edge. This matters wherever the renderer perturbs or evaluates geometry independently per surface: displacement mapping in particular will tear adjacent faces apart along an edge whose normals are discontinuous unless the renderer knows the faces belong together and makes their displaced boundaries agree.
+
+Both attributes are optional. When supplied, both must be supplied, with one value per curve (aligned with `trimcurves.n`, `trimcurves.order`, etc.). They add no geometry of their own, so a renderer that does not implement stitching can ignore them safely.
+
+| Name                | Type    | Default |
+| ------------------- | ------- | ------- |
+| `trimcurves.edgeid` | _`int`_ | `-1`    |
+
+The edge identity of each curve. One value per curve. A non-negative value identifies the model edge this curve is a use of: all trim curves carrying the same non-negative value — in this node or any other `nurbs` node in the scene — trace the same edge in 3D and are stitched. A value of `-1` means the curve carries no edge identity. Identifiers are scene-global; the exporter is responsible for their uniqueness (a serial number per edge of the source model suffices).
+
+| Name                         | Type    | Default |
+| ---------------------------- | ------- | ------- |
+| `trimcurves.edgeorientation` | _`int`_ | `0`     |
+
+The traversal direction of each curve relative to its edge's reference direction. One value per curve. A value of `0` means the curve, traversed from its parametric start to its end, follows the edge's reference direction; `1` means it opposes it. On a consistently oriented manifold shell the two uses of an edge traverse it in opposite directions, so their values differ. This puts the two parameterizations into correspondence without requiring the renderer to match them geometrically.
+
+### Semantics
+
+Curves that share an edge identity must describe the same locus in 3D — each mapped through its own surface — within the source model's tolerance. The renderer is not required to repair uses that disagree beyond that.
+
+An edge normally has exactly two uses. If more than two curves share an identity (a non-manifold edge), all of them are stitched together.
+
+Stitching a renderer supports means: along a shared edge, evaluate displacement and shading such that all welded uses produce coincident positions — for example by deriving a single displacement along the edge and applying it to every use — so that no cracks open where the surfaces meet, even where their geometric normals are discontinuous.
+
+Because stitching information rides on trim curves, a face that is welded along its natural, untrimmed boundary must express that boundary as an explicit outer trim loop (with sense `0`) whose curves carry the edge identities. The loop may simply coincide with the surface's parametric domain.
+
+### Design Notes
+
+A renderer can attempt to reconstruct adjacency without these attributes by detecting boundary proximity, and may still do so as a fallback when they are absent. But proximity detection depends on guessed tolerances and cannot distinguish faces that were welded in the source model from faces of separate solids that merely touch — a distinction CAD formats make topologically. Exporters should therefore conserve the topology whenever the source data has it; it maps one-to-one onto these attributes (e.g. STEP's `edge_curve` entities and their oriented uses).
+
+The edge identifier deliberately leaves room for a future `edge` node type carrying the authoritative shared 3D curve of an edge — useful for exact reprojection or wireframe rendering — referenced by the same identifier. Such a node is not part of this specification.

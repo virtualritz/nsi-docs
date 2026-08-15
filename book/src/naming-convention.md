@@ -486,6 +486,8 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `trimcurves.u`, `.v`       | `trim-curves.position`          | API change (consolidation); mirrors surface |
 | `trimcurves.u`, `.v`, `.w` | `trim-curves.weighted-position` | API change (consolidation); mirrors surface |
 | `trimcurves.sense`         | `trim-curves.sense`             | R6                                          |
+| `trimcurves.edgeid`        | `trim-curves.edge-id`           | R6 (`id` itself is fine per R5)             |
+| `trimcurves.edgeorientation` | `trim-curves.edge-orientation` | R6                                          |
 
 **Consolidation note (API change, not pure rename).** The current API stores trim-curve control points as three parallel arrays (`trimcurves.u`, `trimcurves.v`, `trimcurves.w`) — a structure-of-arrays layout. The surface stores its control points as one interleaved array (`P` or `Pw`) — an array-of-structures layout. The redesign aligns the two:
 
