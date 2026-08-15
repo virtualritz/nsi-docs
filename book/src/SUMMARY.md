@@ -22,6 +22,7 @@
   - [`plane`](nodes/plane.md)
   - [`mesh`](nodes/mesh.md)
   - [`nurbs`](nodes/nurbs.md)
+  - [`t-nurcc`](nodes/t-nurcc.md)
   - [`faceset`](nodes/faceset.md)
   - [`curves`](nodes/curves.md)
   - [`particles`](nodes/particles.md)

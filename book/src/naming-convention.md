@@ -500,6 +500,10 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 **Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout — the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
+### `t-nurcc` Node
+
+New node type (draft, no implementation), introduced directly under the new convention — there are no legacy names to map. Its attributes reuse spellings established elsewhere in this document: `vertex-count`, `position` / `weighted-position` (mirroring `nurbs`), the sparse `group.index` + `group.value` edge-list idiom (mirroring `subdivision.crease.*`) for `knot-interval.*`, and the `stitch.edge-id` identifier space shared with `nurbs`.
+
 ### `face-set` Node
 
 | Current | New          | Rules            |
