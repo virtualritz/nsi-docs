@@ -139,6 +139,7 @@ The meaning of these two arguments will not be documented for every function. In
 | `NSITypePoint`        | Point, given as three 32-bit floating point values.                                  |
 | `NSITypeVector`       | Vector, given as three 32-bit floating point values.                                 |
 | `NSITypeNormal`       | Normal vector, given as three 32-bit floating point values.                          |
+| `NSITypeWeightedPoint` | Weighted (homogeneous) point `(wx, wy, wz, w)`, given as four 32-bit floating point values. Draft — see [Geometry in the Type System](design/geometry-types.md). |
 | `NSITypeMatrix`       | Transformation matrix, in row-major order, given as 16 32-bit floating point values. |
 | `NSITypeDoubleMatrix` | Transformation matrix, in row-major order, given as 16 64-bit floating point values. |
 | `NSITypePointer`      | C pointer.                                                                           |

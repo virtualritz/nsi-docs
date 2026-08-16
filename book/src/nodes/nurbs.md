@@ -76,11 +76,11 @@ One of `position` or `position-weighted` must be supplied to provide the control
 
 The `u.count * v.count` control points (xyz), stored row-major: `position[i * u.count + j]` is the point at row `i`, column `j`.
 
-| Name                | Type         | Default |
-| ------------------- | ------------ | ------- |
-| `position-weighted` | _`float[4]`_ |         |
+| Name                | Type               | Default |
+| ------------------- | ------------------ | ------- |
+| `position-weighted` | _`weighted-point`_ |         |
 
-Rational alternative to `position`: each control point is four floats `(x, y, z, w)`, enabling rational NURBS. Same ordering as `position`.
+Rational alternative to `position`: each control point is a weighted (homogeneous) point `(wx, wy, wz, w)`, enabling rational NURBS. Same ordering as `position`. The `weighted-point` type is a draft addition — see [Geometry in the Type System](../design/geometry-types.md).
 
 ## Trim Curves
 
@@ -142,7 +142,7 @@ The concatenated control points of all curves as non-rational `(u, v)` pairs. Th
 | ------------------------------- | ------------ | ------- |
 | `trim-curves.position-weighted` | _`float[3]`_ |         |
 
-Rational alternative to `trim-curves.position`: the concatenated control points of all curves as homogeneous `(u, v, w)` triples. Same ordering and total length as `trim-curves.position`.
+Rational alternative to `trim-curves.position`: the concatenated control points of all curves as homogeneous `(u, v, w)` triples. Same ordering and total length as `trim-curves.position`. These are deliberately plain float tuples, not `point`-typed data — parameter-space coordinates must never transform; see [Geometry in the Type System](../design/geometry-types.md).
 
 | Name               | Type    | Default |
 | ------------------ | ------- | ------- |

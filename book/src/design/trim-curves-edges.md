@@ -9,7 +9,7 @@ An `edge` node carries a single 3D NURBS curve — the authoritative shape of th
 | `order`                         | _`int`_                     |
 | `knot`                          | _`float`_                   |
 | `min`, `max`                    | _`float`_                   |
-| `position` / `position-weighted`| _`point`_ / _`float[4]`_    |
+| `position` / `position-weighted`| _`point`_ / _`weighted-point`_ |
 
 Identity is the node handle. On the `nurbs` node, the integer ids of the current draft become handle references:
 

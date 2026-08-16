@@ -498,6 +498,8 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 
 Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position` / `position-weighted`.
 
+The types differ on purpose: the surface's `position-weighted` uses the draft `weighted-point` type — four floats that transform as one homogeneous unit — while the trim-curve tuples stay plain `float[2]` / `float[3]`, because parameter-space data must never transform. See [Geometry in the Type System](design/geometry-types.md).
+
 **Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout — the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
 ### `t-nurcc` Node

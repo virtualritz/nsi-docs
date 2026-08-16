@@ -22,11 +22,11 @@ One of `position` or `position-weighted` must be supplied to provide the control
 
 The positions of the cage's control points. Addressed indirectly through a `position.indices` attribute holding the concatenated per-face vertex indices, as on the `mesh` node.
 
-| Name                | Type         | Default |
-| ------------------- | ------------ | ------- |
-| `position-weighted` | _`float[4]`_ |         |
+| Name                | Type               | Default |
+| ------------------- | ------------------ | ------- |
+| `position-weighted` | _`weighted-point`_ |         |
 
-Rational alternative to `position`: each control point is four floats `(x, y, z, w)`. Addressed indirectly through `position-weighted.indices`.
+Rational alternative to `position`: each control point is a weighted (homogeneous) point `(wx, wy, wz, w)`. Addressed indirectly through `position-weighted.indices`.
 
 ### T-Junctions
 
