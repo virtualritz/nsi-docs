@@ -31,6 +31,8 @@ enum
 
 The value `16` is the `0x10` bit that the enum already uses for the same purpose. It moves from the type field to the flags field, where the other orthogonal axes live.
 
+The table shows the short scalar spellings, `int` and `float`. That choice belongs to the [abbreviation axis](type-names.md#abbreviation-and-word-separation) and not to this option.
+
 `NSITypeDouble`, `NSITypeInt64`, and `NSITypeDoubleMatrix` cease to exist as names. Any type can be wide, including the ones that have no wide form today.
 
 ## Two surfaces keep single tokens

@@ -20,6 +20,8 @@ Every type that has a storage width states that width in its name. This is the v
 
 `String` and `Pointer` have no width to state, so they keep their bare names.
 
+The table shows the short scalar spellings, `int` and `float`. That choice belongs to the [abbreviation axis](type-names.md#abbreviation-and-word-separation) and not to this option.
+
 ## Rationale
 
 A reader never has to know a default. `NSITypeInt32` says what it holds, and so does `NSITypeInt64`. The pair reads as a pair, which `Integer` and `Int64` do not. The rule extends to any future width without a further decision: a half-precision color would be `NSITypeColor16`.

@@ -20,6 +20,8 @@ A bare name means the 32-bit type. A `64` postfix marks the wide type, and marks
 
 Three constants change: `Integer` becomes `Int`, `Double` becomes `Float64`, and `DoubleMatrix` becomes `Matrix64`. Everything else keeps its name.
 
+The table shows the short scalar spellings, `int` and `float`. That choice belongs to the [abbreviation axis](type-names.md#abbreviation-and-word-separation) and not to this option.
+
 ## Rationale
 
 The 32-bit types carry almost all traffic. Shader parameters, vertex data, and colors are 32-bit, and a scene may contain no wide value at all. A convention that leaves the common case unmarked keeps the common case short.
