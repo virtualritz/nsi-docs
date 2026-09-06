@@ -12,7 +12,7 @@ The [`nurbs`](../nodes/nurbs.md) and [`t-nurcc`](../nodes/t-nurcc.md) drafts rai
 | ---------------------- | ----------------------------------------------------------------- |
 | `NSITypeWeightedPoint` | Weighted (homogeneous) point `(wx, wy, wz, w)`, four 32-bit floats. |
 
-Under the [naming convention](../naming-convention.md) it reads as _`weighted-point`_. That name uses the vocabulary the attributes already use, as in `position-weighted`. RenderMan's type system grew `hpoint` for exactly this attribute.
+Under the [naming convention](../naming-convention.md) it reads as _`weighted-point`_. The [Type Names](type-names.md) draft asks whether that name should also carry a storage width. That name uses the vocabulary the attributes already use, as in `position-weighted`. RenderMan's type system grew `hpoint` for exactly this attribute.
 
 **Trim-curve control points are the opposite case.** `(u, v, w)` is a *projective 2D* point in the surface's parameter domain. It is not `point`-typed data that happens to be small. A `point` type would be wrong twice. First, it misstates the geometry: the point is projective 2D, not Euclidean 3D. Second, it invites type-correct corruption. A transform-baking tool, an instancing optimizer, or a space-converting importer would do the right thing for `point` data. It would then destroy every trim curve, because parameter-space data must never transform.
 

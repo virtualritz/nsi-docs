@@ -62,6 +62,10 @@
   - [Option 2: `trim` Nodes](design/trim-curves-nodes.md)
   - [Option 3: `edge` Nodes](design/trim-curves-edges.md)
 - [Geometry in the Type System](design/geometry-types.md)
+- [Type Names: API Alternatives](design/type-names.md)
+  - [Option A: Explicit Width](design/type-names-explicit.md)
+  - [Option B: Bare Means 32-Bit](design/type-names-postfix.md)
+  - [Option C: Width as a Flag](design/type-names-flag.md)
 
 # Appendices
 

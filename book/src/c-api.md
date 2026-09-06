@@ -145,6 +145,10 @@ The meaning of these two arguments will not be documented for every function. In
 | `NSITypeDoubleMatrix` | Transformation matrix, in row-major order, given as 16 64-bit floating point values. |
 | `NSITypePointer`      | C pointer.                                                                           |
 
+> [!NOTE]
+> The names of these constants spell the storage width in three different ways.
+> See [Type Names: API Alternatives](design/type-names.md) for a draft that reworks them.
+
 Tuple types are specified by setting the bit defined by the `NSIArgIsArray` constant in the `flags` member and the length of the tuple in the `arraylength` member.
 
 > [!TIP]
