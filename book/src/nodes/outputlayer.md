@@ -60,19 +60,19 @@ The name of an OCIO color profile to apply to rendered image data prior to quant
 
 | Name        | Type        | Default |
 | ----------- | ----------- | ------- |
-| `dithering` | _`integer`_ | `0`     |
+| `dithering` | _`int`_ | `0`     |
 
 If set to 1, dithering is applied to integer scalars. Otherwise, it must be set to 0.
 
 | Name        | Type        | Default |
 | ----------- | ----------- | ------- |
-| `withalpha` | _`integer`_ | `0`     |
+| `withalpha` | _`int`_ | `0`     |
 
 If set to 1, an alpha channel is included in the output layer. Otherwise, it must be set to 0.
 
 | Name      | Type        | Default |
 | --------- | ----------- | ------- |
-| `sortkey` | _`integer`_ |         |
+| `sortkey` | _`int`_ |         |
 
 This attribute is used as a sorting key when ordering multiple output layer nodes connected to the same [output driver](outputdriver.md) node. Layers with the lowest `sortkey` attribute appear first.
 

@@ -16,7 +16,7 @@ Horizontal and vertical resolution of the rendered image, in pixels.
 
 | Name           | Type        | Default |
 | -------------- | ----------- | ------- |
-| `oversampling` | _`integer`_ |         |
+| `oversampling` | _`int`_ |         |
 
 The total number of samples (i.e. camera rays) to be computed for each pixel in the image.
 

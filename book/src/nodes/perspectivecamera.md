@@ -10,7 +10,7 @@ The field of view angle, in degrees.
 
 | Name                  | Type        | Default |
 | --------------------- | ----------- | ------- |
-| `depthoffield.enable` | _`integer`_ | `0`     |
+| `depthoffield.enable` | _`int`_ | `0`     |
 
 Enables depth of field effect for this camera.
 
@@ -40,13 +40,13 @@ Distance, in scene units, in front of the camera at which objects will be in foc
 
 | Name                           | Type        | Default |
 | ------------------------------ | ----------- | ------- |
-| `depthoffield.aperture.enable` | _`integer`_ | `0`     |
+| `depthoffield.aperture.enable` | _`int`_ | `0`     |
 
 By default, the renderer simulates a circular aperture for depth of field. Enable this feature to simulate aperture "blades" as on a real camera. This feature affects the look in out-of-focus regions of the image.
 
 | Name                          | Type        | Default |
 | ----------------------------- | ----------- | ------- |
-| `depthoffield.aperture.sides` | _`integer`_ | `5`     |
+| `depthoffield.aperture.sides` | _`int`_ | `5`     |
 
 Number of sides of the camera's aperture. The minimum number of sides is 3.
 

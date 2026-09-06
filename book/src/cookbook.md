@@ -68,7 +68,7 @@ Connect "simple polygon" "" "translation" "objects" );
 
 # Transalte 1 unit in Y
 SetAttribute "my translation"
-    "transformationmatrix" "matrix" 1 [
+    "transformationmatrix" "doublematrix" 1 [
     1 0 0 0
     0 1 0 0
     0 0 1 0
