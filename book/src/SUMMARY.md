@@ -58,9 +58,9 @@
 # Design Drafts
 
 - [Trim Curves: API Alternatives](design/trim-curves.md)
-  - [Option 1 — Inline Attributes](design/trim-curves-inline.md)
-  - [Option 2 — `trim` Nodes](design/trim-curves-nodes.md)
-  - [Option 3 — `edge` Nodes](design/trim-curves-edges.md)
+  - [Option 1: Inline Attributes](design/trim-curves-inline.md)
+  - [Option 2: `trim` Nodes](design/trim-curves-nodes.md)
+  - [Option 3: `edge` Nodes](design/trim-curves-edges.md)
 - [Geometry in the Type System](design/geometry-types.md)
 
 # Appendices

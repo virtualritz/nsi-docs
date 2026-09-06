@@ -6,7 +6,7 @@ Status: Draft
 
 The current ɴsɪ attribute names grew organically and suffer from several inconsistencies that make the API harder to learn and use than it needs to be.
 
-**No word separation.** Most multi-word names are run together, forcing users to mentally parse where words begin and end — and the conventions are unpredictable:
+**No word separation.** Most multi-word names are run together, forcing users to mentally parse where words begin and end -- and the conventions are unpredictable:
 
 | Name                     | Intended meaning         |
 | ------------------------ | ------------------------ |
@@ -17,7 +17,7 @@ The current ɴsɪ attribute names grew organically and suffer from several incon
 | `importancesamplefilter` | importance sample filter |
 | `unitlengthmillimeters`  | unit length millimeters  |
 
-**Inconsistent grouping.** Some attributes use dot-separated groups, others don't — even for closely related settings:
+**Inconsistent grouping.** Some attributes use dot-separated groups, others don't -- even for closely related settings:
 
 | Grouped                       | Not grouped              |
 | ----------------------------- | ------------------------ |
@@ -49,26 +49,26 @@ This document proposes a systematic naming convention that resolves these incons
 
 ## Why Separate Words at All?
 
-Concatenated names like `maximumraylength` or `importancesamplefilter` are hard to read — especially for non-native English speakers, who may not immediately see where one word ends and the next begins. Word separators make attribute names accessible to a wider audience without any downside: attribute name strings are interned by the renderer, so separators have zero runtime cost. They add a few bytes to the source but nothing to render time.
+Concatenated names like `maximumraylength` or `importancesamplefilter` are hard to read -- especially for non-native English speakers, who may not immediately see where one word ends and the next begins. Word separators make attribute names accessible to a wider audience without any downside: attribute name strings are interned by the renderer, so separators have zero runtime cost. They add a few bytes to the source but nothing to render time.
 
-A common objection is that separators mean more typing. In practice this matters less than it used to: code is increasingly written with AI assistance and autocompletion, so keystroke count is a non-issue. What matters is how easily a human can _read_ and _review_ the code — and `depth-of-field.focal-length` is unambiguously clearer than `depthoffield.focallength`.
+A common objection is that separators mean more typing. In practice this matters less than it used to: code is increasingly written with AI assistance and autocompletion, so keystroke count is a non-issue. What matters is how easily a human can _read_ and _review_ the code -- and `depth-of-field.focal-length` is unambiguously clearer than `depthoffield.focallength`.
 
 ## Redesign Proposal
 
 ### Hyphenate Multi-Word Attributes
 
-Attribute names use **hyphens** (`-`) as word separators, not underscores (`_`). This is a deliberate choice: almost no programming language allows hyphens in identifiers (`variable-name` is invalid in C, C++, Python, Rust, Lua, etc.), so attribute name strings are instantly distinguishable from code identifiers in any language. When you see `reflection.ray-depth-max` in source code, it can only be an attribute name — never a variable, function, or type.
+Attribute names use **hyphens** (`-`) as word separators, not underscores (`_`). This is a deliberate choice: almost no programming language allows hyphens in identifiers (`variable-name` is invalid in C, C++, Python, Rust, Lua, etc.), so attribute name strings are instantly distinguishable from code identifiers in any language. When you see `reflection.ray-depth-max` in source code, it can only be an attribute name -- never a variable, function, or type.
 
 ### Core Convention
 
-- `.` (dots) separate hierarchy levels — these correspond to what would be groups/rollouts/sections in UI/attribute editor.
+- `.` (dots) separate hierarchy levels -- these correspond to what would be groups/rollouts/sections in UI/attribute editor.
 - `-` (hyphens) separate words within a single label.
 - Singular nouns when used as modifiers in compound names (English compound noun rule).
-  - Example: `point-grid` not `points-grid` — "point" modifies "grid".
-- Plain English over jargon (governing principle — R9).
+  - Example: `point-grid` not `points-grid` -- "point" modifies "grid".
+- Plain English over jargon (governing principle -- R9).
   - Example `field-of-view` not `fov`.
 - Compound node type names also use hyphens: `vdb-particles`, `output-driver`, `output-layer`, `face-set`, `perspective-camera`, `fisheye-camera`, etc.
-- Example: `subdivision.corner-sharpness` — group "Subdivision", label "Corner Sharpness".
+- Example: `subdivision.corner-sharpness` -- group "Subdivision", label "Corner Sharpness".
 
 ### Rulings
 
@@ -112,14 +112,14 @@ quadratic-motion
 
 The same concept (e.g., "reflection") can be a **group** in one context and a **leaf** in another. The rule is: whichever level has 2+ siblings becomes the group.
 
-**On the `global` node** — each ray type has 2+ settings (depth + length), so the ray type is the group:
+**On the `global` node** -- each ray type has 2+ settings (depth + length), so the ray type is the group:
 
 ```
 reflection.ray-depth-max
 reflection.ray-length-max
 ```
 
-**On the `attributes` node** — each ray type has only ONE visibility flag, but "visibility" has 8+ flags, so visibility is the group:
+**On the `attributes` node** -- each ray type has only ONE visibility flag, but "visibility" has 8+ flags, so visibility is the group:
 
 ```
 visibility.reflection
@@ -137,10 +137,10 @@ The node type itself provides context, so attribute names should not redundantly
 
 No grandfather clause for industry-standard abbreviations:
 
-- `P` → `position`
-- `N` → `normal`
-- `nvertices` → `vertex-count`
-- `nholes` → `hole-count`
+- `P` -> `position`
+- `N` -> `normal`
+- `nvertices` -> `vertex-count`
+- `nholes` -> `hole-count`
 
 Single-word names that are already clear stay as-is: `width`, `basis`, `id`, `matte`, `clockwise`.
 
@@ -148,10 +148,10 @@ Single-word names that are already clear stay as-is: `width`, `basis`, `id`, `ma
 
 No concatenated words. All multi-word terms get hyphens:
 
-- `depthoffield` → `depth-of-field`
-- `fstop` → `focal-stop`
-- `focallength` → `focal-length`
-- `focaldistance` → `focal-distance`
+- `depthoffield` -> `depth-of-field`
+- `fstop` -> `focal-stop`
+- `focallength` -> `focal-length`
+- `focaldistance` -> `focal-distance`
 
 This applies within both group names and leaf labels:
 
@@ -159,7 +159,7 @@ This applies within both group names and leaf labels:
 depth-of-field.enable
 depth-of-field.focal-stop
 depth-of-field.focal-length
-depth-of-field.aperture.enable    ← sub-group (3 attrs: enable, sides, angle)
+depth-of-field.aperture.enable    <- sub-group (3 attrs: enable, sides, angle)
 depth-of-field.aperture.sides
 depth-of-field.aperture.angle
 ```
@@ -171,21 +171,21 @@ If a connection attribute accepts multiple connections, use plural. If it accept
 **Plural** (multi-connection):
 
 ```
-objects              (root, transform — multiple geometry nodes)
-attributes           (root, transform — multiple attribute nodes)
-members              (set — multiple objects)
-screens              (camera — multiple screen nodes)
-output-layers        (screen — multiple layer nodes)
-output-drivers       (output-layer — multiple driver nodes)
+objects              (root, transform -- multiple geometry nodes)
+attributes           (root, transform -- multiple attribute nodes)
+members              (set -- multiple objects)
+screens              (camera -- multiple screen nodes)
+output-layers        (screen -- multiple layer nodes)
+output-drivers       (output-layer -- multiple driver nodes)
 ```
 
 **Singular** (single-connection):
 
 ```
-shader.surface       (attributes — one surface shader)
-shader.displacement  (attributes — one displacement shader)
-shader.volume        (attributes — one volume shader)
-background-layer     (output-layer — one background layer)
+shader.surface       (attributes -- one surface shader)
+shader.displacement  (attributes -- one displacement shader)
+shader.volume        (attributes -- one volume shader)
+background-layer     (output-layer -- one background layer)
 ```
 
 #### R8: Group by concern, not by concept
@@ -197,21 +197,21 @@ Attributes are grouped by what kind of setting they are, not by what rendering c
 - **`{type}.*`** = per-ray-type limits (depth, length)
 
 ```
-quality.shading-samples           ← sampling effort
-quality.volume-samples            ← sampling effort
-quality.denoise                   ← quality toggle
-quality.volume-emission-sampling  ← quality toggle
-quality.preview.global-update     ← preview/IPR quality
-quality.preview.interpolate       ← preview/IPR quality
-quality.preview.speed-multiplier  ← preview/IPR quality
+quality.shading-samples           <- sampling effort
+quality.volume-samples            <- sampling effort
+quality.denoise                   <- quality toggle
+quality.volume-emission-sampling  <- quality toggle
+quality.preview.global-update     <- preview/IPR quality
+quality.preview.interpolate       <- preview/IPR quality
+quality.preview.speed-multiplier  <- preview/IPR quality
 
-shading.displacement              ← feature toggle
-shading.atmosphere                ← feature toggle
-shading.multiple-scattering       ← feature toggle
-shading.osl-subsurface            ← feature toggle
+shading.displacement              <- feature toggle
+shading.atmosphere                <- feature toggle
+shading.multiple-scattering       <- feature toggle
+shading.osl-subsurface            <- feature toggle
 
-volume.ray-depth-max              ← ray limit
-volume.ray-length-max             ← ray limit
+volume.ray-depth-max              <- ray limit
+volume.ray-length-max             <- ray limit
 ```
 
 This avoids scattering quality-related attrs across concept groups (which would make it hard to find "all the knobs that affect render speed").
@@ -220,9 +220,9 @@ This avoids scattering quality-related attrs across concept groups (which would 
 
 This is a **governing principle** that applies across all naming decisions. When choosing between a technical abbreviation/jargon term and a plain English equivalent, always prefer plain English. Names should be understandable without domain-specific knowledge.
 
-- `ipr` → `preview` (Interactive Progressive Rendering → just "preview")
-- `fov` → `field-of-view`
-- `fstop` → `focal-stop` (kept because it's the actual name of the unit, not jargon)
+- `ipr` -> `preview` (Interactive Progressive Rendering -> just "preview")
+- `fov` -> `field-of-view`
+- `fstop` -> `focal-stop` (kept because it's the actual name of the unit, not jargon)
 
 The group `quality.ipr.*` becomes `quality.preview.*`:
 
@@ -237,37 +237,37 @@ quality.preview.speed-multiplier
 When a boolean on/off attribute belongs to a group that also has non-boolean attrs, append `.enable` to distinguish the toggle from the group:
 
 ```
-depth-of-field.enable         ← mixed group (has focal-stop, focal-length, etc.)
+depth-of-field.enable         <- mixed group (has focal-stop, focal-length, etc.)
 depth-of-field.focal-stop
 depth-of-field.focal-length
 
-cryptomatte.enable            ← mixed group (has level)
+cryptomatte.enable            <- mixed group (has level)
 cryptomatte.level
 ```
 
 When the group is all-toggles or the boolean is standalone, no `.enable` needed:
 
 ```
-shading.displacement          ← all-toggle group, obviously a toggle
+shading.displacement          <- all-toggle group, obviously a toggle
 shading.atmosphere
 
-quality.denoise               ← obviously a toggle from context
+quality.denoise               <- obviously a toggle from context
 ```
 
 #### R11: Unify callbacks under `callback.*` group
 
 All callback/handler function pointers across the API follow a consistent pattern: `callback.{purpose}` for the function pointer and `callback.{purpose}.data` for the associated userdata.
 
-This applies across different API calls — the `callback` group is a cross-cutting convention:
+This applies across different API calls -- the `callback` group is a cross-cutting convention:
 
 ```
 # NSIBegin
-callback.error               ← error handler function (was: errorhandler)
-callback.error.data          ← error handler userdata (was: errorhandler.data)
+callback.error               <- error handler function (was: errorhandler)
+callback.error.data          <- error handler userdata (was: errorhandler.data)
 
 # NSIRenderControl
-callback.stop                ← stopped callback function (was: stoppedcallback)
-callback.stop.data           ← stopped callback userdata (was: stoppedcallbackdata)
+callback.stop                <- stopped callback function (was: stoppedcallback)
+callback.stop.data           <- stopped callback userdata (was: stoppedcallbackdata)
 ```
 
 #### R12: Singular nouns as modifiers in compound names
@@ -301,33 +301,33 @@ The convention above renames attributes consistently, but it doesn't resolve a d
 | Particles | Split by backend               | `particles`, `vdbparticles`                                                                        |
 | Cameras   | Split by projection            | `perspectivecamera`, `fisheyecamera`, `cylindricalcamera`, `sphericalcamera`, `orthographiccamera` |
 
-`mesh` collapses polygons and subdivision surfaces behind a `subdivision.scheme` attribute. Cameras do the opposite — five separate node types that differ only in their projection function. Volumes name themselves generically while only one backend is implemented. Particles are split by the data format their control points hold, not by what the renderer sees.
+`mesh` collapses polygons and subdivision surfaces behind a `subdivision.scheme` attribute. Cameras do the opposite -- five separate node types that differ only in their projection function. Volumes name themselves generically while only one backend is implemented. Particles are split by the data format their control points hold, not by what the renderer sees.
 
 Three coherent resolutions, from least to most invasive:
 
-### Option 1 — Honest names, same shape
+### Option 1 -- Honest names, same shape
 
 Keep one node per concern and rename for honesty. The mapping later in this document already adopts these names:
 
-- `volume` → `vdb-volume` (it only renders OpenVDB).
-- `vdbparticles` → `vdb-particles` (hyphenated).
-- Cameras keep their five hyphenated names (`perspective-camera`, …).
+- `volume` -> `vdb-volume` (it only renders OpenVDB).
+- `vdbparticles` -> `vdb-particles` (hyphenated).
+- Cameras keep their five hyphenated names (`perspective-camera`, ...).
 - `mesh` stays as the one merged exception.
 
-The inconsistency with `mesh` remains. This is a pure rename — no API change.
+The inconsistency with `mesh` remains. This is a pure rename -- no API change.
 
-### Option 2 — Collapse to one canonical primitive
+### Option 2 -- Collapse to one canonical primitive
 
 Bring volumes, particles, and cameras in line with `mesh`'s "one node, type attribute" pattern:
 
 - `vdb-volume` and `vdb-particles` collapse into a single `vdb` node with `kind = "volume" | "particles"` (or distinguished by which data attribute is supplied).
 - The five camera nodes collapse into one `camera` node with `projection = "perspective" | "fisheye" | "cylindrical" | "spherical" | "orthographic"`. Projection-specific attributes live behind the projection's prefix (e.g. `fisheye.mapping`).
 
-Every scene-graph entity ends up with a single canonical primitive. Migration is "rename node type, add a `kind` / `projection` attribute". The renderer's dispatch table has to flatten, but no user-side attribute is lost.
+Every scene-graph entity ends up with a single canonical primitive. Migration is "rename node type, add a `kind`/`projection` attribute". The renderer's dispatch table has to flatten, but no user-side attribute is lost.
 
-### Option 3 — Split `mesh` to match the rest
+### Option 3 -- Split `mesh` to match the rest
 
-Adopt the honest renames from Option 1 — `volume` → `vdb-volume`, `vdbparticles` → `vdb-particles` — and additionally replace `mesh` with `polygon-mesh` and `subdivision-mesh`. Each mesh node carries only the attributes meaningful for its surface kind; `subdivision.scheme` disappears entirely.
+Adopt the honest renames from Option 1 -- `volume` -> `vdb-volume`, `vdbparticles` -> `vdb-particles` -- and additionally replace `mesh` with `polygon-mesh` and `subdivision-mesh`. Each mesh node carries only the attributes meaningful for its surface kind; `subdivision.scheme` disappears entirely.
 
 This is the most invasive option: every existing scene using subdivision surfaces has to re-target the new node, and the `subdivision.*` attributes migrate from prefix-grouped on `mesh` to top-level on `subdivision-mesh`.
 
@@ -350,13 +350,13 @@ R5 currently renames the legacy single-letter attribute names:
 | `P`     | `position`  | `point P`    |
 | `N`     | `normal`    | `normal N`   |
 
-Adopting R5 as written means the attribute name and the ᴏsʟ global diverge. The renderer either has to translate `position` → `P` at the ᴏsʟ binding step — hidden machinery that surprises anyone debugging by attribute name — or the cross-renderer ᴏsʟ contract has to break for ɴsɪ specifically.
+Adopting R5 as written means the attribute name and the ᴏsʟ global diverge. The renderer either has to translate `position` -> `P` at the ᴏsʟ binding step -- hidden machinery that surprises anyone debugging by attribute name -- or the cross-renderer ᴏsʟ contract has to break for ɴsɪ specifically.
 
 The ᴏsʟ globals that overlap with current ɴsɪ attribute names are: `P`, `N`, `Ng`, `u`, `v`, `dPdu`, `dPdv`, `I`.
 
-### Option A — Carve out an exception in R5
+### Option A -- Carve out an exception in R5
 
-Legacy single-letter names that match an ᴏsʟ global stay as-is, even where the surrounding convention would rename them. This preserves the ɴsɪ ↔ ᴏsʟ alignment.
+Legacy single-letter names that match an ᴏsʟ global stay as-is, even where the surrounding convention would rename them. This preserves the ɴsɪ <-> ᴏsʟ alignment.
 
 Affected rows revert in the rename mapping:
 
@@ -365,11 +365,11 @@ Affected rows revert in the rename mapping:
 - `curves`: `P` stays.
 - `particles`: `P` stays, `N` stays.
 
-`nvertices`, `nholes`, `clockwisewinding` etc. still rename — they aren't ᴏsʟ globals.
+`nvertices`, `nholes`, `clockwisewinding` etc. still rename -- they aren't ᴏsʟ globals.
 
-### Option B — Rename and translate
+### Option B -- Rename and translate
 
-Adopt R5 as written. The renderer translates `position` → `P` (and `normal` → `N`, …) when binding attributes to ᴏsʟ shader globals.
+Adopt R5 as written. The renderer translates `position` -> `P` (and `normal` -> `N`, ...) when binding attributes to ᴏsʟ shader globals.
 
 This keeps ɴsɪ-level naming uniform but introduces hidden translation. Shader authors writing portable code now read about `P` in the ᴏsʟ docs and `position` in the ɴsɪ docs and have to internalise the mapping. Debugging tools that show attribute names won't match what the shader sees.
 
@@ -377,14 +377,14 @@ This keeps ɴsɪ-level naming uniform but introduces hidden translation. Shader 
 
 The decision turns on which contract matters more:
 
-- **ᴏsʟ portability** (Option A) — the convention that "the attribute named `P` is what the shader reads as `P`" is sacred.
-- **ɴsɪ-internal consistency** (Option B) — single-letter names are jargon and R5's reasoning applies uniformly; the ᴏsʟ binding layer can absorb the cost.
+- **ᴏsʟ portability** (Option A) -- the convention that "the attribute named `P` is what the shader reads as `P`" is sacred.
+- **ɴsɪ-internal consistency** (Option B) -- single-letter names are jargon and R5's reasoning applies uniformly; the ᴏsʟ binding layer can absorb the cost.
 
 No recommendation in this draft.
 
 ## Complete Attribute Mapping
 
-Every attribute across all node types, with current → new name and the ruling(s) that apply. Attributes where current = new are omitted.
+Every attribute across all node types, with current -> new name and the ruling(s) that apply. Attributes where current = new are omitted.
 
 ### `global` Node
 
@@ -423,7 +423,7 @@ Every attribute across all node types, with current → new name and the ruling(
 | `show.multiplescattering`      | `shading.multiple-scattering`      | R8, R6                                 |
 | `show.osl.subsurface`          | `shading.osl-subsurface`           | R8, R6                                 |
 | `exclusiveshading`             | `exclusive-shading`                | R6                                     |
-| `messages.timestamp`           | `messages.timestamp`               | —                                      |
+| `messages.timestamp`           | `messages.timestamp`               | --                                     |
 
 **Unchanged:** `license.server`, `license.wait`, `license.hold`, `frame`, `statistics.progress`, `statistics.filename`, `verbose`
 
@@ -431,7 +431,7 @@ Every attribute across all node types, with current → new name and the ruling(
 
 | Current              | New          | Rules                        |
 | -------------------- | ------------ | ---------------------------- |
-| `geometryattributes` | `attributes` | R6, R7 (multi-conn → plural) |
+| `geometryattributes` | `attributes` | R6, R7 (multi-conn -> plural)|
 
 **Unchanged:** `objects`
 
@@ -447,10 +447,10 @@ Every attribute across all node types, with current → new name and the ruling(
 | `nvertices`                       | `vertex-count`                 | R5, R6                          |
 | `nholes`                          | `hole-count`                   | R5, R6                          |
 | `clockwisewinding`                | `clockwise`                    | R6 (simplification)             |
-| `subdivision.cornervertices`      | `subdivision.corner.index`     | R2 (3 corner attrs → sub-group) |
+| `subdivision.cornervertices`      | `subdivision.corner.index`     | R2 (3 corner attrs -> sub-group)|
 | `subdivision.cornersharpness`     | `subdivision.corner.sharpness` | R2                              |
 | `subdivision.smoothcreasecorners` | `subdivision.corner.automatic` | R2                              |
-| `subdivision.creasevertices`      | `subdivision.crease.index`     | R2 (2 crease attrs → sub-group) |
+| `subdivision.creasevertices`      | `subdivision.crease.index`     | R2 (2 crease attrs -> sub-group)|
 | `subdivision.creasesharpness`     | `subdivision.crease.sharpness` | R2                              |
 | `referencetime`                   | `reference-time`               | R6                              |
 | `quadraticmotion`                 | `quadratic-motion`             | R6                              |
@@ -485,26 +485,26 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `trimcurves.max`           | `trim-curves.max`               | R6                                          |
 | `trimcurves.u`, `.v`       | `trim-curves.position`          | API change (consolidation); mirrors surface |
 | `trimcurves.u`, `.v`, `.w` | `trim-curves.position-weighted` | API change (consolidation); mirrors surface |
-| `trimcurves.sense`         | `trim-curves.hole`              | R9 (`sense` is jargon — and CAD uses the word for direction, not region keeping) |
-| —                          | `trim-curves.edge-id`           | New (stitching); `id` is fine per R5        |
-| —                          | `trim-curves.edge-orientation`  | New (stitching)                             |
-| —                          | `stitch.edge-id`                | New (stitching), R2 (group of 2)            |
-| —                          | `stitch.edge-orientation`       | New (stitching)                             |
+| `trimcurves.sense`         | `trim-curves.hole`              | R9 (`sense` is jargon -- and CAD uses the word for direction, not region keeping)|
+| --                         | `trim-curves.edge-id`           | New (stitching); `id` is fine per R5        |
+| --                         | `trim-curves.edge-orientation`  | New (stitching)                             |
+| --                         | `stitch.edge-id`                | New (stitching), R2 (group of 2)            |
+| --                         | `stitch.edge-orientation`       | New (stitching)                             |
 
-**Consolidation note (API change, not pure rename).** The current API stores trim-curve control points as three parallel arrays (`trimcurves.u`, `trimcurves.v`, `trimcurves.w`) — a structure-of-arrays layout. The surface stores its control points as one interleaved array (`P` or `Pw`) — an array-of-structures layout. The redesign aligns the two:
+**Consolidation note (API change, not pure rename).** The current API stores trim-curve control points as three parallel arrays (`trimcurves.u`, `trimcurves.v`, `trimcurves.w`) -- a structure-of-arrays layout. The surface stores its control points as one interleaved array (`P` or `Pw`) -- an array-of-structures layout. The redesign aligns the two:
 
-- `trim-curves.position` — `float[2]`, non-rational `(u, v)` pairs. Replaces `trimcurves.u` and `trimcurves.v`.
-- `trim-curves.position-weighted` — `float[3]`, rational `(u, v, w)` triples. Replaces `trimcurves.u`, `trimcurves.v`, and `trimcurves.w`.
+- `trim-curves.position` -- `float[2]`, non-rational `(u, v)` pairs. Replaces `trimcurves.u` and `trimcurves.v`.
+- `trim-curves.position-weighted` -- `float[3]`, rational `(u, v, w)` triples. Replaces `trimcurves.u`, `trimcurves.v`, and `trimcurves.w`.
 
-Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position` / `position-weighted`.
+Supply one of the two; never both. This is the same supply-one-of pattern the surface uses for `position`/`position-weighted`.
 
-The types differ on purpose: the surface's `position-weighted` uses the draft `weighted-point` type — four floats that transform as one homogeneous unit — while the trim-curve tuples stay plain `float[2]` / `float[3]`, because parameter-space data must never transform. See [Geometry in the Type System](design/geometry-types.md).
+The types differ on purpose: the surface's `position-weighted` uses the draft `weighted-point` type -- four floats that transform as one homogeneous unit -- while the trim-curve tuples stay plain `float[2]`/`float[3]`, because parameter-space data must never transform. See [Geometry in the Type System](design/geometry-types.md).
 
-**Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout — the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
+**Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout -- the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
 ### `t-nurcc` Node
 
-New node type (draft, no implementation), introduced directly under the new convention — there are no legacy names to map. Its attributes reuse spellings established elsewhere in this document: `vertex-count`, `position` / `position-weighted` (mirroring `nurbs`), the sparse `group.index` + `group.value` edge-list idiom (mirroring `subdivision.crease.*`) for `knot-interval.*`, and the `stitch.edge-id` identifier space shared with `nurbs`.
+New node type (draft, no implementation), introduced directly under the new convention -- there are no legacy names to map. Its attributes reuse spellings established elsewhere in this document: `vertex-count`, `position`/`position-weighted` (mirroring `nurbs`), the sparse `group.index` + `group.value` edge-list idiom (mirroring `subdivision.crease.*`) for `knot-interval.*`, and the `stitch.edge-id` identifier space shared with `nurbs`.
 
 ### `face-set` Node
 
@@ -553,11 +553,11 @@ New node type (draft, no implementation), introduced directly under the new conv
 
 | Current                     | New                         | Rules                           |
 | --------------------------- | --------------------------- | ------------------------------- |
-| `surfaceshader`             | `shader.surface`            | R2, R7 (single-conn → singular) |
+| `surfaceshader`             | `shader.surface`            | R2, R7 (single-conn -> singular)|
 | `displacementshader`        | `shader.displacement`       | R2, R7                          |
 | `volumeshader`              | `shader.volume`             | R2, R7                          |
 | `visibility.set.subsurface` | `visibility.subsurface-set` | R6                              |
-| `regularemission`           | `emission.regular`          | R2 (2 emission attrs → group)   |
+| `regularemission`           | `emission.regular`          | R2 (2 emission attrs -> group)  |
 | `quantizedemission`         | `emission.quantized`        | R2                              |
 
 **Unchanged:** `ATTR.priority`, `visibility.camera`, `visibility.diffuse`, `visibility.hair`, `visibility.reflection`, `visibility.refraction`, `visibility.shadow`, `visibility.specular`, `visibility.volume`, `visibility`, `matte`, `bounds`
@@ -604,9 +604,9 @@ New node type (draft, no implementation), introduced directly under the new conv
 | `lightset`        | `light-set`        | R6                              |
 | `lightsetname`    | `light-set-name`   | R6                              |
 | `outputdrivers`   | `output-drivers`   | R6, R7                          |
-| `filterwidth`     | `filter.width`     | R2 (2 filter attrs → group)     |
+| `filterwidth`     | `filter.width`     | R2 (2 filter attrs -> group)    |
 | `filter`          | `filter.name`      | R2                              |
-| `backgroundvalue` | `background.value` | R2 (2 background attrs → group) |
+| `backgroundvalue` | `background.value` | R2 (2 background attrs -> group)|
 | `backgroundlayer` | `background.layer` | R2, R7 (single-conn)            |
 | `lightdepth`      | `light-depth`      | R6                              |
 
@@ -631,7 +631,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 | ----------------------- | ------------------------- | ----------------------------- |
 | `vdbfilename`           | `filename`                | R4                            |
 | `pointsgrid`            | `point-grid`              | R6, R12                       |
-| `velocityreferencetime` | `velocity.reference-time` | R2 (2 velocity attrs → group) |
+| `velocityreferencetime` | `velocity.reference-time` | R2 (2 velocity attrs -> group)|
 | `velocityscale`         | `velocity.scale`          | R2                            |
 | `enablepscale`          | `use-point-scale`         | R9 (plain English)            |
 | `widthscale`            | `width-scale`             | R6                            |
@@ -643,7 +643,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 | Current                 | New                       | Rules                     |
 | ----------------------- | ------------------------- | ------------------------- |
 | `vdbfilename`           | `filename`                | R4                        |
-| `densitygrid`           | `grid.density`            | R2 (6 grid attrs → group) |
+| `densitygrid`           | `grid.density`            | R2 (6 grid attrs -> group)|
 | `colorgrid`             | `grid.color`              | R2                        |
 | `emissiongrid`          | `grid.emission`           | R2                        |
 | `emissionintensitygrid` | `grid.emission-intensity` | R2, R6                    |
@@ -659,7 +659,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 | Current          | New               | Rules                        |
 | ---------------- | ----------------- | ---------------------------- |
 | `screens`        | `screens`         | R7                           |
-| `shutterrange`   | `shutter.range`   | R2 (2 shutter attrs → group) |
+| `shutterrange`   | `shutter.range`   | R2 (2 shutter attrs -> group)|
 | `shutteropening` | `shutter.opening` | R2                           |
 | `clippingrange`  | `clipping-range`  | R6                           |
 
@@ -690,7 +690,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 
 | Current         | New                        | Rules                        |
 | --------------- | -------------------------- | ---------------------------- |
-| `fov`           | `field-of-view.vertical`   | R2 (2 fov attrs → group), R9 |
+| `fov`           | `field-of-view.vertical`   | R2 (2 fov attrs -> group), R9|
 | `horizontalfov` | `field-of-view.horizontal` | R2, R6, R9                   |
 | `eyeoffset`     | `eye-offset`               | R6                           |
 
@@ -700,7 +700,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 
 | Current                 | New                       | Rules                        |
 | ----------------------- | ------------------------- | ---------------------------- |
-| `streamfilename`        | `stream.filename`         | R2 (4 stream attrs → group)  |
+| `streamfilename`        | `stream.filename`         | R2 (4 stream attrs -> group) |
 | `streamformat`          | `stream.format`           | R2                           |
 | `streamcompression`     | `stream.compression`      | R2                           |
 | `streampathreplacement` | `stream.path-replacement` | R2, R6                       |
@@ -736,7 +736,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 
 **Unchanged:** `action`, `progressive`, `interactive`, `frame`
 
-**Open question — `action` as a positional argument:** Every meaningful `NSIRenderControl` call needs an `action` value — one of `start`, `wait`, `synchronize`, `suspend`, `resume`, `stop`. The call is a no-op without it. Yet the current signature carries `action` inside the optional-parameter bag, peer to the genuinely-optional `progressive` / `interactive` / callback parameters.
+**Open question -- `action` as a positional argument:** Every meaningful `NSIRenderControl` call needs an `action` value -- one of `start`, `wait`, `synchronize`, `suspend`, `resume`, `stop`. The call is a no-op without it. Yet the current signature carries `action` inside the optional-parameter bag, peer to the genuinely-optional `progressive`/`interactive`/callback parameters.
 
 Promoting `action` to a required positional argument would make intent visible at the call site:
 
@@ -757,6 +757,6 @@ void NSIRenderControl(
     const NSIParam_t   *params);
 ```
 
-A string overload can be kept for the Lua and Python bindings, where `"start"` / `"wait"` / `"stop"` read idiomatically. The enum form catches typos at compile time and surfaces the closed set of allowed values to IDE completion.
+A string overload can be kept for the Lua and Python bindings, where `"start"`/`"wait"`/`"stop"` read idiomatically. The enum form catches typos at compile time and surfaces the closed set of allowed values to IDE completion.
 
-If adopted, `action` leaves this rename table entirely — there is nothing left to rename.
+If adopted, `action` leaves this rename table entirely -- there is nothing left to rename.
