@@ -134,6 +134,7 @@ The meaning of these two arguments will not be documented for every function. In
 | `NSITypeFloat`        | Single 32-bit floating point value.                                                  |
 | `NSITypeDouble`       | Single 64-bit floating point value.                                                  |
 | `NSITypeInteger`      | Single 32-bit integer value.                                                         |
+| `NSITypeInt64`        | Single 64-bit integer value.                                                         |
 | `NSITypeString`       | String value, given as a pointer to a C string.                                      |
 | `NSITypeColor`        | Color, given as three 32-bit floating point values.                                  |
 | `NSITypePoint`        | Point, given as three 32-bit floating point values.                                  |
@@ -386,7 +387,7 @@ The optional arguments accepted by this function are:
 |                   |               | `dynamiclibrary` — Execute native compiled code in a loadable library. See [dynamic library procedurals](procedurals.md) for an implementation example.                                                                                                                    |
 | `filename`        | string        | The file from which to read the interface stream.                                                                                                                                                                                                                          |
 | `script`          | string        | A valid [Lua](lua-api.md#the-lua-api) script to execute when `type` is set to `lua`.                                                                                                                                                                                       |
-| `buffer` / `size` | pointer / int | These two arguments define a memory block that contains ɴsɪ commands to execute.                                                                                                                                                                                           |
+| `buffer`/`size`   | pointer/int64 | These two arguments define a memory block that contains ɴsɪ commands to execute.                                                                                                                                                                                           |
 | `backgroundload`  | int           | If this is nonzero, the object may be loaded in a separate thread, at some later time. This requires that further interface calls not directly reference objects defined in the included file. The only guarantee is that the file will be loaded before rendering begins. |
 
 ## Error Reporting

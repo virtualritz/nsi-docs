@@ -55,17 +55,22 @@ Each single argument is passed as a Lua table containing the following key value
 
 - `type` -- the type of the argument. Possible values are:
 
-  | **Lua Type**      | **C equivalent** |
-  | ----------------- | ---------------- |
-  | `nsi.TypeFloat`   | `NSITypeFloat`   |
-  | `nsi.TypeInteger` | `NSITypeInteger` |
-  | `nsi.TypeString`  | `NSITypeString`  |
-  | `nsi.TypeNormal`  | `NSITypeNormal`  |
-  | `nsi.TypeVector`  | `NSITypeVector`  |
-  | `nsi.TypePoint`   | `NSITypePoint`   |
-  | `nsi.TypeMatrix`  | `NSITypeMatrix`  |
+  | **Lua Type**           | **C equivalent**      |
+  | ---------------------- | --------------------- |
+  | `nsi.TypeFloat`        | `NSITypeFloat`        |
+  | `nsi.TypeInteger`      | `NSITypeInteger`      |
+  | `nsi.TypeString`       | `NSITypeString`       |
+  | `nsi.TypeColor`        | `NSITypeColor`        |
+  | `nsi.TypeNormal`       | `NSITypeNormal`       |
+  | `nsi.TypeVector`       | `NSITypeVector`       |
+  | `nsi.TypePoint`        | `NSITypePoint`        |
+  | `nsi.TypeMatrix`       | `NSITypeMatrix`       |
+  | `nsi.TypeDoubleMatrix` | `NSITypeDoubleMatrix` |
 
   Lua ɴsɪ argument types
+
+  `NSITypeDouble`, `NSITypeInt64`, and `NSITypePointer` have no Lua
+  equivalent. Use the C or C++ API for those types.
 
 - `arraylength` -- length of the array for each element.
 
