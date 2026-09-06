@@ -63,9 +63,11 @@
   - [Option 3: `edge` Nodes](design/trim-curves-edges.md)
 - [Geometry in the Type System](design/geometry-types.md)
 - [Type Names: API Alternatives](design/type-names.md)
-  - [Option A: Explicit Width](design/type-names-explicit.md)
-  - [Option B: Bare Means 32-Bit](design/type-names-postfix.md)
-  - [Option C: Width as a Flag](design/type-names-flag.md)
+  - [Encoding 1: Composite Constants](design/type-names-composite.md)
+  - [Encoding 2: A Named Bit](design/type-names-named-bit.md)
+  - [Encoding 3: A Flag in `flags`](design/type-names-flag.md)
+  - [Decision 2: Vocabulary](design/type-names-vocabulary.md)
+  - [Decision 3: Scope and Contract](design/type-names-scope.md)
 
 # Appendices
 
