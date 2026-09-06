@@ -13,3 +13,6 @@ book/build/
 
 # LaTeX build output
 docs/build/
+# Claude Code hook audit logs
+.claude/audit/
+book/.claude/audit/
