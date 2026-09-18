@@ -68,7 +68,7 @@ Attribute names use **hyphens** (`-`) as word separators, not underscores (`_`).
 - Plain English over jargon (governing principle -- R9).
   - Example `field-of-view` not `fov`.
 - Compound node type names also use hyphens: `vdb-particles`, `output-driver`, `output-layer`, `face-set`, `perspective-camera`, `fisheye-camera`, etc.
-- Example: `subdivision.corner-sharpness` -- group "Subdivision", label "Corner Sharpness".
+- Example: `subdivision.corner.sharpness` -- group "Subdivision", sub-group "Corner", label "Sharpness".
 
 ### Rulings
 
@@ -91,8 +91,9 @@ Only use dot-separated hierarchy when there are 2 or more related attributes tha
 
 ```
 subdivision.scheme
-subdivision.corner-index
-subdivision.corner-sharpness
+subdivision.corner.index
+subdivision.corner.sharpness
+subdivision.corner.automatic
 visibility.camera
 visibility.diffuse
 visibility.reflection
@@ -215,6 +216,18 @@ volume.ray-length-max             <- ray limit
 ```
 
 This avoids scattering quality-related attrs across concept groups (which would make it hard to find "all the knobs that affect render speed").
+
+The `quality.*` group exists on every node that has quality settings, not only on `global`. On `screen`, the number of camera rays per pixel and the importance-sampled pixel filter are both quality settings (R3: the group forms wherever it has 2+ members):
+
+```
+quality.pixel-samples             <- sampling effort, per pixel (screen)
+quality.importance-sample-filter  <- quality toggle (screen)
+```
+
+Within `quality.*`, the suffix tells a count from a switch:
+
+- `-samples` is a count of samples: `pixel-samples`, `shading-samples`, `volume-samples`.
+- `-sampling` switches a sampling technique on or off: `volume-emission-sampling`.
 
 #### R9: Plain English over jargon (governing principle)
 
@@ -620,10 +633,13 @@ New node type (draft, no implementation), introduced directly under the new conv
 | `prioritywindow`         | `priority-window`          | R6     |
 | `screenwindow`           | `screen-window`            | R6     |
 | `pixelaspectratio`       | `pixel-aspect-ratio`       | R6     |
-| `staticsamplingpattern`  | `static-sampling-pattern`  | R6     |
-| `importancesamplefilter` | `importance-sample-filter` | R6     |
+| `oversampling`           | `quality.pixel-samples`            | R8, R9 |
+| `staticsamplingpattern`  | `static-sampling-pattern`          | R6     |
+| `importancesamplefilter` | `quality.importance-sample-filter` | R6, R8 |
 
-**Unchanged:** `resolution`, `oversampling`, `crop`, `overscan`
+**Unchanged:** `resolution`, `crop`, `overscan`
+
+`oversampling` is jargon for a count: the number of camera rays per pixel. `quality.pixel-samples` names it the way `quality.shading-samples` names the count on `global`. `static-sampling-pattern` stays flat: it selects whether the pattern changes per frame, which is not render effort.
 
 ### `vdb-particles` Node
 
