@@ -12,11 +12,10 @@ Below is an example shader creation logic in Lua.
 ```lua
 nsi.Create( "lambert", "shader" );
 nsi.SetAttribute(
-    "lambert", {
-       { name = "filename", data = "lambert_material.oso" },
-       { name = "Kd", data = 0.55 },
-       { name = "albedo", data = { 1, 0.5, 0.3 }, type = nsi.TypeColor }
-    }
+    "lambert",
+    { name = "filename", data = "lambert_material.oso" },
+    { name = "Kd", data = 0.55 },
+    { name = "albedo", data = { 1, 0.5, 0.3 }, type = nsi.TypeColor }
 );
 
 nsi.Create( "ggx", "shader" );
@@ -158,7 +157,7 @@ Some utilities, such as error reporting, are available through the `nsi.utilitie
 
 ## Passing Arguments to a Lua Script
 
-All arguments passed to `NSIEvaluate()` will appear in the `nsi.scriptarguments` table. For example, the following call:
+All arguments passed to `NSIEvaluate()` will appear in the `nsi.scriptparameters` table. For example, the following call:
 
 ```sh
 Evaluate
@@ -167,10 +166,10 @@ Evaluate
     "userdata" "color[2]" 1 [1 0 1 2 3 4]
 ```
 
-Will register a `userdata` entry in the `nsi.scriptarguments` table. So executing the following line in the `test.lua` script that the above snippete references:
+Will register a `userdata` entry in the `nsi.scriptparameters` table. So executing the following line in the `test.lua` script that the above snippete references:
 
 ```lua
-print( nsi.scriptarguments.userdata.data[5] );
+print( nsi.scriptparameters.userdata.data[5] );
 ```
 
 Will print:
@@ -187,12 +186,12 @@ Use `nsi.utilities.ReportError()` to send error messages to the error handler de
 nsi.utilities.ReportError( nsi.ErrWarning, "Watch out!" );
 ```
 
-The and are shown in .
+The error codes are the same as in the C API. They are shown in the table below.
 
 | **Lua Error Codes** | **C equivalent** |
 | ------------------- | ---------------- |
 | `nsi.ErrMessage`    | `NSIErrMessage`  |
-| `nsi.ErrWarning`    | `NSIErrMessage`  |
+| `nsi.ErrWarning`    | `NSIErrWarning`  |
 | `nsi.ErrInfo`       | `NSIErrInfo`     |
 | `nsi.ErrError`      | `NSIErrError`    |
 

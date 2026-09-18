@@ -6,4 +6,4 @@ This geometry node defines a sphere of infinite radius. Its only purpose is to r
 | ------- | ---------- | ------- |
 | `angle` | _`double`_ | `360`   |
 
-Specifies the cone angle representing the region of the sphere to be sampled. The angle is measured around the Z+ axis. If the angle is set to 0, the environment describes a directional light. Refer to [lighting guidelines](../guidelines.md#lighting-in-the-nodal-scene-interface) for more about how to specify light sources.
+Specifies the cone angle representing the region of the sphere to be sampled. The angle is measured around the Z+ axis. To orient the environment dome, connect the node to a [transform](transform.md) node and apply the rotation there. If the angle is set to 0, the environment describes a directional light. Refer to [lighting guidelines](../guidelines.md#lighting-in-the-nodal-scene-interface) for more about how to specify light sources.

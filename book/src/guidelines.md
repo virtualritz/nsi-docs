@@ -10,7 +10,7 @@ A minimal (and useful) ɴsɪ scene graph contains the three following components
 2.  [ᴏsʟ](https://opensource.imageworks.com/?p=osl) materials linked to scene geometry through an [attributes](nodes/attributes.md) node.
 3.  At least one _outputdriver_ ​ → ​ _outputlayer_ ​ → ​ _screen_ ​ → ​ _camera_ ​ → ​ `.root` chain to describe a view and an output device.
 
-The scene graph in shows a renderable scene with all the necessary elements. Note how the connections always lead to the `.root` node.
+The scene graph above shows a renderable scene with all the necessary elements. Note how the connections always lead to the `.root` node.
 
 In this view, a node with no output connections is not relevant by definition and will be ignored.
 
@@ -28,7 +28,7 @@ In ɴsɪ things are simpler and all attributes are set through the `NSISetAttrib
 > [!NOTE]
 > In this documentation, all intrinsic attributes are documented at the beginning of each section describing a particular node.
 
-In [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shaders, attributes are accessed using the `getattribute()` function and _this is the only way to access attributes in ɴsɪ_. Having one way to set and to access attributes makes things simpler (a [design goal](background.md#chapter-background)) and allows for extra flexibility (another design goal). shows two features of attribute assignment in ɴsɪ:
+In [ᴏsʟ](https://opensource.imageworks.com/?p=osl) shaders, attributes are accessed using the `getattribute()` function and _this is the only way to access attributes in ɴsɪ_. Having one way to set and to access attributes makes things simpler (a [design goal](background.md#chapter-background)) and allows for extra flexibility (another design goal). The figure above shows two features of attribute assignment in ɴsɪ:
 
 Attribute inheritance
 
@@ -46,7 +46,7 @@ Instancing in ɴsɪ is naturally performed by connecting a geometry to more than
 
 ![Instancing in ɴsɪ with attribute inheritance and per-instance attribute override](image/instancing.svg)
 
-The above figure shows a simple scene with a geometry instanced three times. The scene also demonstrates how to override an attribute for one particular geometry instance, an operation very similar to what we have seen in [the attributes section](guidelines.md#section-attributes). Note that transforms can also be instanced and this allows for _instances of instances_ using the same semantics.
+The above figure shows a simple scene with a geometry instanced three times. The scene also demonstrates how to override an attribute for one particular geometry instance, an operation very similar to what we have seen in [the attributes section](guidelines.md#a-word-or-two-about-attributes). Note that transforms can also be instanced and this allows for _instances of instances_ using the same semantics.
 
 ## Creating ᴏsʟ Networks
 
@@ -63,7 +63,7 @@ Some observations:
 >
 > This behavior is useful when the shader needs to refer to another node, in a [ᴏsʟ](https://opensource.imageworks.com/?p=osl) call to `transform()` or `getattribute()`, for example.
 
-- There is no _symbolic linking_ between shader arguments and geometry attributes (a.k.a. primvars). One has to explicitly use the `getattribute()` [ᴏsʟ](https://opensource.imageworks.com/?p=osl) function to read attributes attached to geometry. In this is done in the `read_attribute` node ([Lines 11--14](guidelines.md#osl-network-example)). Also see the section on [attributes](guidelines.md#section-attributes).
+- There is no _symbolic linking_ between shader arguments and geometry attributes (a.k.a. primvars). One has to explicitly use the `getattribute()` [ᴏsʟ](https://opensource.imageworks.com/?p=osl) function to read attributes attached to geometry. In the example above, this is done in the `read_attribute` node ([Lines 11--14](guidelines.md#osl-network-example)). Also see the section on [attributes](guidelines.md#a-word-or-two-about-attributes).
 
 ```sh
 Create "ggx_metal" "shader"
@@ -100,7 +100,7 @@ Connect "ggx_metal" "Ci" "attr" "surfaceshader"
 
 There are no special light source nodes in ɴsɪ (although the [environment](nodes/environment.md) node, which defines a sphere of infinite radius, could be considered a light in practice).
 
-Any scene geometry can become a light source if its surface shader produces an `emission()` [closure](https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support). Some operations on light sources, such as _light linking_, are done using more [general approaches](guidelines.md#section-lightlinking).
+Any scene geometry can become a light source if its surface shader produces an `emission()` [closure](https://www.3delight.com/documentation/display/3DSP/3Delight's+OSL+Support). Some operations on light sources, such as _light linking_, are done using more [general approaches](guidelines.md#inter-object-visibility).
 
 Following is a quick summary on how to create different kinds of light in ɴsɪ.
 
@@ -179,7 +179,7 @@ shader hdrlight(
 ```
 
 > [!NOTE]
-> Environment geometry is visible to camera rays by default so it will appear as a background in renders. To disable this simply switch off camera visibility on the associated node.
+> Environment geometry is visible to camera rays by default so it will appear as a background in renders. To disable this simply switch off camera visibility on the associated attributes node.
 
 ## Defining Output Drivers and Layers
 
@@ -192,7 +192,7 @@ shader hdrlight(
 - Rendering different scene views per output layer (e.g. one pass stereo render)
 - Rendering images of different resolutions from the same camera (e.g. two viewports using the same camera, in an animation software)
 
-depicts a ɴsɪ scene to create one file with three layers. In this case, all layers are saved to the same file and the render is using one view. A more complex example is shown in : a left and right cameras are used to drive two file outputs, each having two layers (`Ci` and `Diffuse` colors).
+The figure above depicts an ɴsɪ scene that creates one file with three layers. In this case, all layers are saved to the same file and the render is using one view. A more complex example is shown below: a left and a right camera are used to drive two file outputs, each having two layers (`Ci` and `Diffuse` colors).
 
 ![ɴsɪ graph for a stereo image output](image/output_channels_stereo.svg)
 
@@ -206,13 +206,13 @@ The ability to render a certain set of lights per output layer has a formal work
 2.  Create a set of lights using the `set` node and connect it into `outputlayer.lightset`
 3.  A combination of both 1 and 2
 
-Above diagram a scene using method to create an output layer containing only illumination from two lights of the scene. Note that if there are no lights or light sets connected to the `lightset` attribute then all lights are rendered. The final output pixels contain the illumination from the considered lights on the specific surface variable specified in `outputlayer.variablename` ().
+The diagram above shows a scene using method 2 to create an output layer containing only illumination from two lights of the scene. Note that if there are no lights or light sets connected to the `lightset` attribute then all lights are rendered. The final output pixels contain the illumination from the considered lights on the specific surface variable specified in `outputlayer.variablename` ().
 
 ## Inter-Object Visibility
 
 Some common rendering features are difficult to achieve using attributes and hierarchical tree structures. One such example is inter-object visibility in a 3D scene. A special case of this feature is _light linking_ which allows the artist to select which objects a particular light illuminates, or not. Another classical example is a scene in which a ghost character is invisible to camera rays but visible in a mirror.
 
-In ɴsɪ such visibility relationships are implemented using cross-hierarchy connection between one object and another. In the case of the mirror scene, one would first tag the character invisible using the attribute and then connect the attribute node of the receiving object (mirror) to the visibility attribute of the source object (ghost) to _override_ its visibility status. Essentially, this "injects" a new value for the ghost visibility for rays coming from the mirror.
+In ɴsɪ such visibility relationships are implemented using cross-hierarchy connection between one object and another. In the case of the mirror scene, one would first tag the character invisible using the `visibility` attribute and then connect the attribute node of the receiving object (mirror) to the visibility attribute of the source object (ghost) to _override_ its visibility status. Essentially, this "injects" a new value for the ghost visibility for rays coming from the mirror.
 
 ![Visibility override, both hierarchically and inter-object](image/vampire.svg)
 

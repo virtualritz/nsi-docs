@@ -20,7 +20,26 @@ It also has optional attributes:
 | -------- | ------- | ------- |
 | `nholes` | _`int`_ |         |
 
-The number of holes in the polygons. When this attribute is defined, the total number of faces in the mesh is defined by the number of values for `nholes` rather than for `nvertices`. For each face, there should be (nholes+1) values in `nvertices`: the respective first value specifies the number of vertices on the outside perimeter of the face, while additional values describe the number of vertices on perimeters of holes in the face.
+The number of holes in the polygons. When this attribute is defined, the total number of faces in the mesh is defined by the number of values for `nholes` rather than for `nvertices`. For each face, there should be (nholes+1) values in `nvertices`: the respective first value specifies the number of vertices on the outside perimeter of the face, while additional values describe the number of vertices on perimeters of holes in the face. This stream defines a polygon mesh of three square faces, with one triangular hole in the first face and two square holes in the second:
+
+```sh
+Create "holey" "mesh"
+SetAttribute "holey"
+  "nholes" "int" 3 [ 1 2 0 ]
+  "nvertices" "int" 6 [
+    4 3               # Square with 1 triangular hole
+    4 4 4             # Square with 2 square holes
+    4 ]               # Square with 0 hole
+  "P" "point" 23 [
+    0 0 0    3 0 0    3 3 0    0 3 0
+    1 1 0    2 1 0    1 2 0
+
+    4 0 0    9 0 0    9 3 0    4 3 0
+    5 1 0    6 1 0    6 2 0    5 2 0
+    7 1 0    8 1 0    8 2 0    7 2 0
+
+    10 0 0   13 0 0   13 3 0   10 3 0 ]
+```
 
 | Name               | Type    | Default |
 | ------------------ | ------- | ------- |

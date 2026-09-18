@@ -182,6 +182,12 @@ Adjusts targeted render speed when processing multiple scene edits. A higher val
 
 | Name                     | Type    | Default |
 | ------------------------ | ------- | ------- |
+| `quality.causticsamples` | _`int`_ | `1`     |
+
+Controls the quality of caustic sampling. Larger values give more accurate results.
+
+| Name                     | Type    | Default |
+| ------------------------ | ------- | ------- |
 | `quality.shadingsamples` | _`int`_ | `1`     |
 
 Controls the quality of ʙsᴅꜰ sampling. Larger values give less visible noise.
@@ -215,6 +221,12 @@ When set to 1, enables displacement shading. Otherwise, it must be set to 0, whi
 | `show.atmosphere` | _`int`_ | `1`     |
 
 When set to 1, enables atmosphere shader(s). Otherwise, it must be set to 0, which forces the renderer to ignore any atmosphere shader in the scene.
+
+| Name                 | Type    | Default |
+| -------------------- | ------- | ------- |
+| `show.instancesnode` | _`int`_ | `1`     |
+
+When set to 1, enables the [instances node](instances.md). Otherwise, it must be set to 0, which forces the renderer to ignore geometry defined by these nodes.
 
 | Name                      | Type       | Default |
 | ------------------------- | ---------- | ------- |

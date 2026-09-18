@@ -63,15 +63,15 @@ If `NSIBegin` fails for some reason, it returns `NSI_BAD_CONTEXT` which is defin
 |                         |          | `render` — Execute the calls directly in the renderer. This is the **default**.                                                                                                                                                                                                                                    |
 |                         |          | `apistream` — To write the interface calls to a stream, for later execution. The target for writing the stream must be specified in another argument.                                                                                                                                                              |
 | `streamfilename`        | string   | The file to which the stream is to be output, if the context type is `apistream`. Specify `stdout` to write to standard output and `stderr` to write to standard error.                                                                                                                                            |
-| `streamformat`          | string   | The format of the command stream to write. Possible formats are:                                                                                                                                                                                                                                                   |
+| `streamformat`          | string (`nsi`) | The format of the command stream to write. Possible formats are:                                                                                                                                                                                                                                                   |
 |                         |          | `nsi` — Produces an [ɴsɪ stream](stream-api.md#the-nsi-stream).                                                                                                                                                                                                                                                    |
 |                         |          | `binarynsi` — Produces a binary encoded [ɴsɪ stream](stream-api.md#the-nsi-stream).                                                                                                                                                                                                                                |
-|                         |          | `autonsi` — Automatically selects the best format.                                                                                                                                                                                                                                                                 |
-| `stream.compression`    | string   | The type of compression to apply to the written command stream.                                                                                                                                                                                                                                                    |
-| `streampathreplacement` | int      | Use `0` to disable replacement of path prefixes by references to environment variables which begin with `NSI_PATH_` in an ɴsɪ stream. This should generally be left enabled to ease creation of files which can be moved between systems.                                                                          |
-| `separateprocess`       | int      | When set to `1`, the render will be executed in a separate process.                                                                                                                                                                                                                                                |
+|                         |          | `autonsi` — Behaves like `nsi` if `streamfilename` ends with `.nsia`, and like `binarynsi` otherwise.                                                                                                                                                                                                                                                                 |
+| `streamcompression`     | string   | The type of compression to apply to the written command stream.                                                                                                                                                                                                                                                    |
+| `streampathreplacement` | int (`1`) | Use `0` to disable replacement of path prefixes by references to environment variables which begin with `NSI_PATH_` in an ɴsɪ stream. This should generally be left enabled to ease creation of files which can be moved between systems.                                                                          |
+| `separateprocess`       | int (`0`) | A non-zero value makes rendering occur in a separate process. This can reduce the effect of rendering on the host application.                                                                                                                                                                                     |
 | `errorhandler`          | pointer  | A function which is to be called by the renderer to report errors. The default handler will print messages to the console.                                                                                                                                                                                         |
-| `errorhandler.data`     | pointer  | The `userdata` argument of the [error reporting function](#error-reporting).                                                                                                                                                                                                                                       |
+| `errorhandlerdata`      | pointer  | The `userdata` argument of the [error reporting function](#error-reporting).                                                                                                                                                                                                                                       |
 | `executeprocedurals`    | string   | A list of procedural types that should be executed immediately when a call to [NSIEvaluate()](#evaluating-procedurals) or a procedural node is encountered and `NSIBegin()`'s output `type` is `apistream`. This will replace any matching call to `NSIEvaluate()` with the results of the procedural's execution. |
 
 ## Arguments vs. Attributes
@@ -149,15 +149,15 @@ The meaning of these two arguments will not be documented for every function. In
 > The names of these constants spell the storage width in three different ways.
 > See [Type Names: API Alternatives](design/type-names.md) for a draft that reworks them.
 
-Tuple types are specified by setting the bit defined by the `NSIArgIsArray` constant in the `flags` member and the length of the tuple in the `arraylength` member.
+Tuple types are specified by setting the bit defined by the `NSIParamIsArray` constant in the `flags` member and the length of the tuple in the `arraylength` member.
 
 > [!TIP]
-> It helps to view `arraylength` as a part of the data type. The data type is a tuple with this length when `NSIArgIsArray` is set.
+> It helps to view `arraylength` as a part of the data type. The data type is a tuple with this length when `NSIParamIsArray` is set.
 
 > [!NOTE]
-> If `NSIArgIsArray` is not set, `arraylength` is _ignored_.
+> If `NSIParamIsArray` is not set, `arraylength` is _ignored_.
 >
-> The `NSIArgIsArray` flag is necessary to distinguish between arguments that happen to be of _length_ 1 (set in the `count` member) and tuples that have a _length_ of 1 (set in the `arraylength` member) for the resp. argument.
+> The `NSIParamIsArray` flag is necessary to distinguish between arguments that happen to be of _length_ 1 (set in the `count` member) and tuples that have a _length_ of 1 (set in the `arraylength` member) for the resp. argument.
 >
 > ```sh
 > "foo" "int[1]" 1 [42]  # The answer to the ultimate question – in a (single) tuple
@@ -171,19 +171,19 @@ The `data` member is a pointer to the data for the argument. This is a pointer t
 > [!NOTE]
 > When data is an array, the actual number of elements in the array is count × arraylength × n. Where n is specified implicitly through the `type` member in the table above.
 >
-> For example, if the type is `NSITypeColor` (**3** values), `NSIArgIsArray` is set, `arraylength` is **2** and `count` is **4**, `data` is expected to contain **24** 32-bit floating point values (3×2×4).
+> For example, if the type is `NSITypeColor` (**3** values), `NSIParamIsArray` is set, `arraylength` is **2** and `count` is **4**, `data` is expected to contain **24** 32-bit floating point values (3×2×4).
 
 The `flags` member is a bit field with a number of constants used to communicate more information about the argument:
 
 | Flag                      | Description                                                                                                               |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `NSIArgIsArray`           | To specify that the argument is an array type, as explained above.                                                        |
-| `NSIArgPerFace`           | To specify that the argument has different values for every face of a geometric primitive, where this might be ambiguous. |
-| `NSIArgPerVertex`         | Specify that the argument has different values for every vertex of a geometric primitive, where this might be ambiguous.  |
-| `NSIArgInterpolateLinear` | Specify that the argument is to be interpolated linearly instead of using some other, default method.                     |
+| `NSIParamIsArray`           | To specify that the argument is an array type, as explained above.                                                        |
+| `NSIParamPerFace`           | To specify that the argument has different values for every face of a geometric primitive, where this might be ambiguous. |
+| `NSIParamPerVertex`         | Specify that the argument has different values for every vertex of a geometric primitive, where this might be ambiguous.  |
+| `NSIParamInterpolateLinear` | Specify that the argument is to be interpolated linearly instead of using some other, default method.                     |
 
 > [!NOTE]
-> `NSIArgPerFace` or `NSIArgPerVertex` are only strictly needed in rare circumstances when a geometric primitive's number of vertices matches the number of faces. The most simple case is a tetrahedral mesh which has exactly four vertices and also four faces.
+> `NSIParamPerFace` or `NSIParamPerVertex` are only strictly needed in rare circumstances when a geometric primitive's number of vertices matches the number of faces. The most simple case is a tetrahedral mesh which has exactly four vertices and also four faces.
 
 Indirect lookup of arguments is achieved by giving an integer argument of the same name, with the `.indices` suffix added. This is read to know which values of the other argument to use.
 
@@ -354,12 +354,12 @@ These two functions respectively create or remove a connection between two eleme
 | **Name**   | **Type** | **Description/Values**                                                                                                                                                                                                         |
 | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `value`    |          | This can be used to change the value of a node's attribute in some contexts. Refer to [guidelines on inter-object visibility](guidelines.md#inter-object-visibility) for more information about the utility of this parameter. |
-| `priority` |          | When connecting attribute nodes, indicates in which order the nodes should be considered when evaluating the value of an attribute. At equal priority, the attributes node connected first wins; see [the attributes node](nodes/attributes.md#geometry-attributes). |
+| `priority` | int (0)  | When connecting attribute nodes, indicates in which order the nodes should be considered when evaluating the value of an attribute. At equal priority, the attributes node connected first wins; see [the attributes node](nodes/attributes.md#geometry-attributes). |
 | `strength` | int (0)  | A connection with a strength greater than `0` will _block_ the progression of a recursive `NSIDelete`.                                                                                                                         |
 
 ## Severing Connections
 
-With `NSIDisconnect()`, the handle for either node may be the special value `.all`. This will remove all connections which match the other three arguments. For example, to disconnect everything from [the scene's root](nodes/root.md):
+With `NSIDisconnect()`, the handle for either node, and any or all of the attribute names, may be the special value `.all`. This will remove all connections which match the other arguments. For example, to disconnect everything from [the scene's root](nodes/root.md):
 
 ```c
 NSIDisconnect( NSI_ALL_NODES, "", NSI_SCENE_ROOT, "objects" );
@@ -386,10 +386,11 @@ The optional arguments accepted by this function are:
 | **Name**          | **Type**      | **Description/Values**                                                                                                                                                                                                                                                     |
 | ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`            | string        | The type of file which will generate the interface calls. This can be one of:                                                                                                                                                                                              |
-|                   |               | `apistream` — Read in an [ɴsɪ stream](stream-api.md#the-nsi-stream). This requires either `filename` or `buffer`/`size` arguments to be specified too.                                                                                                                     |
+|                   |               | `apistream` — Read in an [ɴsɪ stream](stream-api.md#the-nsi-stream). This requires either `filename`, `script` or `buffer`/`size` to be provided as the source of the ɴsɪ commands.                                                                                                                     |
 |                   |               | `lua` — Execute a [Lua](lua-api.md#the-lua-api) script, either from file or inline. See also [how to evaluate a Lua script](lua-api.md#the-lua-api).                                                                                                                       |
 |                   |               | `dynamiclibrary` — Execute native compiled code in a loadable library. See [dynamic library procedurals](procedurals.md) for an implementation example.                                                                                                                    |
 | `filename`        | string        | The file from which to read the interface stream.                                                                                                                                                                                                                          |
+| `replacensidir`   | int (`1`)     | When evaluating an `apistream`, this controls whether `${NSIDIR}` references are replaced by the path to the directory that holds `filename`.                                                                                                                              |
 | `script`          | string        | A valid [Lua](lua-api.md#the-lua-api) script to execute when `type` is set to `lua`.                                                                                                                                                                                       |
 | `buffer`/`size`   | pointer/int64 | These two arguments define a memory block that contains ɴsɪ commands to execute.                                                                                                                                                                                           |
 | `backgroundload`  | int           | If this is nonzero, the object may be loaded in a separate thread, at some later time. This requires that further interface calls not directly reference objects defined in the included file. The only guarantee is that the file will be loaded before rendering begins. |
@@ -451,8 +452,8 @@ This function is the only control function of the API. It is responsible for sta
 
 | **Name**          | **Type** | **Description/Values**                                                                                                                                                                                                                              |
 | ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `progressive`     | integer  | If set to `1`, render the image in a progressive fashion.                                                                                                                                                                                           |
-| `interactive`     | integer  | If set to `1`, the renderer will accept commands to edit scene's state while rendering. The difference with a normal render is that the render task will not exit even if rendering is finished. Interactive renders are by definition progressive. |
+| `progressive`     | int (`0`) | If set to `1`, render the image in a progressive fashion.                                                                                                                                                                                           |
+| `interactive`     | int (`0`) | If set to `1`, the renderer will accept commands to edit scene's state while rendering. The difference with a normal render is that the render task will not exit even if rendering is finished. Interactive renders are by definition progressive. Interactive renders are by definition progressive. |
 | `frame`           |          | Specifies the frame number of this render.                                                                                                                                                                                                          |
 | `stoppedcallback` | pointer  | A pointer to a user function that should be called on rendering status changes. The function signature is:                                                                                                                                          |
 

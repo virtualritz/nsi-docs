@@ -62,7 +62,7 @@ The name of an OCIO color profile to apply to rendered image data prior to quant
 | ----------- | ----------- | ------- |
 | `dithering` | _`int`_ | `0`     |
 
-If set to 1, dithering is applied to integer scalars. Otherwise, it must be set to 0.
+If set to 1, dithering is applied to integer scalars. Otherwise, it must be set to 0. Turn dithering off when a layer carries values that must not change, such as object IDs.
 
 | Name        | Type        | Default |
 | ----------- | ----------- | ------- |
@@ -133,14 +133,8 @@ Allows filtering light contributions according to the number of bounces light ha
 
 | Name                 | Type    | Default |
 | -------------------- | ------- | ------- |
-| `cryptomatte.enable` | _`int`_ | `0`     |
+| `cryptomatte.enable` | _`int`_ | `1`     |
 
-Setting this attribute to 1 enables Cryptomatte encoding of the layer's data. `cryptomatte.level` should also be set properly.
-
-| Name                | Type    | Default |
-| ------------------- | ------- | ------- |
-| `cryptomatte.level` | _`int`_ | `0`     |
-
-If this value is negative, the layer will contain a human-readable "Cryptomatte header" image. Otherwise, the value indicates the index of the first Cryptomatte level that will be output. Since Cryptomatte levels are output by pairs, a Cryptomatte file with 4 levels would contain output layers with `cryptomatte.level` set to -1, 0 and 2. This has no effect unless Cryptomatte encoding is enabled using `cryptomatte.enable`.
+With the default value of 1, some output variables -- the built-ins `id.geometry`, `id.scenepath`, `id.surfaceshader` and `id.asset` -- are encoded in Cryptomatte format when `layertype` is `color`. Extra Cryptomatte data layers, used for antialiased selection, are also added to connected [output drivers](outputdriver.md) of type `exr`. A value of 0 disables both the Cryptomatte encoding of the layer and the extra Cryptomatte data layers.
 
 Any extra attributes are also forwarded to the output driver which may interpret them however it wishes.

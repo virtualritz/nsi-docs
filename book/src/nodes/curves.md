@@ -29,7 +29,6 @@ The basis functions used for curve interpolation. Possible choices are:
 - `b-spline` — B-spline interpolation.
 - `catmull-rom` — Catmull-Rom interpolation.
 - `linear` — Linear interpolation.
-- `hobby` — Hobby interpolation.
 
 | Name          | Type    | Default |
 | ------------- | ------- | ------- |

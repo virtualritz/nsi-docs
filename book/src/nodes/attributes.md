@@ -94,6 +94,24 @@ If this is set to 1, quantized closures will use emission from the objects affec
 
 When a geometry node (usually a [mesh node](mesh.md)) is connected to this attribute, it restricts the effect of the attributes node. The node then applies only inside the volume defined by the connected geometry. A transform node may be connected here instead, which is equivalent to connecting every geometry node reachable through that transform.
 
+| Name            | Type    | Default |
+| --------------- | ------- | ------- |
+| `caustics.cast` | _`int`_ | `0`     |
+
+Only objects with this attribute set to a non-zero value are considered to alter the shape of caustics through reflection and refraction.
+
+| Name            | Type    | Default |
+| --------------- | ------- | ------- |
+| `caustics.emit` | _`int`_ | `0`     |
+
+Only lights with this attribute set to a non-zero value contribute to caustics.
+
+| Name               | Type    | Default |
+| ------------------ | ------- | ------- |
+| `caustics.receive` | _`int`_ | `0`     |
+
+Only objects with this attribute set to a non-zero value receive caustics.
+
 | Name                     | Type      | Default |
 | ------------------------ | --------- | ------- |
 | `displacementresolution` | _`float`_ | `1`     |

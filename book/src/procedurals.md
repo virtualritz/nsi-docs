@@ -16,7 +16,7 @@ struct NSIProcedural_t* NSIProceduralLoad(
     const char* renderer_version);
 ```
 
-It will be called only once per render and has the responsibility of initializing the library and returning a description of the functions implemented by the procedural. However, it is not meant to generate ɴsɪ calls.
+It will be called only once per render and has the responsibility of initializing the library and returning a description of the functions implemented by the procedural. However, it is not meant to generate ɴsɪ calls. For that reason, it is passed a unique `NSIContext_t` that should be used only in that function, usually to call the `report` function.
 
 It returns a pointer to a descriptor struct of type `NSIProcedural_t` (see [below](#procedural-description)).
 
