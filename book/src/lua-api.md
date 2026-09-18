@@ -66,11 +66,18 @@ Each single argument is passed as a Lua table containing the following key value
   | `nsi.TypePoint`        | `NSITypePoint`        |
   | `nsi.TypeMatrix`       | `NSITypeMatrix`       |
   | `nsi.TypeDoubleMatrix` | `NSITypeDoubleMatrix` |
+  | `nsi.TypeHPoint`       | `NSITypeHPoint`       |
 
   Lua ɴsɪ argument types
 
   `NSITypeDouble`, `NSITypeInt64`, and `NSITypePointer` have no Lua
   equivalent. Use the C or C++ API for those types.
+
+  > **Warning:** In 3Delight 2.9.210, `nsi.TypeDouble`, `nsi.TypeInt64` and
+  > `nsi.TypePointer` are `nil`. An argument that names one of them has no
+  > type, so the renderer infers one, and the value is changed without an
+  > error: `data=9007199254740993, type=nsi.TypeInt64` arrives as the `int`
+  > 1, and `data=0.1, type=nsi.TypeDouble` arrives as a `float`.
 
 - `arraylength` -- length of the array for each element.
 

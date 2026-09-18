@@ -1,6 +1,6 @@
 # Trim Curves: API Alternatives
 
-The [`nurbs`](../nodes/nurbs.md) node is a draft. No implementation exists yet. One packaging question therefore stays open: **where does trim-curve data live**? It can live inline on the surface node, or in nodes of its own. This section gives three alternatives with their rationale and trade-offs, as a basis for discussion with implementers. All three share the same per-curve data model: counts, orders, knots, control points, hole flags, and edge identities. They differ in *granularity*, in *ordering semantics*, and in *how each option expresses welds*.
+3Delight 2.9.210 ships the [`nurbs`](../nodes/nurbs.md) node with its trim curves inline, under the legacy names. For the [draft design](nurbs-draft.md) of its next version, one packaging question stays open: **where does trim-curve data live**? It can live inline on the surface node, or in nodes of its own. This section gives three alternatives with their rationale and trade-offs, as a basis for discussion with implementers. All three share the same per-curve data model: counts, orders, knots, control points, hole flags, and edge identities. They differ in *granularity*, in *ordering semantics*, and in *how each option expresses welds*.
 
 The criteria worth weighing:
 
@@ -9,7 +9,7 @@ The criteria worth weighing:
 - **Editability** -- can a live session replace one hole without a resend of the rest?
 - **Reuse** -- can two faces share identical trim geometry?
 - **Ordering** -- a loop orders its curves head-to-tail. Connections in ɴsɪ have no order. A node-based option must therefore carry the order as data.
-- **Stitching fidelity** -- how well the option conserves the CAD weld topology ([Stitching](../nodes/nurbs.md#stitching)), and what the renderer can do with it.
+- **Stitching fidelity** -- how well the option conserves the CAD weld topology ([Stitching](nurbs-draft.md#stitching)), and what the renderer can do with it.
 - **Precedent** -- three prior designs differ:
   - RenderMan's `RiTrimCurve` was a separate entity from the patch it trimmed. It set graphics state for the `RiNuPatch` calls that followed.
   - The existing 3Delight ɴsɪ carries `trimcurves.*` inline.

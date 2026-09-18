@@ -58,6 +58,7 @@
 
 # Design Drafts
 
+- [NURBS: Draft Design](design/nurbs-draft.md)
 - [Trim Curves: API Alternatives](design/trim-curves.md)
   - [Option 1: Inline Attributes](design/trim-curves-inline.md)
   - [Option 2: `trim` Nodes](design/trim-curves-nodes.md)
@@ -69,6 +70,7 @@
   - [Encoding 3: A Flag in `flags`](design/type-names-flag.md)
   - [Decision 2: Vocabulary](design/type-names-vocabulary.md)
   - [Decision 3: Scope and Contract](design/type-names-scope.md)
+  - [Type Rename: Role, Components, Width](design/type-rename.md)
 
 # Appendices
 

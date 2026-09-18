@@ -33,6 +33,7 @@ enum NSIType_t
 	NSITypeFloat = 1,
 	NSITypeDouble = NSITypeFloat | 0x10,
 	NSITypeInteger = 2,
+	NSITypeInt64 = NSITypeInteger | 0x10,
 	NSITypeString = 3,
 	NSITypeColor = 4,
 	NSITypePoint = 5,
@@ -40,7 +41,8 @@ enum NSIType_t
 	NSITypeNormal = 7,
 	NSITypeMatrix = 8,
 	NSITypeDoubleMatrix = NSITypeMatrix | 0x10,
-	NSITypePointer = 9
+	NSITypePointer = 9,
+	NSITypeHPoint = 10
 };
 
 static inline
@@ -50,9 +52,9 @@ size_t NSITypeSizeOf(unsigned t)
 	{
 		0, sizeof(float), sizeof(int), sizeof(char*),
 		3*sizeof(float), 3*sizeof(float), 3*sizeof(float), 3*sizeof(float),
-		16*sizeof(float), sizeof(void*), 0, 0,
+		16*sizeof(float), sizeof(void*), 4*sizeof(float), 0,
 		0, 0, 0, 0,
-		0, sizeof(double), 0, 0,
+		0, sizeof(double), 8, 0,
 		0, 0, 0, 0,
 		16*sizeof(double)
 	};
@@ -173,5 +175,4 @@ DL_INTERFACE void NSIRenderControl(
 #endif
 
 #endif
-
 ```

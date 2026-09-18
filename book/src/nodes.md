@@ -11,7 +11,7 @@ The following sections describe available nodes in technical terms. Refer to [th
 | [attributes](nodes/attributes.md)     | Container for generic attributes (e.g. visibility)                                |
 | [transform](nodes/transform.md)       | Transformation to place objects in the scene                                      |
 | [mesh](nodes/mesh.md)                 | Polygonal mesh or subdivision surface                                             |
-| [nurbs](nodes/nurbs.md)               | NURBS surface patch, optionally trimmed and stitched (draft)                      |
+| [nurbs](nodes/nurbs.md)               | NURBS surface patch, optionally trimmed                                           |
 | [t-nurcc](nodes/t-nurcc.md)           | Watertight T-spline surface — rational Catmull-Clark with T-junctions (draft)     |
 | [plane](nodes/plane.md)               | Infinite plane                                                                    |
 | [faceset](nodes/faceset.md)           | Assign attributes to part of a mesh                                               |

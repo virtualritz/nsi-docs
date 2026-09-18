@@ -488,8 +488,8 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `vmin`                     | `v.min`                         | R3, R6                                      |
 | `vmax`                     | `v.max`                         | R3, R6                                      |
 | `P`                        | `position`                      | R5                                          |
-| `Pw`                       | `position-weighted`             | R5, R6 (alternative to `position`)          |
-| `trimcurves.nloops`        | `trim-curves.loop-count`        | R5, R6                                      |
+| `Pw`                       | `position-weighted`             | R5, R6 (alternative to `position`); type `hpoint` -> `weighted-point` |
+| --                         | `trim-curves.loop-count`        | New: the shipped node derives it from the number of `trimcurves.ncurves` values |
 | `trimcurves.ncurves`       | `trim-curves.curve-count`       | R5, R6                                      |
 | `trimcurves.n`             | `trim-curves.point-count`       | R5 (`n` and `cv` are jargon), R9            |
 | `trimcurves.order`         | `trim-curves.order`             | R6 (group prefix only)                      |
@@ -498,7 +498,7 @@ The `u` and `v` axes each have five related attributes (count, order, knot, min,
 | `trimcurves.max`           | `trim-curves.max`               | R6                                          |
 | `trimcurves.u`, `.v`       | `trim-curves.position`          | API change (consolidation); mirrors surface |
 | `trimcurves.u`, `.v`, `.w` | `trim-curves.position-weighted` | API change (consolidation); mirrors surface |
-| `trimcurves.sense`         | `trim-curves.hole`              | R9 (`sense` is jargon -- and CAD uses the word for direction, not region keeping)|
+| `trimcurves.inside`        | `trim-curves.hole`              | API change: one value per loop, and inverted (`inside` 1 keeps the inside; `hole` 1 removes it) |
 | --                         | `trim-curves.edge-id`           | New (stitching); `id` is fine per R5        |
 | --                         | `trim-curves.edge-orientation`  | New (stitching)                             |
 | --                         | `stitch.edge-id`                | New (stitching), R2 (group of 2)            |
@@ -513,7 +513,7 @@ Supply one of the two; never both. This is the same supply-one-of pattern the su
 
 The types differ on purpose: the surface's `position-weighted` uses the draft `weighted-point` type -- four floats that transform as one homogeneous unit -- while the trim-curve tuples stay plain `float[2]`/`float[3]`, because parameter-space data must never transform. See [Geometry in the Type System](design/geometry-types.md).
 
-**Draft-status note.** The `nurbs` node is a draft that no renderer implements yet, so there is nothing to be backward-compatible with. Its [reference page](nodes/nurbs.md) therefore already uses the new names throughout -- the "Current" column above records the superseded draft spelling. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
+**Status note.** 3Delight 2.9.210 implements the `nurbs` node with the names in the "Current" column; its [reference page](nodes/nurbs.md) documents them. The new names are those of the [draft design](design/nurbs-draft.md), which was written before that release. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
 ### `t-nurcc` Node
 

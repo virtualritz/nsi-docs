@@ -1,6 +1,6 @@
 # Geometry in the Type System
 
-The [`nurbs`](../nodes/nurbs.md) and [`t-nurcc`](../nodes/t-nurcc.md) drafts raise a type-system question. Rational control points are homogeneous `(wx, wy, wz, w)` tuples. The legacy API passed them as `float` arrays of length 4, together with a spec warning about how *not* to declare them. Trim curves add a second case. Their control points are `(u, v)` or homogeneous `(u, v, w)` tuples in the surface's parameter domain. What type should these tuples have?
+The [`nurbs`](nurbs-draft.md) and [`t-nurcc`](../nodes/t-nurcc.md) drafts raise a type-system question. Rational control points are homogeneous `(wx, wy, wz, w)` tuples. The legacy API passed them as `float` arrays of length 4, together with a spec warning about how *not* to declare them. Trim curves add a second case. Their control points are `(u, v)` or homogeneous `(u, v, w)` tuples in the surface's parameter domain. What type should these tuples have?
 
 ## What ɴsɪ's types actually encode
 

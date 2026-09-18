@@ -8,7 +8,7 @@ This node represents a T-NURCC, a Non-Uniform Rational Catmull-Clark surface wit
 
 Together these features express a network of trimmed, stitched patches as a *single watertight surface*.
 
-> This node is a draft: no renderer implements it yet. Like [`nurbs`](nurbs.md), its attributes follow the [new naming convention](../naming-convention.md).
+> This node is a draft: no renderer implements it yet. Like the [`nurbs` draft](../design/nurbs-draft.md), its attributes follow the [new naming convention](../naming-convention.md).
 
 ## Control Cage
 

@@ -1,6 +1,6 @@
 # Option 1: Inline Attributes
 
-This option is the current draft. The [`nurbs`](../nodes/nurbs.md) page specifies it in full. The complete trim description lives on the surface node. The `trim-curves.*` attribute group holds the loop and curve counts, the orders, the knots, the ranges, the control points, and the `hole` flags. It also holds the integer edge identities `trim-curves.edge-id` and `trim-curves.edge-orientation`. The per-side `stitch.*` attributes hold the welds along natural boundaries.
+This option is the current draft, and the shape the shipped [`nurbs`](../nodes/nurbs.md) node already has under its legacy names. The [draft design](nurbs-draft.md) specifies it in full. The complete trim description lives on the surface node. The `trim-curves.*` attribute group holds the loop and curve counts, the orders, the knots, the ranges, the control points, and the `hole` flags. It also holds the integer edge identities `trim-curves.edge-id` and `trim-curves.edge-orientation`. The per-side `stitch.*` attributes hold the welds along natural boundaries.
 
 ```
 Create "face_12" "nurbs"
