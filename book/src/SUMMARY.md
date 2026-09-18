@@ -64,6 +64,7 @@
   - [Option 1: Inline Attributes](design/trim-curves-inline.md)
   - [Option 2: `trim` Nodes](design/trim-curves-nodes.md)
   - [Option 3: `edge` Nodes](design/trim-curves-edges.md)
+- [Shared Boundaries: Topology Declarations](design/shared-boundaries.md)
 - [Geometry in the Type System](design/geometry-types.md)
 - [Type Names: API Alternatives](design/type-names.md)
   - [Encoding 1: Composite Constants](design/type-names-composite.md)
