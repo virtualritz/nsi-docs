@@ -354,7 +354,7 @@ These two functions respectively create or remove a connection between two eleme
 | **Name**   | **Type** | **Description/Values**                                                                                                                                                                                                         |
 | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `value`    |          | This can be used to change the value of a node's attribute in some contexts. Refer to [guidelines on inter-object visibility](guidelines.md#inter-object-visibility) for more information about the utility of this parameter. |
-| `priority` |          | When connecting attribute nodes, indicates in which order the nodes should be considered when evaluating the value of an attribute.                                                                                            |
+| `priority` |          | When connecting attribute nodes, indicates in which order the nodes should be considered when evaluating the value of an attribute. At equal priority, the attributes node connected first wins; see [the attributes node](nodes/attributes.md#geometry-attributes). |
 | `strength` | int (0)  | A connection with a strength greater than `0` will _block_ the progression of a recursive `NSIDelete`.                                                                                                                         |
 
 ## Severing Connections

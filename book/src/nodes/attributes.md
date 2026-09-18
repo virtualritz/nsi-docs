@@ -8,6 +8,17 @@ This node can provide various geometry related rendering attributes that are not
 
 When an attribute is defined multiple times along this path, the definition with the highest priority is selected. In case of conflicting priorities, the definition that is closest to the geometric primitive (i.e. the furthest from the root) is selected. Connections (for shaders, essentially) can also be assigned priorities, which are used in the same way as for regular attributes. Multiple attributes nodes can be connected to the same geometry or transform nodes (e.g. one attributes node can set object visibility and another can set the surface shader) and will all be considered.
 
+When two attributes nodes connected to the same node supply the same attribute with the same priority, the node connected *first* wins. The order of the `NSIConnect()` calls is part of the scene. For example, `red_attributes` and `green_attributes` each have a shader connected to their `surfaceshader`. With this stream, the plane uses the shader of `red_attributes`:
+
+```sh
+Connect "red_attributes" "" "plane" "geometryattributes"
+Connect "green_attributes" "" "plane" "geometryattributes"
+```
+
+Swap the two `Connect` statements and the plane uses the shader of `green_attributes`. To make the result independent of call order, give the connections different `priority` values.
+
+> **Note:** This rule is observed in 3Delight 2.9.207 with two `surfaceshader` connections. Earlier versions of this specification did not state it.
+
 In this case, the node has the following attributes:
 
 | Name            | Type             | Default |
