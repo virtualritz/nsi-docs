@@ -52,9 +52,12 @@
 - [Cookbook](cookbook.md)
 - [Implementer FAQ](faq.md)
 
-# OSL
+# Implementations
 
-- [OSL Extensions](osl-extensions.md)
+- [Implementations](implementations.md)
+  - [3Delight](implementations/3delight.md)
+    - [ᴏsʟ Extensions](osl-extensions.md)
+  - [MoonRay](implementations/moonray.md)
 
 # Design Drafts
 
