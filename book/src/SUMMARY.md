@@ -50,6 +50,7 @@
 
 - [Rendering Guidelines](guidelines.md)
 - [Cookbook](cookbook.md)
+- [Implementer FAQ](faq.md)
 
 # OSL
 
