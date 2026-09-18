@@ -1,110 +1,183 @@
-# Shared Boundaries: Topology Declarations
+# Shared Boundaries: Weld Declarations
 
-> Proposal, not implemented. This feature follows the [naming convention](../naming-convention.md). It adds shared topology across geometry types.
+> Proposal, not implemented. This page unifies the NURBS stitching and weld-node alternatives. Names follow the [naming convention](../naming-convention.md).
 
-How can ɴsɪ preserve the fact that two surface boundaries belong to the same model edge?
+How can an exporter preserve joined boundaries with little bookkeeping, even when the two sides have different representations?
 
-A STEP solid supplies this information through its faces and shared edges. Exporting each face as a separate surface must preserve that relationship. The same declaration should connect polygon meshes, subdivision surfaces, and NURBS surfaces in any combination.
+The declaration means: *these selected boundaries belong together and must stay joined when rendered*. Spatial coincidence alone does not declare a join. The renderer decides how to preserve the join through tessellation and displacement. This proposal specifies no welding algorithm or displacement policy.
 
-The declaration means: *these boundary uses represent the same edge and must stay joined when rendered*. Spatial coincidence alone does not declare a join. Two separate objects can touch without belonging together.
+## Recommendation: One Scope, Many Welds
 
-The renderer decides how to keep the declared join closed through tessellation and displacement. This proposal specifies topology, not displacement directions, parameter matching, or a welding algorithm. It does not require equal normals, materials, or texture coordinates across the join.
-
-## Recommendation: Welds and Local Uses
-
-`weld` names the relationship that the renderer must preserve. `weld-use` names one participating boundary occurrence. The name distinguishes this declaration from an edge geometry node.
-
-Separate the shared identity from its occurrence on a surface:
-
-- A `weld` node identifies one shared model edge. It needs no geometry attributes.
-- A `weld-use` node selects one boundary occurrence on one surface.
-- The use connects to both the weld and its surface.
-
-This separation matters because a shared edge has different local descriptions on different surfaces. One side can be a NURBS trim curve; the other can be a subdivision boundary. A surface can also use the same edge twice, as at a periodic seam.
-
-Proposed connection direction:
+A `weld` node supplies an identity namespace. It can describe all joins in a solid through the boundary declarations on its connected geometry. It carries no curves and needs no attributes of its own.
 
 ```text
-                    +-> use_a.weld
-shared_weld --------+
-                    +-> use_b.weld
-
-use_a ----------------> surface_a.weld-uses
-use_b ----------------> surface_b.weld-uses
+solid_welds --> face_a.weld
+            --> face_b.weld
+            --> subdivision_mesh.weld
 ```
 
-The `weld` input on each use accepts exactly one connection. The `weld-uses` input on geometry accepts multiple uses. Each use belongs to exactly one geometry node. Connections have no ordering requirement.
+Each geometry node accepts one `weld` connection. Its local attributes select boundaries and assign integer IDs. Two boundary uses with the same ID and the same connected `weld` node belong together. ID `12` in another weld node is unrelated.
 
-The graph attaches topology metadata to geometry through ordinary connections. Welds and uses do not render as separate objects. Their connections do not create additional geometry instances.
+The effective identity is `(weld node, ID)`. Membership in the node alone does not weld every boundary together. A solid with 10,000 shared boundaries can use one extra node, not 10,000 nodes. The exporter assigns IDs from source topology and writes arrays on the geometry it already exports.
 
-An illustrative C API fragment shows the structure. The node types and connection names are proposed; the API functions already exist:
+The earlier proposal used one `weld` per shared edge and one `weld-use` per occurrence. That remains an alternative below. The recommendation here changes the granularity: one namespace node, with boundary uses stored as data.
 
-```c
-NSICreate(ctx, "weld_ab", "weld", 0, NULL);
-NSICreate(ctx, "use_a", "weld-use", 0, NULL);
-NSICreate(ctx, "use_b", "weld-use", 0, NULL);
+## A Boundary Use Can Contain Several Segments
 
-/* Each use also carries its local boundary selector. */
-NSIConnect(ctx, "weld_ab", "", "use_a", "weld", 0, NULL);
-NSIConnect(ctx, "weld_ab", "", "use_b", "weld", 0, NULL);
-NSIConnect(ctx, "use_a", "", "surface_a", "weld-uses", 0, NULL);
-NSIConnect(ctx, "use_b", "", "surface_b", "weld-uses", 0, NULL);
+A *boundary use* is one connected, ordered chain on one surface. It can be open or closed. The two uses of a weld need not contain the same number or type of segments.
+
+For example, one use can contain five NURBS trim curves. The other can select one subdivision boundary edge whose limit boundary follows the same locus. These are two uses of one weld, not six competing definitions of an edge.
+
+The exporter declares the relationship already known by the source application. It does not resample curves, split matching geometry, or construct parameter maps for the renderer. Direction describes traversal only. Different knot vectors, segment counts, or parameter speeds do not change the identity.
+
+For a closed chain, a different starting point does not create a different boundary. The renderer resolves geometric correspondence. A declaration does not require matching loop seams.
+
+### What the Exporter Guarantees
+
+The exporter guarantees that counterpart uses trace the same undisplaced spatial path within the source model's geometric tolerance. Their lengths must also agree within the applicable tolerance. Equal length alone is insufficient: two unrelated curves can have equal lengths.
+
+This agreement applies to the complete boundaries, not just their endpoints or control vertices. Comparisons concern the evaluated surface boundaries in a common coordinate system. For subdivision, this means the limit boundary, not the cage polyline. Animated declarations must remain valid over the rendered time interval.
+
+No equality of vertex counts, segment counts, knot vectors, or parameter values is required. Five trim curves can meet seventeen mesh edges, or one boundary curve, under the same declaration. The exporter preserves known source topology; it need not generate a sample-to-sample correspondence table.
+
+A numerical tolerance is a validity condition, not a search radius for discovering joins. Coincident boundaries with different IDs remain unrelated. The exact way to convey the source tolerance, if needed by a renderer, remains an open attribute-design decision. This draft does not invent a fixed epsilon or require a renderer to repair mismatched boundaries.
+
+### A Five-Curve Hole
+
+The existing [NURBS trim model](nurbs-draft.md#trim-curves) already supports multiple curves in one loop:
+
+```text
+trim-curves.loop-count = 1
+trim-curves.curve-count = [5]
+trim-curves.hole = [1]
 ```
 
-The two surface nodes already exist in this example. No change to `NSIConnect` is needed. Renderer support for the new node types and connections is needed.
+The five curves connect head-to-tail. The last curve ends at the start of the first curve. Their individual orders, knots, ranges, and control points remain separate. The hole flag applies to the whole loop.
 
-## What a Use Selects
+There are two different topological declarations an exporter might need:
 
-A selector identifies existing surface topology. It does not duplicate the surface or add a 3D curve.
+- Each curve meets a different neighboring face: assign five different weld IDs, one to each boundary use.
+- The entire loop meets one boundary on another surface: select the loop as one use and assign one weld ID.
 
-| Geometry | Local boundary selector |
-| -------- | ----------------------- |
-| NURBS natural boundary | One active-domain side: `u-min`, `u-max`, `v-min`, or `v-max` |
-| NURBS trim | One trim-curve occurrence in the surface's trim data |
-| Polygon mesh | One directed edge occurrence, identified by face, loop, and local edge index |
-| Subdivision surface | One directed boundary edge occurrence in its control topology, denoting the corresponding limit-surface boundary |
+Trim segmentation therefore does not determine weld granularity.
 
-A face-local mesh selector distinguishes occurrences that a pair of vertex indices can leave ambiguous. The loop identifies the outer perimeter or a polygon hole. The selector refers to authored topology, not a renderer's tessellation indices.
+## Concrete Encoding
 
-Subdivision schemes share the identity mechanism. Each scheme defines how its control topology identifies a surface boundary. This includes the draft [`t-nurcc`](../nodes/t-nurcc.md) representation. Joining two subdivision boundaries does not request a merge of their control cages.
+The following is a proposed data layout, not a shipped API. It uses ordinary attributes and connections. No new C API function or connection parameter is needed.
 
-Trim packaging stays independent. With inline trims, the selector identifies a curve in the surface's arrays. With [trim nodes](trim-curves-nodes.md), it identifies a connected trim node and a curve within it. A trim node reference would be a connection, not a handle stored in a string.
+Each geometry node carries a local boundary-use table:
 
-A use can retain the source model's orientation relative to the shared edge. Orientation expresses traversal direction only. It does not prescribe parameter correspondence or a renderer algorithm.
+- `weld.id`: one non-negative integer per use.
+- `weld.segment-count`: segment count per use; omitted means one segment per use.
+- `weld.kind`: one string per segment.
+- `weld.index`: one _`int[3]`_ tuple per segment.
+- `weld.reverse`: one integer per segment; omitted means all zero. `1` reverses the selected segment.
+- `weld.range`: one _`float[2]`_ tuple per segment; omitted means the full selected segment.
 
-For a partial boundary, the selector also needs a local interval. At a T-junction, separate shared edges describe the spans on either side of the junction. Each span can select part of a longer patch side or mesh boundary. Exact selector attribute names and interval encoding remain a follow-up specification decision.
+Segments are concatenated in use order. Counts partition those arrays; their sum equals the segment-array length. Each segment belongs to exactly one use. IDs belong to uses, not to segments.
 
-## Identity and Scene Structure
+The index tuple has a fixed width so exporters can build one table without node handles for every segment. Unused components are zero. All indices are zero-based.
 
-Two uses that connect to the same `weld` declare a join. Distinct weld nodes declare distinct identities, even when their boundaries coincide. More than two uses can share a weld, which expresses a non-manifold join. Two uses on the same surface can express a seam.
+| `weld.kind` | `weld.index` | Selected boundary |
+| ----------- | ------------ | ----------------- |
+| `trim-loop` | `[loop, 0, 0]` | Complete loop, in its stored curve order |
+| `trim-curve` | `[curve, 0, 0]` | One curve in the flattened trim-curve arrays |
+| `nurbs-side` | `[side, 0, 0]` | Active-domain side: 0 = u-min, 1 = u-max, 2 = v-min, 3 = v-max |
+| `mesh-edge` | `[face, loop, edge]` | Directed local edge occurrence in a polygon or subdivision control mesh |
 
-The weld node has no authoritative shape and no displacement settings. A STEP exporter can preserve shared-edge identity without exporting the model edge's separate 3D curve. Explicit endpoint nodes are not needed for this edge-belonging declaration.
+For meshes, loop 0 is the outer perimeter; later loops are polygon holes. The edge runs from a local vertex to the next vertex in that loop, with wraparound. For subdivision, the selection denotes the associated limit-surface boundary, not the straight control-cage segment. Each supported subdivision scheme must define that association. The same declaration applies to the draft `t-nurcc` control topology.
 
-Node handles identify definitions; rendered instances need a scope rule. Repeating a joined assembly should repeat its internal joins without joining separate copies. An initial specification can restrict joins to uniquely identified surface occurrences within one assembly occurrence. Joins across ambiguous instance paths need explicit occurrence addressing before they can be supported. This is a structural question for implementers, separate from welding algorithms.
+A natural side follows increasing `v` for a u-side and increasing `u` for a v-side. A trim curve follows its stored parameter range. Reversal applies after selection.
 
-Ordinary connections also make references visible to graph edits. Removing a use removes that boundary's membership. Missing required connections make a use incomplete; a missing weld node does not become an implicit identity token. Topology edits that change local indices must update the affected selectors.
+A range selects a subinterval before reversal. Its endpoints lie in `[0, 1]`, normalized over the selected curve's active range or the selected edge's local domain. This normalization selects a local portion; it does not assert equal parameter values across surfaces. A `trim-loop` selector accepts only its full range. Partial loops use ordered `trim-curve` selectors instead.
+
+The selected segments must form one connected chain. A closed-loop selector is a complete use and cannot be mixed with additional segments in that use. Empty uses, invalid indices, and disconnected chains are invalid declarations.
+
+### The Five-to-One Join
+
+Suppose `patch` already has the five-curve hole above. Suppose `subdiv` has a boundary edge that describes the same closed locus. This illustrative stream fragment contains the entire additional declaration:
+
+```text
+Create "solid_welds" "weld"
+Connect "solid_welds" "" "patch" "weld"
+Connect "solid_welds" "" "subdiv" "weld"
+
+SetAttribute "patch"
+    "weld.id" "int" 1 [12]
+    "weld.kind" "string" 1 ["trim-loop"]
+    "weld.index" "int[3]" 1 [0 0 0]
+
+SetAttribute "subdiv"
+    "weld.id" "int" 1 [12]
+    "weld.kind" "string" 1 ["mesh-edge"]
+    "weld.index" "int[3]" 1 [7 0 2]
+```
+
+This declares that trim loop 0 joins edge 2 of loop 0 on subdivision face 7. The example assumes that the selected subdivision boundary really is the same closed locus. An ordinary open edge cannot join an entire closed hole. If several subdivision edges form the matching ring, they form one use instead.
+
+The five trim curves could also be listed explicitly. The following replaces the patch's three attributes above and selects the same chain:
+
+```text
+SetAttribute "patch"
+    "weld.id" "int" 1 [12]
+    "weld.segment-count" "int" 1 [5]
+    "weld.kind" "string" 5 ["trim-curve" "trim-curve" "trim-curve" "trim-curve" "trim-curve"]
+    "weld.index" "int[3]" 5 [0 0 0  1 0 0  2 0 0  3 0 0  4 0 0]
+```
+
+A chain of mesh edges uses the same count and concatenation mechanism. Mixed segment kinds can describe a boundary that follows both a natural patch side and trim curves. The renderer sees one use on each side regardless of segmentation.
+
+### Several Independent Joins
+
+The same patch can declare another boundary without another node:
+
+```text
+SetAttribute "patch"
+    "weld.id" "int" 2 [12 13]
+    "weld.kind" "string" 2 ["trim-loop" "nurbs-side"]
+    "weld.index" "int[3]" 2 [0 0 0  1 0 0]
+```
+
+Loop 0 belongs to weld 12. The u-max side belongs to weld 13. Another surface declares ID 13 in the same namespace to complete that join. These two IDs remain independent.
+
+Two uses on the same geometry can have the same ID, which expresses a self-seam. More than two uses can share an ID, which expresses a non-manifold join. A use without a counterpart is an open declaration; it joins nothing by itself.
+
+## Relation to the Original Stitching Arrays
+
+The [NURBS stitching attributes](nurbs-draft.md#stitching) remain a compact shorthand for one-segment uses. They use the same `weld` connection and ID namespace:
+
+- Each non-negative `trim-curves.edge-id` entry selects its corresponding trim curve as one complete use.
+- Each non-negative `stitch.edge-id` entry selects its corresponding natural side as one complete use.
+- The paired orientation value supplies that use's direction.
+- `-1` means no use is declared for that entry.
+
+These arrays need no separate matching rules. They lower to the boundary-use table described above. A surface supplies either these shorthand arrays or the general table, never both. An exporter can use the general table everywhere to avoid maintaining two encodings.
+
+Assigning one shorthand ID to five consecutive curves would declare five complete uses of the same boundary. It would not make one five-segment use. A `trim-loop` selector or explicit segment count expresses that grouping.
+
+With [separate trim nodes](trim-curves-nodes.md), a general table can reside on each trim node. Its trim indices refer to that node's arrays. It obtains the weld namespace through its single consuming surface; natural sides stay on the surface. A trim node carrying weld declarations has one consuming surface, to keep its use unambiguous. Trim packaging does not otherwise change the identity model.
 
 ## Alternatives and Trade-offs
 
-| Representation | Benefit | Cost |
-| -------------- | ------- | ---- |
-| Inline edge IDs | Compact arrays; extends the existing stitching draft | Requires an identity namespace and per-geometry selector arrays; the relation is outside the connection graph |
-| Shared `weld` with direct connections | One node per shared edge; fewer nodes than explicit uses | Local selectors need defined connection metadata or named attribute slots; repeated uses need distinct slots |
-| Shared `weld` plus `weld-use` | Ordinary connections; each local occurrence has its own selector; supports mixed geometry and self-seams | One node per shared edge plus one node per use |
-| Shared edge with a 3D curve | Also transports the model edge's geometry | Adds data that shared identity alone does not require |
+For `E` shared boundaries and `U` uses, these counts exclude existing geometry and trim nodes:
 
-Inline IDs are a reasonable compact alternative. Their identity should be scoped to an assembly or explicit topology namespace. Scene-global integers require coordination between exporters. The [existing NURBS stitching draft](nurbs-draft.md#stitching) already takes this approach; mesh selectors would extend it.
+| Encoding | Extra nodes | Benefit | Cost |
+| -------- | ----------- | ------- | ---- |
+| Original scene-global IDs | 0 | Small arrays; direct mapping from source IDs | Exporters must coordinate global IDs; no explicit scope connection |
+| One `weld` namespace plus local use tables | 1 per namespace | Batches all joins; supports chains; IDs stay local; recommended | Exporter maintains arrays; one namespace per geometry node |
+| One `weld` per boundary plus explicit `weld-use` nodes | `E + U` | Independent graph edits; each use has an explicit handle | More nodes, handles, connections, and lifetime bookkeeping |
+| One `weld` per boundary with direct geometry connections | `E` | Fewer nodes than explicit uses | Still needs selectors and grouping on connections or attribute slots |
 
-Direct connections are attractive if node count is the main concern. However, a connection between a weld and a surface does not identify which surface boundary participates. Encoding selectors in attribute names, or defining additional connection parameters, introduces another convention. Explicit use nodes keep those data in ordinary attributes and support independent edits.
+For 10,000 boundaries with two uses each, the explicit-use approach adds 30,000 nodes. The recommended encoding adds one namespace node for that solid. Both still describe 20,000 uses; batching removes node overhead, not the topology data. No render-time performance claim follows from these counts.
 
-The graph proposal therefore favors explicit uses for clarity. A later compact encoding could express the same relation if real scene sizes justify it. No performance advantage is assumed without measurement.
+A [shared 3D edge curve](trim-curves-edges.md) is an independent extension. It could accompany either identity encoding. It is not required to preserve belonging, and it does not select the local boundaries by itself.
 
-## Relation to the Existing Drafts
+## Scope, Edits, and Remaining Decisions
 
-The [edge-node alternative for trim curves](trim-curves-edges.md) combines shared identity with an authoritative 3D curve. This proposal separates those decisions. A shared identity node is useful even when it carries no geometry.
+One geometry node participates in one weld namespace in this recommendation. A mesh containing several solids can use one namespace with distinct IDs. This avoids splitting geometry solely to allocate scopes. Combining independently authored namespaces needs ID remapping, just as combining indexed geometry needs index remapping.
 
-The existing `trim-curves.edge-id` and `stitch.edge-id` proposals express the same basic belonging relation. They remain an alternative encoding, not attributes that this proposal requires alongside connections. A scene should not supply conflicting declarations through both forms.
+Node handles identify definitions; rendered occurrences need an additional scope rule. Repeating an assembly must repeat its internal joins without welding separate instances together. The exact attachment of that assembly scope remains an implementation discussion. Ambiguous instances must not silently weld to every occurrence of a connected geometry node.
 
-This feature can use the proposed names without adopting the full node and attribute rename draft. It adds topology information that the current geometry definitions do not carry between nodes.
+Topology edits that change indices must update the use tables. A table's arrays form one coherent declaration at a render synchronization point. Removing the `weld` connection removes its membership; the remaining IDs do not become scene-global. A renderer that ignores these declarations cannot claim to preserve the requested joins.
 
-The remaining structural decisions are the use-node encoding, exact local selectors, and instance scope. Displacement and tessellation methods remain renderer decisions.
+The main remaining decisions are occurrence scope and the exact attribute encoding. The structural requirement illustrated by the examples is: one namespace contains many identities, and one use can contain many ordered segments. Displacement, tessellation, and geometric correspondence remain renderer decisions.

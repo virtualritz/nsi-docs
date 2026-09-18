@@ -477,6 +477,8 @@ The types differ on purpose: the surface's `position-weighted` uses the draft `w
 
 **Status note.** 3Delight 2.9.210 implements the `nurbs` node with the names in the "Current" column; its [reference page](nodes/nurbs.md) documents them. The new names are those of the [draft design](design/nurbs-draft.md), which was written before that release. The stitching attributes (`trim-curves.edge-id`, `trim-curves.edge-orientation`, `stitch.edge-id`, `stitch.edge-orientation`) were introduced directly under the new convention and have no legacy counterparts.
 
+The [shared-boundary proposal](design/shared-boundaries.md) scopes these IDs through a `weld` connection. Its general `weld.*` table also supports whole loops and multi-segment uses. The per-curve and per-side stitching arrays remain an alternative shorthand, not a separate identity system.
+
 ### `t-nurcc` Node
 
 New node type (draft, no implementation), introduced directly under the new convention -- there are no legacy names to map. Its attributes reuse spellings established elsewhere in this document: `vertex-count`, `position`/`position-weighted` (mirroring `nurbs`), the sparse `group.index` + `group.value` edge-list idiom (mirroring `subdivision.crease.*`) for `knot-interval.*`, and the `stitch.edge-id` identifier space shared with `nurbs`.

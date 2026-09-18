@@ -156,11 +156,13 @@ Whether each loop is a hole. One value per loop. A value of `0` keeps the surfac
 
 ## Stitching
 
-CAD solid formats (STEP, IGES, Parasolid) represent a solid as a shell of faces sewn together along shared edges: each edge of the model is stored once and referenced by the faces it bounds -- typically two -- each of which carries its own parameter-space curve for that edge. When such a model is exported as one `nurbs` node per face, the boundaries of adjacent nodes are two views of the same model edge.
+The [shared-boundary design](shared-boundaries.md) owns the common identity model, alternatives, and examples for NURBS, polygon, and subdivision surfaces. Its recommendation is one `weld` namespace node connected to every participating geometry node. One namespace can contain all joins in a solid.
 
-The attributes below conserve that shared-edge topology. They declare which boundaries -- on the same or on different `nurbs` nodes -- trace the same edge and were welded in the source model, so the renderer can keep the geometry watertight across the edge. This matters wherever the renderer perturbs or evaluates geometry independently per surface: displacement mapping in particular will tear adjacent faces apart along an edge whose normals are discontinuous unless the renderer knows the faces belong together and makes their displaced boundaries agree.
+The attributes below are a compact shorthand for one-segment boundary uses in that namespace. They are proposed additions, not shipped attributes. A surface supplies either these arrays or the general `weld.*` use table, never both.
 
-A welded boundary is either a trim curve or a natural side of the patch's parameter domain; there is one mechanism for each, sharing a single identifier space. All stitching attributes are optional and add no geometry of their own, so a renderer that does not implement stitching can ignore them safely.
+A boundary use can also contain several segments. For example, five trim curves can jointly meet one subdivision boundary. That case uses the general table's `trim-loop` selector or an explicit ordered chain; the per-curve shorthand cannot express that grouping.
+
+The declaration asks the renderer to preserve the join through tessellation and displacement. It does not prescribe an algorithm. A renderer that ignores the declaration cannot guarantee the requested join.
 
 ### Trim-Curve Edges
 
@@ -170,13 +172,13 @@ Both attributes below, when supplied, must be supplied together, with one value 
 | --------------------- | ------- | ------- |
 | `trim-curves.edge-id` | _`int`_ | `-1`    |
 
-The edge identity of each curve. One value per curve. A non-negative value identifies the model edge this curve is a use of: all boundaries carrying the same non-negative value -- in this node or any other `nurbs` node in the scene -- trace the same edge in 3D and are stitched. A value of `-1` means the curve carries no edge identity. Identifiers are scene-global; the exporter is responsible for their uniqueness (a serial number per edge of the source model suffices).
+The edge identity of each curve. One value per curve. Each non-negative entry declares one complete boundary use. Uses with the same ID and connected `weld` node belong together, including uses on other geometry types. A value of `-1` declares no use. Non-negative IDs require a `weld` connection; IDs are not scene-global.
 
 | Name                           | Type    | Default |
 | ------------------------------ | ------- | ------- |
 | `trim-curves.edge-orientation` | _`int`_ | `0`     |
 
-The traversal direction of each curve relative to its edge's reference direction. One value per curve. A value of `0` means the curve, traversed from its parametric start to its end, follows the edge's reference direction; `1` means it opposes it. On a consistently oriented manifold shell the two uses of an edge traverse it in opposite directions, so their values differ. This puts the two parameterizations into correspondence without requiring the renderer to match them geometrically.
+The traversal direction of each curve relative to its edge's reference direction. One value per curve. A value of `0` means the curve, traversed from its parametric start to its end, follows the edge's reference direction; `1` means it opposes it. On a consistently oriented manifold shell the two uses of an edge traverse it in opposite directions, so their values differ. This records traversal direction only. The renderer determines geometric correspondence; equal parameter values need not identify equal positions.
 
 ### Natural Boundaries
 
@@ -198,22 +200,12 @@ A side's entry applies only where that side actually bounds the rendered region.
 
 A closed surface that is represented as a single patch split at a seam -- a cylinder or torus, say -- welds to itself by giving the two seam sides the same identity, e.g. equal values for the *u = u.min* and *u = u.max* entries of one node.
 
-Welds covering only part of a side, or a side stitched to several neighbours (T-junctions), cannot be expressed per side; use trim curves for those.
+The per-side shorthand selects whole sides only. Partial sides and T-junctions use local ranges in the [general boundary-use table](shared-boundaries.md#concrete-encoding).
 
-### Semantics
+### Shared Semantics
 
-Boundaries that share an edge identity must describe the same locus in 3D -- each mapped through its own surface -- within the source model's tolerance. The renderer is not required to repair uses that disagree beyond that.
+The [shared-boundary design](shared-boundaries.md) defines identity scope, boundary chains, self-seams, and non-manifold joins. Natural-side and trim-curve shorthand entries follow those same rules. The exporter guarantees that counterpart chains describe the same spatial boundary within the source model's tolerance. Segment counts and parameterizations can differ. Belonging does not ask the renderer to join unrelated geometry.
 
-The two mechanisms interoperate through the common identifier space: a trim curve on one face may be welded to a natural side of another, as happens where a trimmed face meets an untrimmed patch.
+Each trim curve is a complete use in this shorthand. Five curves with one repeated ID are five uses, not one chain. Selecting the whole loop in the general table expresses a single use made from all five curves.
 
-An edge normally has exactly two uses. If more than two boundaries share an identity (a non-manifold edge), all of them are stitched together.
-
-Stitching a renderer supports means: along a shared edge, evaluate displacement and shading such that all welded uses produce coincident positions -- for example by deriving a single displacement along the edge and applying it to every use -- so that no cracks open where the surfaces meet, even where their geometric normals are discontinuous.
-
-The obligation is *visual watertightness*, independent of evaluation strategy. A backend that renders NURBS analytically and dices only displacement-mapped surfaces meets it just as a backend that tessellates everything does -- the former by making the welded uses' displaced boundaries agree, the latter by additionally welding its meshes along the shared edges.
-
-### Design Notes
-
-A renderer can attempt to reconstruct adjacency without these attributes by detecting boundary proximity, and may still do so as a fallback when they are absent. But proximity detection depends on guessed tolerances and cannot distinguish faces that were welded in the source model from faces of separate solids that merely touch -- a distinction CAD formats make topologically. Exporters should therefore conserve the topology whenever the source data has it; it maps one-to-one onto these attributes (e.g. STEP's `edge_curve` entities and their oriented uses).
-
-The edge identifier deliberately leaves room for a future `edge` node type carrying the authoritative shared 3D curve of an edge -- useful for exact reprojection or wireframe rendering -- referenced by the same identifier. Such a node is not part of this specification.
+An optional 3D edge representation is a separate [geometry extension](trim-curves-edges.md). It is not required by these declarations.

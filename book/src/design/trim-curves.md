@@ -1,39 +1,32 @@
 # Trim Curves: API Alternatives
 
-3Delight 2.9.210 ships the [`nurbs`](../nodes/nurbs.md) node with its trim curves inline, under the legacy names. For the [draft design](nurbs-draft.md) of its next version, one packaging question stays open: **where does trim-curve data live**? It can live inline on the surface node, or in nodes of its own. This section gives three alternatives with their rationale and trade-offs, as a basis for discussion with implementers. All three share the same per-curve data model: counts, orders, knots, control points, hole flags, and edge identities. They differ in *granularity*, in *ordering semantics*, and in *how each option expresses welds*.
+Where should a NURBS surface's trim data live? This packaging decision is separate from how surfaces declare shared boundaries.
 
-The criteria worth weighing:
+The shipped [`nurbs`](../nodes/nurbs.md) node stores trim curves inline under the legacy names. The [NURBS draft](nurbs-draft.md#trim-curves) describes renamed attributes and proposed extensions. Both inline data and separate trim nodes can describe a hole made from several curves.
 
-- **Exporter ergonomics** -- how much bookkeeping a STEP/IGES exporter needs. A real exporter informed these pages: the STEP -> ɴsɪ BRep emitter in [monster-step-viewer](https://github.com/virtualritz/monster-step-viewer).
-- **API-call count** -- more nodes mean more `Create`/`Connect`/`SetAttribute` traffic. Implementers report that render time dwarfs this overhead in an offline renderer. The overhead must therefore not decide the design alone. Memory cost is also near-identical across all three options.
-- **Editability** -- can a live session replace one hole without a resend of the rest?
-- **Reuse** -- can two faces share identical trim geometry?
-- **Ordering** -- a loop orders its curves head-to-tail. Connections in ɴsɪ have no order. A node-based option must therefore carry the order as data.
-- **Stitching fidelity** -- how well the option conserves the CAD weld topology ([Stitching](nurbs-draft.md#stitching)), and what the renderer can do with it.
-- **Precedent** -- three prior designs differ:
-  - RenderMan's `RiTrimCurve` was a separate entity from the patch it trimmed. It set graphics state for the `RiNuPatch` calls that followed.
-  - The existing 3Delight ɴsɪ carries `trimcurves.*` inline.
-  - BRep kernels and STEP store edges as first-class shared entities.
+The [shared-boundary design](shared-boundaries.md) owns the stitching alternatives and their trade-offs. Its recommended `weld` node supplies one namespace for many joins. A local boundary use can select one curve, a whole loop, or an ordered chain. Trim packaging does not require one weld node per curve.
 
-## The Options
+## Packaging Options
 
-| Criterion               | [1 -- Inline](trim-curves-inline.md) | [2 -- `trim` nodes](trim-curves-nodes.md)   | [3 -- `edge` nodes](trim-curves-edges.md)   |
-| ----------------------- | ------------------------------------ | ------------------------------------------- | ------------------------------------------- |
-| Trim data lives         | on the `nurbs` node                  | on `trim` nodes, connected                  | on the `nurbs` node (as Option 1)           |
-| Weld identity           | integer ids                          | integer ids                                 | `edge` node handles                         |
-| Nodes per trimmed face  | 1                                    | 1 + trim nodes (1 suffices)                 | 1 + shared edge nodes (~half per face)      |
-| Ordering                | explicit arrays                      | whole loops per node -- order-free          | explicit arrays                             |
-| Independent loop edits  | no -- resend the block               | yes -- swap one node                        | no -- resend the block                      |
-| Reuse across faces      | no                                   | yes, for unstitched trims                   | edges shared by construction                |
-| Authoritative 3D edge   | no                                   | no                                          | yes -- one exact common boundary            |
-| Exporter complexity     | lowest                               | medium (handles, granularity)               | highest (two curve representations)         |
-| Precedent               | 3Delight ɴsɪ `trimcurves.*`          | RenderMan `RiTrimCurve`                     | STEP/BRep kernel topology                   |
+| Criterion | [Inline attributes](trim-curves-inline.md) | [Separate `trim` nodes](trim-curves-nodes.md) |
+| --------- | ------------------------------------------ | ------------------------------------------ |
+| Trim data lives | On the surface | On connected nodes |
+| Extra trim nodes | None | One per loop group |
+| Curve ordering | Arrays within each loop | Arrays within each loop; loops stay within one node |
+| Independent loop edits | Replace the surface's trim data | Replace one connected loop group |
+| Reuse | Through geometry instancing | Unstitched trim patterns can serve compatible surfaces |
+| Weld identity | IDs in a connected weld namespace | Same namespace, obtained through the consuming surface |
 
-Option 2 and Option 3 are not mutually exclusive. Option 2 repackages the *per-face* data. Option 3 adds a node for the *shared* entity. Adopt either option alone, or both together.
+Connections need no ordering because each trim node carries complete loops. A loop can contain any supported number of curve segments. Loop membership and curve order are data, not connection order.
 
-## Questions to Settle
+The inline encoding minimizes exporter bookkeeping. Separate nodes make loop groups independently editable. Neither encoding has an assumed memory or rendering advantage; those costs need measurement.
 
-1. **Granularity** -- is trim data an atomic property of the surface (one blob, Option 1) or scene structure (loop-set nodes, Option 2)? Call overhead is negligible, as agreed above. This question is therefore about the editing model and exporter ergonomics, not about performance.
-2. **Weld identity** -- are welds out-of-band integers (Option 1 and Option 2) or graph objects (Option 3)? Integers are easy to emit. Handles cannot collide, and they can carry geometry.
-3. **Is reuse real?** -- Option 2 shares trim data only between identical trim regions on identically parameterized faces, such as hole patterns and perforated panels. The sharing also conflicts with stitching, because edge identities are per-use. Is that case common enough to shape the API?
-4. **Does the renderer want authoritative 3D edges?** -- only Option 3 reconciles boundary evaluation and displacement against a single shared curve. Every other option reconciles two approximations of that curve. Option 3 does so whatever the evaluation strategy. An analytic backend resolves both faces to the exact curve; 3Delight dices only displacement-mapped surfaces. A tessellating backend, such as a GPU renderer, welds its meshes along samples of the same curve. If the answer is "eventually", specify the `edge` node of Option 3 now and implement it later. It degrades cleanly to Option 1.
+## Shared 3D Edges Are a Separate Extension
+
+The earlier [Option 3: `edge` Nodes](trim-curves-edges.md) also exported a model edge's 3D curve. It is not a third place to store trim data. A 3D curve could accompany either packaging option and either weld-identity encoding.
+
+A trim curve describes a boundary in one surface's parameter domain. A weld declaration states which boundaries belong together. A model-edge curve supplies additional geometry. Keeping these roles separate lets an exporter preserve topology without exporting redundant curves.
+
+## Decisions to Settle
+
+The trim decision is whether exporters and editors need independent loop-group nodes. The [weld decision](shared-boundaries.md#alternatives-and-trade-offs) is how to encode shared identity and boundary uses. Optional model-edge geometry should be considered only when a consumer needs that geometry.

@@ -1,54 +1,21 @@
 # Option 3: `edge` Nodes
 
-The per-face trim data stays inline, exactly as in [Option 1](trim-curves-inline.md). A parametric curve has one consumer, the surface in whose domain it lives, so a move to a node gains nothing. The thing that genuinely *is* shared becomes a node: the **model edge**. This mirrors BRep topology directly. STEP stores each `edge_curve` once, and faces reference it through oriented uses. Here each model edge becomes one `edge` node, and faces reference it by handle.
+> Historical alternative, now separated into identity and optional geometry. The [shared-boundary design](shared-boundaries.md) owns the unified stitching proposal and its trade-offs.
 
-An `edge` node carries a single 3D NURBS curve. That curve is the authoritative shape of the edge both faces meet at:
+The original option combined two roles in one `edge` node: shared identity and an authoritative 3D NURBS curve. Surfaces referred to that node through handle-valued attributes. This required roughly one node per model edge, in addition to the surface nodes.
 
-| Attribute                       | Type                           |
-| ------------------------------- | ------------------------------ |
-| `order`                         | _`int`_                        |
-| `knot`                          | _`float`_                      |
-| `min`, `max`                    | _`float`_                      |
-| `position`/`position-weighted`  | _`point`_/_`weighted-point`_   |
+The revised design separates those roles. A `weld` node can supply an identity namespace for all joins in a solid. Local use tables identify the participating boundaries, including chains of multiple trim curves or mesh edges. Those declarations do not require a shared 3D curve.
 
-The node handle is the identity. On the `nurbs` node, the integer ids of the current draft become handle references:
+## What Additional Geometry Could Provide
 
-- `trim-curves.edge-id` (_`int`_) -> `trim-curves.edge` (_`string`_, one handle per curve, `""` = none)
-- `stitch.edge-id` (_`int[4]`_) -> `stitch.edge` (_`string[4]`_)
-- `trim-curves.edge-orientation`/`stitch.edge-orientation` do not change. Orientation is relative to the parametric direction of the edge curve, which is now explicit.
+An exporter might also preserve the source model's 3D edge curves for wireframe rendering or other geometry consumers. Such a curve would need an order, knots, a parameter range, and control points. Those are additional geometry, not required weld metadata.
 
-```
-Create "edge_301" "edge"
-SetAttribute "edge_301" "order" "int" 1 [4] ...
+A shared curve does not identify which trim loop, patch side, or mesh boundary uses it. Local selectors remain necessary. Nor does a shared curve by itself specify how a renderer reconciles displacement. That algorithm remains the renderer's responsibility.
 
-Create "face_12" "nurbs"
-SetAttribute "face_12" ... "trim-curves.edge" "string" 5 ["edge_301" "" ...] ...
-Create "face_13" "nurbs"
-SetAttribute "face_13" ... "trim-curves.edge" "string" 4 ["edge_301" ...] ...
-```
+## Trade-offs
 
-A handle that resolves to no node is legal. It acts as a pure identity token, so two faces that name the same missing handle are still welded. The scheme therefore *degrades to Option 1* for exporters that do not emit edge geometry; the ids simply happen to be strings. Renderers may implement resolution incrementally.
+The benefit is preservation of source geometry that a consumer might otherwise reconstruct. The cost is another curve representation and its relationship to the surface boundaries. An authoritative-curve extension would also need to state what happens when those representations disagree.
 
-When the node exists, its curve is authoritative. A face's parametric curve, mapped through its surface, can disagree with the edge curve. The edge curve then defines the true boundary position. The parametric curves define the locus in the parameter domain and the trimmed-region classification.
+The original handle-valued attributes required custom lookup, dependency, and deletion semantics. Its missing-handle fallback treated unresolved references as identity tokens. The current recommendation uses ordinary connections to a real `weld` node instead. A disconnected declaration does not acquire a scene-global identity.
 
-## What the shared curve buys
-
-Only this option changes what a renderer can *do*, rather than how the API packages data:
-
-- **One boundary, whatever the evaluation strategy.** Backends differ in how they realize a NURBS surface. 3Delight renders it analytically, and dices only a surface that carries displacement. A GPU backend would tessellate everything. The obligation of stitching is visual watertightness, and it must hold under both strategies. A shared edge curve serves both. An analytic renderer resolves the common boundary of the two faces to the same exact curve. A tessellating backend welds its meshes along samples of that same curve. Neither backend must reconcile two floating-point approximations that drift apart. The sampled-trim fallback in the monster-step-viewer exporter is exactly such a drift source.
-- **Exact displacement reconciliation.** Derive the welded displacement once, on the edge curve, and apply it to every use.
-- **Reusable topology.** The same nodes serve BRep wireframe rendering and exact re-projection. Open borders of a `t-nurcc` node weld against them identically.
-- **Collision-free identity.** Handles are unique by construction. Integer ids from two exporters that feed one scene can collide silently.
-
-## Pros
-
-- Faithful conservation of CAD topology -- the scene graph *shows* that two faces share an edge.
-- Everything under "What the shared curve buys" above.
-- Additive: specify it now and adopt it incrementally, because dangling handles reduce to Option 1 semantics.
-
-## Cons
-
-- The heaviest option. Exporters emit a second curve representation: 3D edge curves in addition to the parametric curves. They also emit roughly one edge node per two face-uses, so edge nodes outnumber faces in typical solids.
-- Cross-node references by a handle-valued *attribute*, rather than by a connection, are a new pattern for ɴsɪ. Dependency tracking and deletion semantics need explicit rules. A parallel `Connect` into an `edges` attribute, purely for lifetime bookkeeping, is one alternative. This point is undecided.
-- The boundary gets two sources of truth, the parametric curve and the edge curve. They need the precedence rule above, and the exporter owns any tolerance disagreement between them.
-- Renderers must at least parse and ignore the references, even if they never use the geometry.
+This extension remains optional and unspecified. It is not necessary to keep joined surfaces joined, and it makes no claim that an existing exporter produces cracks.

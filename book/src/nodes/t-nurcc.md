@@ -63,7 +63,7 @@ Knot intervals are subject to two consistency constraints:
 
 ## Stitching
 
-A T-NURCC is watertight by construction, so the interior of the surface needs no stitching. That is the point of the node. Stitching applies only to the *open borders* of a T-NURCC sheet. Weld those borders to the boundaries of other nodes, either `nurbs` patches or other `t-nurcc` sheets. The weld uses the same scene-global edge-identifier space that the [Stitching](nurbs.md#stitching) section of the `nurbs` node defines. Supply the two attributes below together.
+A T-NURCC is watertight by construction, so the interior of the surface needs no stitching. That is the point of the node. Stitching applies only to the *open borders* of a T-NURCC sheet. Weld those borders to the boundaries of other nodes, either `nurbs` patches or other `t-nurcc` sheets. The weld uses the connected `weld` namespace defined by the [shared-boundary draft](../design/shared-boundaries.md). Polygon and subdivision meshes can participate in the same namespace. The general use table supports boundary chains. The two attributes below are an alternative shorthand for individual cage edges; supply them together and do not combine them with the general table.
 
 | Name           | Type    | Default |
 | -------------- | ------- | ------- |
@@ -75,7 +75,7 @@ A list of boundary cage edges. Specify each edge as a pair of indices into the `
 | ---------------- | ------- | ------- |
 | `stitch.edge-id` | _`int`_ |         |
 
-The edge identity of each listed boundary edge. Supply one value per pair in `stitch.index`. The semantics are those of the `trim-curves.edge-id`/`stitch.edge-id` attributes of the `nurbs` node. Boundaries anywhere in the scene that carry the same non-negative value trace the same model edge in 3D, and the renderer welds them. The welded counterpart is the arc of the limit-surface boundary that the listed cage edge maps to.
+The edge identity of each listed boundary edge. Supply one value per pair in `stitch.index`. The semantics are those of the `trim-curves.edge-id`/`stitch.edge-id` attributes of the `nurbs` node. Boundary uses with the same non-negative value and connected `weld` node belong together. IDs in different weld nodes are unrelated. The welded counterpart is the arc of the limit-surface boundary that the listed cage edge maps to.
 
 ## Semantics
 
@@ -86,7 +86,7 @@ The NURCC subdivision rules of the paper cited above define the limit surface. T
 
 ## Design Notes
 
-This node is the complement of the `nurbs` stitching design. That design *conserves* the weld topology of a CAD shell across a network of trimmed patches. This node lets a pipeline *eliminate* that topology instead. The pipeline merges the network into one surface, whose continuity is structural rather than declared. T-splines were conceived for exactly this merge. The T-junctions make it lossless, because local refinement absorbs patch boundaries that do not run through the whole network. The pipeline chooses which representation to export. The shared edge-identifier space lets the two representations coexist in one scene, welded to each other at their open borders.
+This node is the complement of the `nurbs` stitching design. That design *conserves* the weld topology of a CAD shell across a network of trimmed patches. This node lets a pipeline *eliminate* that topology instead. The pipeline merges the network into one surface, whose continuity is structural rather than declared. T-splines were conceived for exactly this merge. The T-junctions make it lossless, because local refinement absorbs patch boundaries that do not run through the whole network. The pipeline chooses which representation to export. The shared weld namespace lets the two representations coexist in one scene, welded to each other at their open borders.
 
 This node is a separate node type rather than an extension of `mesh`. Its data model diverges in every direction that matters:
 

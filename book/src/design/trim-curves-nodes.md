@@ -2,7 +2,7 @@
 
 Trim data moves to a dedicated `trim` node type, connected to the surface it trims. This node type is the graph-native descendant of RenderMan's `RiTrimCurve`. That entity was also separate from the patch: it set graphics state for the `RiNuPatch` calls that followed, and it was reusable across patches.
 
-A `trim` node carries **one or more complete loops**. The payload is the same as in the inline design, but the `trim-curves.` prefix drops away, because the node type supplies the context. Rule R4 of the [naming convention](../naming-convention.md) requires this. The attributes are `loop-count`, `curve-count`, `point-count`, `order`, `knot`, `min`, `max`, `position`/`position-weighted`, `hole`, `edge-id`, and `edge-orientation`.
+A `trim` node carries **one or more complete loops**. The payload is the same as in the inline design, but the `trim-curves.` prefix drops away, because the node type supplies the context. Rule R4 of the [naming convention](../naming-convention.md) requires this. The trim attributes are `loop-count`, `curve-count`, `point-count`, `order`, `knot`, `min`, `max`, `position`/`position-weighted`, and `hole`. Optional `edge-id` and `edge-orientation` arrays encode one-segment weld uses. A general `weld.*` table can instead select whole loops or segment chains, as described in the [shared-boundary design](shared-boundaries.md). The two weld encodings are alternatives.
 
 ```
 Create "face_12" "nurbs"
@@ -36,7 +36,7 @@ A loop orders its curves head-to-tail, but ɴsɪ connections have no order. This
 One `trim` node may connect to any number of `nurbs` nodes whose parameter domains it fits. A bolt-hole pattern stamped across identical panel faces is then defined once. Two caveats bound this benefit:
 
 - Reuse needs identically parameterized faces. CAD faces usually have per-face domains.
-- **Reuse conflicts with stitching.** `edge-id` names the edge of *one specific* face boundary. A node connected to two faces would claim the same edges on both, which is wrong. The rule is: a `trim` node with any non-negative `edge-id` must have exactly one connection. Reusable trims are unstitched trims.
+- **Weld declarations are local uses.** A trim node carrying a weld table or a non-negative `edge-id` has exactly one consuming surface in this proposal. Its IDs belong to that surface's connected weld namespace. Reusable trim nodes carry no weld declarations.
 
 The natural-boundary `stitch.*` attributes stay on the `nurbs` node in any case.
 
@@ -46,7 +46,7 @@ The natural-boundary `stitch.*` attributes stay on the `nurbs` node in any case.
 - Reuse of repeated trim patterns across compatible faces.
 - It follows the established precedent, `RiTrimCurve`, and the general shape of ɴsɪ: shared, composable components are nodes.
 - Attribute names get shorter (R4), and the `nurbs` namespace stays lean.
-- Implementers report that the extra API calls are noise next to render time. Memory cost does not change.
+- A loop group can be updated without replacing unrelated trim data.
 
 ## Cons
 
