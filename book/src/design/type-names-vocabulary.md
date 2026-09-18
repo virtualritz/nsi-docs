@@ -26,7 +26,7 @@ Two choices combine. The first is how a name states the width. The second is whe
 
 **D** is defensible for `i32` and `f32`, which every programmer reads. It is not defensible for `c32`, `p32`, `n32`, or `h32`. Those are inventions. They contradict the ᴏsʟ words that the same person writes in a shader, and they are jargon in exactly the sense R9 forbids. A `.nsi` stream is read by humans when they debug an exporter, and these tokens make it opaque. The hesitation between `h32` and `w32` for the same type shows the scheme has no natural letter for a new semantic type.
 
-A fifth scheme names every type by role, component count and width, as in `Color3F32` and `NumberF64`. It has its own page: [Type Rename: Role, Components, Width](type-rename.md).
+A fifth scheme names every type by role, component count and width, as in `Color3F32` and `RealF64`. It has its own page: [Type Rename: Role, Components, Width](type-rename.md).
 
 ## Whether the name abbreviates
 
