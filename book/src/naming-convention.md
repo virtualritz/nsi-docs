@@ -253,9 +253,6 @@ When a boolean on/off attribute belongs to a group that also has non-boolean att
 depth-of-field.enable         <- mixed group (has focal-stop, focal-length, etc.)
 depth-of-field.focal-stop
 depth-of-field.focal-length
-
-cryptomatte.enable            <- mixed group (has level)
-cryptomatte.level
 ```
 
 When the group is all-toggles or the boolean is standalone, no `.enable` needed:
@@ -276,7 +273,7 @@ This applies across different API calls -- the `callback` group is a cross-cutti
 ```
 # NSIBegin
 callback.error               <- error handler function (was: errorhandler)
-callback.error.data          <- error handler userdata (was: errorhandler.data)
+callback.error.data          <- error handler userdata (was: errorhandlerdata)
 
 # NSIRenderControl
 callback.stop                <- stopped callback function (was: stoppedcallback)
@@ -303,54 +300,9 @@ members              ✓
 output-layers        ✓
 ```
 
-## Open Question: Node Granularity
+## Open Question: Node Types
 
-The convention above renames attributes consistently, but it doesn't resolve a deeper inconsistency in how ɴsɪ models primitives. Three different patterns are in play across the existing node types:
-
-| Primitive | Pattern                        | Examples                                                                                           |
-| --------- | ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Meshes    | One node, type attribute       | `mesh` (polygons and Catmull-Clark via `subdivision.scheme`)                                       |
-| Volumes   | One node, but only one backend | `volume` (renders OpenVDB exclusively)                                                             |
-| Particles | Split by backend               | `particles`, `vdbparticles`                                                                        |
-| Cameras   | Split by projection            | `perspectivecamera`, `fisheyecamera`, `cylindricalcamera`, `sphericalcamera`, `orthographiccamera` |
-
-`mesh` collapses polygons and subdivision surfaces behind a `subdivision.scheme` attribute. Cameras do the opposite -- five separate node types that differ only in their projection function. Volumes name themselves generically while only one backend is implemented. Particles are split by the data format their control points hold, not by what the renderer sees.
-
-Three coherent resolutions, from least to most invasive:
-
-### Option 1 -- Honest names, same shape
-
-Keep one node per concern and rename for honesty. The mapping later in this document already adopts these names:
-
-- `volume` -> `vdb-volume` (it only renders OpenVDB).
-- `vdbparticles` -> `vdb-particles` (hyphenated).
-- Cameras keep their five hyphenated names (`perspective-camera`, ...).
-- `mesh` stays as the one merged exception.
-
-The inconsistency with `mesh` remains. This is a pure rename -- no API change.
-
-### Option 2 -- Collapse to one canonical primitive
-
-Bring volumes, particles, and cameras in line with `mesh`'s "one node, type attribute" pattern:
-
-- `vdb-volume` and `vdb-particles` collapse into a single `vdb` node with `kind = "volume" | "particles"` (or distinguished by which data attribute is supplied).
-- The five camera nodes collapse into one `camera` node with `projection = "perspective" | "fisheye" | "cylindrical" | "spherical" | "orthographic"`. Projection-specific attributes live behind the projection's prefix (e.g. `fisheye.mapping`).
-
-Every scene-graph entity ends up with a single canonical primitive. Migration is "rename node type, add a `kind`/`projection` attribute". The renderer's dispatch table has to flatten, but no user-side attribute is lost.
-
-### Option 3 -- Split `mesh` to match the rest
-
-Adopt the honest renames from Option 1 -- `volume` -> `vdb-volume`, `vdbparticles` -> `vdb-particles` -- and additionally replace `mesh` with `polygon-mesh` and `subdivision-mesh`. Each mesh node carries only the attributes meaningful for its surface kind; `subdivision.scheme` disappears entirely.
-
-This is the most invasive option: every existing scene using subdivision surfaces has to re-target the new node, and the `subdivision.*` attributes migrate from prefix-grouped on `mesh` to top-level on `subdivision-mesh`.
-
-### Trade-offs
-
-- **Option 1** is cheapest to deliver; it preserves the inconsistency under prettier names.
-- **Option 2** matches the mesh pattern. Requires backend dispatch work but no user-facing data loss.
-- **Option 3** is the cleanest in isolation but invalidates the largest existing-asset footprint.
-
-No recommendation in this draft. The decision belongs in the API roadmap, not in a renaming pass.
+The convention renames attributes. How node types are named and split -- one `mesh` for polygons and subdivision surfaces but five camera nodes, `volume` for one backend -- is a separate question. It has its own page: [Node Types: Naming and Granularity](design/node-types.md).
 
 ## Open Question: ᴏsʟ Built-In Variable Alignment
 
@@ -399,6 +351,12 @@ No recommendation in this draft.
 
 Every attribute across all node types, with current -> new name and the ruling(s) that apply. Attributes where current = new are omitted.
 
+### Common (All Nodes)
+
+| Current    | New         | Rules |
+| ---------- | ----------- | ----- |
+| `nicename` | `nice-name` | R6    |
+
 ### `global` Node
 
 | Current                        | New                                | Rules                                  |
@@ -429,12 +387,16 @@ Every attribute across all node types, with current -> new name and the ruling(s
 | `quality.iprspeedmultiplier`   | `quality.preview.speed-multiplier` | R8, R9                                 |
 | `quality.shadingsamples`       | `quality.shading-samples`          | R8, R6                                 |
 | `quality.volumesamples`        | `quality.volume-samples`           | R8, R6                                 |
+| `quality.causticsamples`       | `quality.caustic-samples`          | R8, R6                                 |
 | `quality.samplevolumeemission` | `quality.volume-emission-sampling` | R8, R6                                 |
 | `referencetime`                | `reference-time`                   | R6                                     |
 | `show.displacement`            | `shading.displacement`             | R8                                     |
 | `show.atmosphere`              | `shading.atmosphere`               | R8                                     |
 | `show.multiplescattering`      | `shading.multiple-scattering`      | R8, R6                                 |
 | `show.osl.subsurface`          | `shading.osl-subsurface`           | R8, R6                                 |
+| `show.instancesnode`           | `shading.instances-node`           | R8, R6 (feature toggle, as the other `show.*`) |
+| `texture.missingcolor`         | `texture.missing-color`            | R2 (2 texture attrs -> group), R6      |
+| `texture.missingcolorerrors`   | `texture.missing-color-errors`     | R2, R6                                 |
 | `exclusiveshading`             | `exclusive-shading`                | R6                                     |
 | `messages.timestamp`           | `messages.timestamp`               | --                                     |
 
@@ -561,6 +523,8 @@ New node type (draft, no implementation), introduced directly under the new conv
 | ---------------- | ---------- | ------------------------------- |
 | `shaderfilename` | `filename` | R4 (node type provides context) |
 | `shaderobject`   | `object`   | R4                              |
+| `materialxnodedef` | `materialx.node-definition` | R2 (2 MaterialX attrs -> group), R9 |
+| `materialxversion` | `materialx.version` | R2                              |
 
 ### `attributes` (geometry) Node
 
@@ -572,8 +536,9 @@ New node type (draft, no implementation), introduced directly under the new conv
 | `visibility.set.subsurface` | `visibility.subsurface-set` | R6                              |
 | `regularemission`           | `emission.regular`          | R2 (2 emission attrs -> group)  |
 | `quantizedemission`         | `emission.quantized`        | R2                              |
+| `displacementresolution`    | `displacement-resolution`   | R6                              |
 
-**Unchanged:** `ATTR.priority`, `visibility.camera`, `visibility.diffuse`, `visibility.hair`, `visibility.reflection`, `visibility.refraction`, `visibility.shadow`, `visibility.specular`, `visibility.volume`, `visibility`, `matte`, `bounds`
+**Unchanged:** `caustics.cast`, `caustics.emit`, `caustics.receive`, `ATTR.priority`, `visibility.camera`, `visibility.diffuse`, `visibility.hair`, `visibility.reflection`, `visibility.refraction`, `visibility.shadow`, `visibility.specular`, `visibility.volume`, `visibility`, `matte`, `bounds`
 
 ### `transform` Node
 
@@ -622,8 +587,9 @@ New node type (draft, no implementation), introduced directly under the new conv
 | `backgroundvalue` | `background.value` | R2 (2 background attrs -> group)|
 | `backgroundlayer` | `background.layer` | R2, R7 (single-conn)            |
 | `lightdepth`      | `light-depth`      | R6                              |
+| `cryptomatte.enable` | `cryptomatte`      | R2 (single attr, flat), R10 (standalone toggle) |
 
-**Unchanged:** `dithering`, `cryptomatte.enable`, `cryptomatte.level`
+**Unchanged:** `dithering`
 
 ### `screen` Node
 
@@ -722,7 +688,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 | `streampathreplacement` | `stream.path-replacement` | R2, R6                       |
 | `separateprocess`       | `separate-process`        | R6                           |
 | `errorhandler`          | `callback.error`          | R11 (unified callback group) |
-| `errorhandler.data`     | `callback.error.data`     | R11                          |
+| `errorhandlerdata`      | `callback.error.data`     | R11                          |
 | `executeprocedurals`    | `evaluate-replace`        | R9                           |
 
 **Unchanged:** `type`
@@ -740,6 +706,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 | Current          | New               | Rules |
 | ---------------- | ----------------- | ----- |
 | `backgroundload` | `background-load` | R6    |
+| `replacensidir`  | `replace-nsidir`  | R6 (`NSIDIR` is a variable name, kept whole) |
 
 **Unchanged:** `type`, `filename`, `script`, `buffer`, `size`
 

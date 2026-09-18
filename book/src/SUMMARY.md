@@ -59,6 +59,7 @@
 # Design Drafts
 
 - [NURBS: Draft Design](design/nurbs-draft.md)
+- [Node Types: Naming and Granularity](design/node-types.md)
 - [Trim Curves: API Alternatives](design/trim-curves.md)
   - [Option 1: Inline Attributes](design/trim-curves-inline.md)
   - [Option 2: `trim` Nodes](design/trim-curves-nodes.md)
