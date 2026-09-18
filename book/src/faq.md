@@ -95,6 +95,14 @@ A set inside another set contributes nothing. A set that holds two nodes of the 
 
 **Answer.** No. `transformationmatrix` must be a `doublematrix`. With sixteen `double` values, 3Delight warns `E6007` and draws the node at the identity transform. In a stream, the type name for an integer is `int`: `"integer"` is rejected with `E1000` and the call is skipped.
 
+### Can a Lua script pass an `int64` or a `double`?
+
+**Answer.** Not in 3Delight 2.9.210. `nsi.TypeInt64`, `nsi.TypeDouble` and `nsi.TypePointer` are `nil`, so an argument that names one of them has no type. The renderer then infers a type and changes the value without an error.
+
+**Observed.** With `renderdl -lua -cat`, `data=9007199254740993, type=nsi.TypeInt64` is written as `"int" 1 1`, and `data=0.1, type=nsi.TypeDouble` is written as a `float`.
+
+**For implementers.** Define all type constants in the Lua binding, including the 64-bit ones. A value that cannot be represented should be an error, not a silent conversion. See the [Lua API](lua-api.md).
+
 ## The Stream Format
 
 ### Is the stream line-based?
