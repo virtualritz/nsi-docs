@@ -17,6 +17,7 @@
 - **A connection `priority` on `geometryattributes` has no effect.** Only a `priority` on a shader connection, such as `surfaceshader`, ranks it. Use `ATTR.priority` on the attributes node instead. See the [FAQ](../faq.md).
 - **Calls on one context run one at a time.** Several threads may call into one context, but they are serialized: 20,000 `SetAttribute` calls take 11.8 ms from one thread and 21.4 ms from sixteen.
 - **`hpoint` needs 2.9.210.** A [`nurbs`](../nodes/nurbs.md) surface's `Pw` must have the type `hpoint`. The same data as flat `float`s is rejected (`E6007`), and the surface is then dropped (`E6020`). 3Delight 2.9.208 has neither the type nor the node.
+- **Displacement needs `displacementbound`.** A `displacementshader` has no effect unless the attributes also set `displacementbound`, a `float`: how far, at most, the displacement moves the surface. The manual does not mention it. The library also knows a `displacementboundspace`, whose behavior is unverified. See the [attributes node](../nodes/attributes.md#displacement-bound).
 - **The `hobby` curve basis is not supported.** A [`curves`](../nodes/curves.md) node with `basis` `hobby` warns `E6036` and falls back to the default basis.
 
 ## Behavior the Specification Leaves Open

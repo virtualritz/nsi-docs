@@ -118,6 +118,12 @@ Only objects with this attribute set to a non-zero value receive caustics.
 
 A multiplier on the level of detail in displacement. Larger values provide more detail; smaller values reduce memory use. It is usually not necessary to set this attribute.
 
+| Name                | Type      | Default |
+| ------------------- | --------- | ------- |
+| `displacementbound` | _`float`_ |         |
+
+<a id="displacement-bound"></a>The furthest a displacement shader moves the surface. A renderer can use it to bound displaced geometry before shading it. 3Delight 2.9.210 applies no displacement while it is unset; see [3Delight](../implementations/3delight.md#limitations).
+
 ### Shader Attributes
 
 This node can be a container for attributes available to shaders. For this purpose, instances of this node must be connected to the `shaderattributes` attribute of geometric primitives, [transform](transform.md) nodes or [set](set.md) nodes. Attribute values are gathered along the path starting from the geometric primitive, through all the transform nodes it is connected to, until the [scene root](root.md) is reached.
