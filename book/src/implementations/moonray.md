@@ -5,19 +5,21 @@
 ## Extensions
 
 - **ᴏsʟ shader networks run in MoonRay.** An ɴsɪ shader network becomes one ᴏsʟ shader group, evaluated by three MoonRay plug-ins: `Osl` for surfaces, `OslDisplacement` and `OslMap`. The backend must be built with ᴏsʟ available; without it, each shader is replaced by a `UsdPreviewSurface` with parameters read from 3Delight's shaders, and displacement is dropped with a report.
+- **Every emitter runs its actual shader, not a name lookup.** ɴsɪ has no light nodes: a light is geometry whose surface shader produces an `emission()` closure. Every such emitter becomes a MoonRay `MeshLight`, lit by an `OslMap` running that same network -- colour, intensity, and how both vary across the surface, come from the closure itself, sampled per point. Shader-name recognition (`areaLight`, `pointLight`, `spotLight`, `distantLight`) is a fallback only, for a build with no ᴏsʟ or a shader with no compiled `.oso` behind it; then MoonRay supplies the photometry and the light is in the right place with the wrong look.
 - **3Delight's ᴏsʟ closures are understood.** `layer_closures`, `outputvariable` and `outputconstant` are registered, and `microfacet`'s `realeta`/`complexeta` build a conductor. The MaterialX closures (`dielectric_bsdf`, `conductor_bsdf`, `generalized_schlick_bsdf`, `sheen_bsdf`, `subsurface_bssrdf`, `uniform_edf`, `layer` and others) are mapped too.
 - **Per-lobe AOVs.** An output variable that names a lobe becomes a MoonRay light-path expression. 3Delight's variable names are translated, for example `reflection` to `specular` and `incandescence` to `emission`.
 - **Output drivers without ndspy.** An output driver named `ferris_f32` (or `_u32`, `_i32`, `_u16`, `_i16`, `_u8`, `_i8`) calls Rust closures passed as `callback.open`, `callback.write` and `callback.finish`.
 - **Scene export.** `$NSI_MOONRAY_SCENE` writes the translated scene as MoonRay `.rdla`. The `mnry` command renders, converts and watches `.nsi` files.
+- **A geometry shared under several transforms keeps every material.** ɴsɪ's lightweight instancing -- connecting one node to several transforms, each with its own bound material -- is one shared object in the interface, and `RdlMeshGeometry` cannot do that natively: one object, one transform, one material. The backend expands the shared node into one `RdlMeshGeometry` per placement at the translator boundary instead of dropping every material but one. Nothing in the ɴsɪ scene is lost, only duplicated internally.
 
 ## Limitations
 
 - **At most two motion samples per attribute**, on one shutter for the whole scene. More samples are reported, not rendered, and each object's motion is resampled onto the scene's shutter.
 - **Moving instances translate only.** Rotation or scale of an `instances` node across the shutter is reported, not rendered.
 - **`suspend` and `resume` are not supported.** Restarting a MoonRay frame loses the samples taken so far.
-- **`volumeshader` is not used.** ᴏsʟ volume closures are unmapped; VDB volumes render with MoonRay's own volume shader. A scalar emission grid is refused, and the volume with it.
 - **`vdbparticles` is not supported.** MoonRay has no geometry that reads a point-data grid.
-- **`environment` carries no texture.** It becomes a MoonRay environment light with default color and intensity.
+- **A scalar OpenVDB emission grid is refused**, and the volume with it. `MoonRay`'s `VdbGeometry` reads only an RGB emission grid. (`volumeshader` itself *is* used: a bound ᴏsʟ volume closure crosses as an `OslVolume` and runs.)
+- **An `environment` node's shader does not run**, since MoonRay's `EnvLight` is a light class, not a shader. Colour, intensity, exposure and a texture path cross; gradients, mappings and every other per-component contribution the shader computes do not.
 - **ᴏsʟ details that are dropped:** colored transparency becomes one scalar presence; MaterialX tints become their luminance; `occlusion()` and the `microfacet` keywords `gamma`, `thinfilmthickness`, `thinfilmeta` and `mediumeta` are ignored with a warning; scoped `getattribute("scope", "name", ...)` is not answered.
 - **An emissive mesh cannot also have a non-emissive material**, such as glowing metal.
 - **One renderer per process.** A second concurrent render is refused; use a second process.
@@ -29,7 +31,6 @@
 - **Pixels are pulled, not pushed.** MoonRay renders progressively but does not deliver buckets. The backend polls it and sends each changed rectangle to the output driver.
 - **Channels are named after the layer.** The beauty output has the channels `Ci.R`, `Ci.G` and `Ci.B`, without alpha, not RGBA.
 - **A plain `mesh` is not subdivided.** MoonRay's mesh subdivides by default; the backend turns that off unless `subdivision.scheme` is set.
-- **Lights are recognized by shader name.** Geometry wearing one of 3Delight's light shaders (`areaLight`, `pointLight`, `spotLight`, `distantLight`) becomes a mesh light. Other emissive geometry is visible but lights nothing, because MoonRay's ᴏsʟ `emission()` affects only camera rays.
 - **ᴏsʟ `+` adds closures.** Only `layer()` and `layer_closures` layer them with attenuation.
 - **A disconnected object is switched off**, not removed, in an interactive session.
 - **A scene without a camera gets a default one**, and geometry without a shader gets a default material.
@@ -48,6 +49,6 @@ Found while writing the backend; none is filed upstream yet.
 ## Setup
 
 - The library is `libnsi_moonray.so` (`.dylib` on macOS, `nsi_moonray.dll` on Windows). It exports the ɴsɪ C API.
-- `$NSI_MOONRAY_DSO` must name MoonRay's plug-in directory. Without it, no scene class is found and the render is empty, without an error.
+- MoonRay's plug-in directory is found without being named: beside the running binary first, then the platform's own per-user and system-wide install locations. `$NSI_MOONRAY_DSO` overrides that search and is never second-guessed. If nothing is found anywhere, the in-process path reports every directory it tried and falls back to spawning the `moonray` program rather than rendering silently empty.
 - The backend links MoonRay when built with the `rdl2` feature. Otherwise it writes `.rdla` and runs the `moonray` program.
 - MoonRay is licensed under Apache-2.0; nsi-moonray under MIT, Apache-2.0 or Zlib.
