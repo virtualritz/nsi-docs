@@ -178,7 +178,7 @@ The edge identity of each curve. One value per curve. Each non-negative entry de
 | ------------------------------ | ------- | ------- |
 | `trim-curves.edge-orientation` | _`int`_ | `0`     |
 
-The traversal direction of each curve relative to its edge's reference direction. One value per curve. A value of `0` means the curve, traversed from its parametric start to its end, follows the edge's reference direction; `1` means it opposes it. On a consistently oriented manifold shell the two uses of an edge traverse it in opposite directions, so their values differ. This records traversal direction only. The renderer determines geometric correspondence; equal parameter values need not identify equal positions.
+The traversal direction of each curve relative to its edge's reference direction. One value per curve. A value of `0` means the curve, traversed from its parametric start to its end, follows the edge's reference direction; `1` means it opposes it. This value becomes `weld.reverse` in the general table. After reversal, all uses follow the same reference traversal and share their start within tolerance, including closed boundaries. Native face-boundary orientation is separate. Equal parameter values still need not identify equal positions.
 
 ### Natural Boundaries
 
@@ -194,9 +194,9 @@ The edge identities of the four sides of the active domain rectangle, in the ord
 | ------------------------- | ---------- | ------- |
 | `stitch.edge-orientation` | _`int[4]`_ | `0`     |
 
-The traversal direction of each side relative to its edge's reference direction, in the same side order. The reference direction of a side is increasing `v` for the two u-sides and increasing `u` for the two v-sides; `0` follows the edge's reference direction, `1` opposes it.
+The traversal direction of each side relative to the shared reference traversal, in the same side order. A side's native direction is increasing `v` for the two u-sides and increasing `u` for the two v-sides. A value of `1` reverses that native direction; `0` keeps it. The resulting traversal must agree with the other uses, including its start.
 
-A side's entry applies only where that side actually bounds the rendered region. Where the outer boundary is expressed as trim curves instead, the identities belong on the curves via `trim-curves.edge-id`.
+This shorthand selects a whole side, so that entire side must bound the retained region. Partly retained sides require explicit ranges in the general table. If a trim curve and a domain side describe the same boundary portion, only one selector declares that use.
 
 A closed surface that is represented as a single patch split at a seam -- a cylinder or torus, say -- welds to itself by giving the two seam sides the same identity, e.g. equal values for the *u = u.min* and *u = u.max* entries of one node.
 
@@ -204,8 +204,10 @@ The per-side shorthand selects whole sides only. Partial sides and T-junctions u
 
 ### Shared Semantics
 
-The [shared-boundary design](shared-boundaries.md) defines identity scope, boundary chains, self-seams, and non-manifold joins. Natural-side and trim-curve shorthand entries follow those same rules. The exporter guarantees that counterpart chains describe the same spatial boundary within the source model's tolerance. Segment counts and parameterizations can differ. Belonging does not ask the renderer to join unrelated geometry.
+The [shared-boundary design](shared-boundaries.md) defines identity scope, boundary chains, self-seams, and non-manifold joins. Natural-side and trim-curve shorthand entries follow those same rules. The exporter guarantees that counterpart chains describe the same spatial boundary within the source model's tolerance. After reversal, starts, ends, and traversal directions agree. Segment counts and parameterizations can differ. Belonging does not ask the renderer to join unrelated geometry.
 
 Each trim curve is a complete use in this shorthand. Five curves with one repeated ID are five uses, not one chain. Selecting the whole loop in the general table expresses a single use made from all five curves.
+
+A trim-boundary use belongs to the retained surface adjacent to that loop. A hole therefore joins its surrounding surface, not the removed interior. Reversal changes correspondence direction, not the retained region. The [retained-region rules](shared-boundaries.md#retained-region-and-mixed-selectors) apply to both shorthand and general declarations.
 
 An optional 3D edge representation is a separate [geometry extension](trim-curves-edges.md). It is not required by these declarations.
