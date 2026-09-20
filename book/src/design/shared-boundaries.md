@@ -1,6 +1,8 @@
 # Shared Boundaries: Weld Declarations
 
-> Proposal, not implemented. This page unifies the NURBS stitching and weld-node alternatives. Names follow the [naming convention](../naming-convention.md).
+> Proposal. This page unifies the NURBS stitching and weld-node alternatives. Names follow the [naming convention](../naming-convention.md).
+>
+> A first implementation exists: [`nsi-intermediate`](https://github.com/virtualritz/nsi) resolves the declarations and `nsi-tessellate` welds `nurbs` nodes through them, exercised on STEP parts (io1-ec-214, 17 faces and 35 edges; boxy, 80 and 124). The notes headed **From the first implementation** record what that found, in the section whose shape it concerns. They are findings and suggestions, not settled text.
 
 How can an exporter preserve joined boundaries with little bookkeeping, even when the two sides have different representations?
 
@@ -76,6 +78,8 @@ Each geometry node carries a local boundary-use table:
 
 Segments are concatenated in use order. Counts partition those arrays; their sum equals the segment-array length. Each segment belongs to exactly one use. IDs belong to uses, not to segments.
 
+> **From the first implementation.** Across five STEP fixtures every use had exactly one segment: a circular edge converts to one rational curve with doubled knots, not to a run of quarter arcs. The chain mechanism is still needed for exports that split an edge, but the common path is a single segment, and `weld.segment-count` defaulting to one segment per use is what keeps the table small in practice.
+
 The index tuple has a fixed width so exporters can build one table without node handles for every segment. Unused components are zero. All indices are zero-based.
 
 | `weld.kind` | `weld.index` | Selected boundary |
@@ -85,11 +89,23 @@ The index tuple has a fixed width so exporters can build one table without node 
 | `nurbs-side` | `[side, 0, 0]` | Active-domain side: 0 = u-min, 1 = u-max, 2 = v-min, 3 = v-max |
 | `mesh-edge` | `[face, loop, edge]` | Directed local edge occurrence in a polygon or subdivision control mesh |
 
+> **From the first implementation.** The trim selectors say which curve is joined, but not which *side* of it is material, and the shipped node's `trimcurves.inside` 0 -- keep the surface outside the loops -- inverts that. The draft's per-loop `trim-curves.hole` raises the same question per loop: a weld on a hole's boundary and a weld on the outer boundary join opposite material. The implementation refuses `trimcurves.inside` 0 rather than guess. Suggested: state the interaction where the trim attributes are defined, so a weld's meaning does not depend on an attribute the weld table never names.
+
 For meshes, loop 0 is the outer perimeter; later loops are polygon holes. The edge runs from a local vertex to the next vertex in that loop, with wraparound. For subdivision, the selection denotes the associated limit-surface boundary, not the straight control-cage segment. Each supported subdivision scheme must define that association. The same declaration applies to the draft `t-nurcc` control topology.
 
 A natural side follows increasing `v` for a u-side and increasing `u` for a v-side. A trim curve follows its stored parameter range. Reversal applies after selection.
 
+> **From the first implementation.** This gives each *segment* a direction, but not the *weld*, so nothing says how the two uses of one boundary correspond. Where the boundary is open the ends settle it. Where it is closed -- a circle, the common case in a ʙ-ʀᴇᴘ -- both ends are the same point, and a consumer that pairs the uses by their endpoints cannot tell a reversed use from a forward one. Implementing it that way made every reversed use read as forward, and the cylinder bands of a real part folded over themselves, meshing 3.2 and 7.8 times their own area. Comparing the quarter points as well as the ends distinguishes them, because a circle's midpoint is the antipode whichever way it is traversed.
+>
+> `weld.reverse` does not help here: it reverses a segment against its own selector, and the weld has no direction of its own to be reversed against.
+>
+> Suggested: state the correspondence instead of leaving it to geometry. In every STEP export measured, the two uses of a manifold weld traverse the locus in *opposite* senses and agree at their start point. Requiring that -- anti-parallel, and start points coincident within tolerance -- lets a consumer zip the two sample runs with no geometric search. A stronger form would give the weld a direction, say that of its lowest-numbered use, and read `weld.reverse` against it.
+
 A range selects a subinterval before reversal. Its endpoints lie in `[0, 1]`, normalized over the selected curve's active range or the selected edge's local domain. This normalization selects a local portion; it does not assert equal parameter values across surfaces. A `trim-loop` selector accepts only its full range. Partial loops use ordered `trim-curve` selectors instead.
+
+> **From the first implementation.** Ranges are what a side shared with several neighbours needs, and they carried most of a real part: 48 of io1-ec-214's 70 segments are `nurbs-side`, several of them partial. They work as specified.
+>
+> One thing the text leaves out matters to a consumer that has to *merge* the two sides: where a boundary is split between neighbours, the split point must be the same point on both faces, or the seam opens exactly where the parts meet. In the exports measured it always was. The text declines to assert anything across surfaces, which is right for parameter values; suggested: assert it for the locus -- the endpoints of corresponding ranges denote the same point -- so a consumer may rely on it rather than search for it.
 
 The selected segments must form one connected chain. A closed-loop selector is a complete use and cannot be mixed with additional segments in that use. Empty uses, invalid indices, and disconnected chains are invalid declarations.
 
@@ -127,6 +143,12 @@ SetAttribute "patch"
 
 A chain of mesh edges uses the same count and concatenation mechanism. Mixed segment kinds can describe a boundary that follows both a natural patch side and trim curves. The renderer sees one use on each side regardless of segmentation.
 
+> **From the first implementation.** The mixed form has no rule for closing the chain. A patch's natural sides and its trim loops are separate loops of its boundary, so a use that runs through both is not one edge to a consumer that builds the boundary loop by loop; the implementation reports such a use and leaves that boundary unwelded. It never arose: a trimmed face's natural side is a boundary only where a trim curve already runs along it, which makes the mixed form redundant in every case measured.
+>
+> Suggested: either forbid mixing `nurbs-side` with the trim selectors in one use, or say how the chain closes across the two.
+>
+> Untested here: `mesh-edge`. Nothing in this implementation selects one, so it carries no evidence either way.
+
 ### Several Independent Joins
 
 The same patch can declare another boundary without another node:
@@ -141,6 +163,8 @@ SetAttribute "patch"
 Loop 0 belongs to weld 12. The u-max side belongs to weld 13. Another surface declares ID 13 in the same namespace to complete that join. These two IDs remain independent.
 
 Two uses on the same geometry can have the same ID, which expresses a self-seam. More than two uses can share an ID, which expresses a non-manifold join. A use without a counterpart is an open declaration; it joins nothing by itself.
+
+> **From the first implementation.** The self-seam clause earns its place immediately: a cylinder band closed on itself uses its seam edge twice from one face, and 12 of io1-ec-214's 17 faces are such bands. No other construct in the shipped node expresses it. Open declarations proved worth reporting as diagnostics -- they are how a consumer tells a part that was exported incompletely from one that is genuinely open.
 
 ## Relation to the Original Stitching Arrays
 
