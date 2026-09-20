@@ -345,7 +345,11 @@ The decision turns on which contract matters more:
 - **ᴏsʟ portability** (Option A) -- the convention that "the attribute named `P` is what the shader reads as `P`" is sacred.
 - **ɴsɪ-internal consistency** (Option B) -- single-letter names are jargon and R5's reasoning applies uniformly; the ᴏsʟ binding layer can absorb the cost.
 
-No recommendation in this draft.
+### Resolution: Option A
+
+The ᴏsʟ globals keep their names. `P`, `N`, `Pw`, `Ng`, `u`, `v`, `dPdu`, `dPdv` and `I` are not renamed and not deprecated; every other row of the mapping stands. A shader reads the attribute named `P` as `P`, with nothing in between, and no debugging tool has to translate.
+
+The rows that name them in the [complete mapping](#complete-attribute-mapping) -- `P` to `position` on `mesh`, `nurbs`, `curves` and `particles`, `N` to `normal`, `Pw` to `position-weighted` -- are therefore not adopted. The rest of each of those sections is.
 
 ## Complete Attribute Mapping
 
