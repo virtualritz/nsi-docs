@@ -69,7 +69,9 @@ A T-NURCC is watertight by construction, so the interior of the surface needs no
 | -------------- | ------- | ------- |
 | `stitch.index` | _`int`_ |         |
 
-A list of boundary cage edges. Specify each edge as a pair of indices into the `position` attribute. Unlike `knot-interval.index`, pair order is significant. The pair `(a, b)` selects traversal from `a` to `b`. Its order must align that traversal with the shared reference direction. No separate orientation attribute is needed. The resulting traversal must share its start and direction with the other uses, as specified in the [shared-boundary contract](../design/shared-boundaries.md#start-direction-and-correspondence).
+A list of boundary cage edges. Specify each edge as a pair of indices into the `position` attribute. Unlike `knot-interval.index`, pair order is significant. The pair `(a, b)` selects traversal from `a` to `b`. Its order must align that traversal with the shared reference direction. No separate orientation attribute is needed.
+
+The resulting traversal must follow the shared direction. Open endpoints must match; closed starts may differ. The [shared-boundary contract](../design/shared-boundaries.md#start-direction-and-correspondence) defines these rules.
 
 | Name             | Type    | Default |
 | ---------------- | ------- | ------- |

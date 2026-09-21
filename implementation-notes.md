@@ -27,3 +27,12 @@
 - Consolidated the reported measurements and coverage limits into one evidence table.
 - Removed superseded inline suggestions, including the claim that opposite directions alone permit direct sample pairing.
 - Preserved the reported fixture counts, closed-boundary failures, partial ranges, single-segment defaults, and self-seam evidence.
+
+## Closed Anchor Cost Feedback
+
+- Kept required direction and matching open endpoints.
+- Made the shared source vertex the preferred closed anchor, with renderer fallback even when that vertex exists. A known vertex alone does not supply its surface parameter.
+- Applied the fallback to both single-segment and multi-segment closed uses. Optional range rotation remains available.
+- Recorded the follow-up results as implementer reports; no independent renderer validation or universal claim for the Newell-vector method.
+- Updated NURBS and T-NURCC cross-references to remove mandatory matching closed starts.
+- Validation: the book build and diff checks passed. The updated shared-boundary prose passes the sentence-length check; the build retains its preprocessor version warning.

@@ -32,7 +32,7 @@ For example, one use can contain five NURBS trim curves. The other can select on
 
 The exporter preserves the relationship from the source application. It selects each segment and sets its order and direction. It does not need to resample curves or change the geometry. Different knot vectors, segment counts, or parameter speeds do not change the identity.
 
-The rules below require a common start and direction after selection and reversal. The earlier draft left those choices to the renderer.
+The rules below require a common direction after selection and reversal. Open uses also require matching endpoints. Closed uses can start at different points; a common start is preferred.
 
 ### What the Exporter Guarantees
 
@@ -46,15 +46,31 @@ The tolerance limits the permitted difference between declared boundaries. It do
 
 ### Start, Direction, and Correspondence
 
-For each weld ID, the exporter chooses a start point and direction along the boundary before displacement. Together, these define the *reference traversal*. Each use must follow that traversal after the renderer applies its ranges, segment order, and `weld.reverse` values. This rule needs no reference-use handle or additional direction attribute.
+For each weld ID, the exporter chooses a reference direction along the boundary before displacement. Each use must follow that direction after the renderer applies its ranges, segment order, and `weld.reverse` values. These directed paths are the *reference traversal*. This rule needs no reference-use handle or additional direction attribute.
 
-For an open boundary, all uses start at the same endpoint and finish at the same endpoint, within tolerance. For a closed boundary, all uses start at the same anchor and travel in the same direction, exactly once around. A use must not backtrack or traverse the boundary multiple times. These rules do not cover degenerate boundaries with no defined traversal.
+For an open boundary, all uses must start at the same endpoint and finish at the same endpoint, within tolerance. For a closed boundary, every use must travel exactly once around in the reference direction. Closed uses may start at different points. A use must not backtrack or traverse the boundary multiple times. These rules do not cover degenerate boundaries with no defined traversal.
 
 If the source chain runs in the opposite direction, the exporter reverses each selected segment and the segment order. For a single segment, only `weld.reverse = 1` is needed. For a closed `trim-loop`, reversal changes both curve order and curve direction. The loop keeps its original start point.
 
-Closed loops with different start points need different selections. If the common start is a segment endpoint, the exporter can rotate the segment order. If the common start lies inside a curve, the exporter can select two ranges: the tail, then the head. This selection does not split the source geometry. A whole `trim-loop` selector works when its stored start already matches the common start.
+### Preferred Anchor and Renderer Fallback
 
-For example, suppose a periodic curve needs to start at local parameter `0.25`. The use selects ranges `[0.25, 1]` and `[0, 0.25]`. Both segments select the same curve index, in that order. Together, the two ranges start and end at the required point.
+An *anchor* is a common start point for the uses of a closed weld. Exporters should use a shared source vertex as the anchor when the source topology provides one. This means a topological vertex of the shared boundary, not an arbitrary control point. Where several such vertices exist, the exporter can choose one consistently for that weld.
+
+A known vertex does not always provide its parameter on every surface. For example, a periodic patch side starts at the patch seam. Its matching source edge can start at a different vertex position. Finding that position on the patch side can require a parameter search.
+
+The exporter may keep those different starts, even when the source has a shared vertex. It does not need to perform that search or split a selection solely to align closed-boundary starts. A different start alone is not an invalid weld declaration. The spatial path, direction, and other validity rules still apply.
+
+A renderer that supports closed welds must handle different starts. It must establish matching positions while preserving the declared direction. It must not drop an otherwise valid join solely because the starts differ. An implementation that cannot handle different starts must report that limitation.
+
+The renderer chooses the method. For example, it can align closed sample runs by distance along the boundary, or project shared samples onto each use. This proposal does not promise a fixed search cost or require either algorithm. Geometry and parameterization can affect the cost.
+
+The same rule applies to single-segment and multi-segment closed uses. Segment order still defines a connected traversal. A different start changes only where that traversal begins, not which segments belong to it or their cyclic order.
+
+Exporters can still align starts when the source provides the required parameters. If the anchor is a segment endpoint, the exporter can rotate the segment order. If it lies inside a curve, the exporter can select two ranges: the tail, then the head. This selection does not split the source geometry.
+
+For example, suppose a periodic curve can start at local parameter `0.25` without a search. The use can select ranges `[0.25, 1]` and `[0, 0.25]` of that curve, in that order. Both ranges together start and end at the anchor. This is optional; the renderer fallback also permits the original full-range selection.
+
+### Direction Does Not Determine Parameter Speed
 
 In an oriented manifold shell, the two face boundaries can run in opposite directions. The weld traversal provides a separate direction for matching their positions. Reversal does not change face orientation or which surface region is retained. A weld with more than two uses cannot make every pair run in opposite directions.
 
@@ -150,7 +166,7 @@ A natural side follows increasing `v` for a u-side and increasing `u` for a v-si
 
 A range selects a subinterval before reversal. Its endpoints satisfy `0 <= start < end <= 1`. These values are fractions of the curve's active parameter range or the edge's local parameter domain. A `trim-loop` selector accepts only its full range. Partial loops use ordered `trim-curve` selectors instead.
 
-Matching uses must have the same start and end positions, within tolerance, after reversal. Where neighboring welds meet, their declarations must select the same geometric junction, within tolerance. A segment break inside one use needs no matching break in another use.
+Matching open uses must have the same start and end positions, within tolerance, after reversal. Closed uses follow the anchor and fallback rules above. Where neighboring welds meet, their declarations must select the same geometric junction, within tolerance. A segment break inside one use needs no matching break in another use.
 
 Local range numbers need not match across surfaces. For example, `[0, 0.5]` on `A(t)` above corresponds geometrically to `[0, (sqrt(5)-1)/2]` on `B(t)`. Both finish at position `0.5`. The exporter guarantees this geometric agreement. The renderer cannot assume equal range numbers or equal parameter increments.
 
@@ -196,7 +212,7 @@ SetAttribute "subdiv"
     "weld.index" "int[3]" 1 [7 0 2]
 ```
 
-Both uses have ID `12` and connect to `solid_welds`, so they declare one join. The example assumes that both selections follow the same closed path, start, and direction. If one selector runs oppositely, its declaration also supplies `weld.reverse = 1`. An ordinary open edge cannot join an entire closed hole. If several subdivision edges form the matching ring, they form one use instead.
+Both uses have ID `12` and connect to `solid_welds`, so they declare one join. The example assumes that both selections follow the same closed path and direction. Their start points may differ. If one selector runs oppositely, its declaration also supplies `weld.reverse = 1`. An ordinary open edge cannot join an entire closed hole. If several subdivision edges form the matching ring, they form one use instead.
 
 The exporter can also list the five trim curves separately. This alternative selects the same chain and keeps ID `12`:
 
@@ -269,14 +285,20 @@ The first implementer reported results from `nsi-intermediate` and `nsi-tessella
 
 | Reported finding | Consequence for this revision |
 | ---------------- | ----------------------------- |
-| Endpoint-only direction matching folded closed cylinder bands, producing areas 3.2 and 7.8 times the expected values. Quarter-point comparisons distinguished direction in the measured cases. | All uses must share a start and traversal direction after reversal. This removes the need to infer direction from endpoints. |
-| Measured manifold uses had opposite source traversals and coincident starts. | Exporters align these traversals with `weld.reverse`. The shared traversal also supports more than two uses; it does not imply equal parameter speeds. |
+| Endpoint-only direction matching folded closed cylinder bands, producing areas 3.2 and 7.8 times the expected values. Quarter-point comparisons helped in those cases but later rejected valid uses with different parameter speeds. | All uses must follow the same declared direction. Open endpoints must match; closed starts may differ. |
+| Initial manifold exports had opposite source traversals and coincident starts. Later tests found periodic patch sides whose starts differed from the source edge. | Exporters align direction with `weld.reverse`. A source vertex is the preferred closed anchor, but the renderer must support different starts. |
 | The implementation rejected outside-loop trims because the draft did not specify which surface region the weld joined. | A weld belongs to the retained region beside its selected boundary. Hole and outside-loop settings are valid and do not change weld traversal. |
 | Mixed side/trim uses were unsupported and did not occur in the measured exports. | Mixed selections must follow consecutive portions of one boundary of the retained surface. Separate loops and duplicate portions remain invalid. |
 | Of io1-ec-214's 70 segments, 48 were natural sides, including partial sides. Ranges worked where split points agreed. | Corresponding use endpoints and adjoining weld junctions must agree geometrically. Local range numbers need not match. |
 | All uses across five STEP fixtures had one segment. Circular edges were single rational curves with doubled knots. | The default segment count stays one. Ordered chains remain available for differently segmented exports. |
 | Twelve of io1-ec-214's 17 faces were cylinder bands with self-seams. Open declarations also served as useful diagnostics. | Two uses on the same geometry remain distinct uses of one weld. A lone use joins nothing and can help diagnose incomplete export. |
 
-The report does not test mesh-edge selectors, chains with several segments, or different parameter speeds. The proposal supports those cases, but implementation tests are still needed. An open declaration alone cannot distinguish an intentional open boundary from missing export data.
+Follow-up feedback reports implementation commits `3ae28ff` and `c2e0ec3`. The implementer found that source edge orientation usually supplies direction without a search. Its own conversion needed extra work because surface-coordinate mirrors changed direction.
+
+The same feedback reports that quarter-point checks rejected valid uses with different parameter speeds. The implementation then used endpoints for open boundaries and a Newell area vector to compare closed traversal senses. Ignoring direction reportedly left a real part with 390 open edges. This records a result from that implementation, not a general validation algorithm for every supported boundary.
+
+The implementer also reported that two-range anchor rotation was not yet implemented. The emitter kept the affected joins and reported their different starts. Under this revision, different closed starts alone no longer violate the contract. This revision does not establish that the implementation meets every other rule.
+
+The reports do not test mesh-edge selectors or chains with several segments. The follow-up exercises different parameter speeds on NURBS boundaries, but does not validate every geometry combination. An open declaration alone cannot distinguish an intentional open boundary from missing export data.
 
 The remaining decisions concern instance scope, how to supply tolerances, and the exact attribute encoding. One namespace contains many identities, and one use can contain many ordered segments. Displacement, tessellation, and geometric correspondence remain renderer decisions.
