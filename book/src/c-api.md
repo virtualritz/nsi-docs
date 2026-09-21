@@ -454,8 +454,9 @@ This function is the only control function of the API. It is responsible for sta
 | ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `progressive`     | int (`0`) | If set to `1`, render the image in a progressive fashion.                                                                                                                                                                                           |
 | `interactive`     | int (`0`) | If set to `1`, the renderer will accept commands to edit scene's state while rendering. The difference with a normal render is that the render task will not exit even if rendering is finished. Interactive renders are by definition progressive. Interactive renders are by definition progressive. |
-| `frame`           |          | Specifies the frame number of this render.                                                                                                                                                                                                          |
 | `stoppedcallback` | pointer  | A pointer to a user function that should be called on rendering status changes. The function signature is:                                                                                                                                          |
+
+There is no `frame` argument. Earlier revisions of this page listed one, without a type; the specification has none, and 3Delight 2.9.210 ignores it. The frame number is the [global node](nodes/global.md)'s `frame` attribute, which seeds the sampling pattern.
 
 ```c
 void StoppedCallback(

@@ -723,7 +723,7 @@ New node type (draft, no implementation), introduced directly under the new conv
 | `stoppedcallback`     | `callback.stop`      | R11 (unified callback group) |
 | `stoppedcallbackdata` | `callback.stop.data` | R11                          |
 
-**Unchanged:** `action`, `progressive`, `interactive`, `frame`
+**Unchanged:** `action`, `progressive`, `interactive`
 
 **Open question -- `action` as a positional argument:** Every meaningful `NSIRenderControl` call needs an `action` value -- one of `start`, `wait`, `synchronize`, `suspend`, `resume`, `stop`. The call is a no-op without it. Yet the current signature carries `action` inside the optional-parameter bag, peer to the genuinely-optional `progressive`/`interactive`/callback parameters.
 

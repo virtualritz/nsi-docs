@@ -23,6 +23,7 @@
 ## Behavior the Specification Leaves Open
 
 - **Equal-priority definitions resolve in connection order.** When two attributes nodes on one node define the same attribute at the same priority, the one connected first applies, for plain attributes and for shaders. 3Delight prints no warning about the definitions it drops. See the [attributes node](../nodes/attributes.md#geometry-attributes).
+- **`NSIRenderControl` ignores arguments it does not know, silently.** A `frame` argument there changes nothing and draws no warning; the same value on the global node's `frame` changes the sampling pattern. An exporter that sets the frame in the wrong place gets no signal.
 - **A lone `ATTR.priority` is a definition** of `ATTR` at its default value. The priority must be exactly one `int`; any other type or count is ignored.
 - **Specificity ranks before proximity.** At equal priority, a far `visibility.camera` wins over a nearer `visibility`.
 - **Values are read loosely.** On `visibility`, a `float` 0.4 is visible, an `int64` 0 hides, and a `string` reads as true. A value of the wrong type is still a definition.
