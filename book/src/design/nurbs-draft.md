@@ -214,4 +214,4 @@ Each trim curve is a complete use in this shorthand. Five curves with one repeat
 
 A trim-boundary use belongs to the retained surface adjacent to that loop. A hole therefore joins its surrounding surface, not the removed interior. Reversal changes correspondence direction, not the retained region. The [retained-region rules](shared-boundaries.md#retained-region-and-mixed-selectors) apply to both shorthand and general declarations.
 
-An optional 3D edge representation is a separate [geometry extension](trim-curves-edges.md). It is not required by these declarations.
+Renderable 3D curves belong in the draft [`nurbs-curves`](../nodes/nurbs-curves.md) node. They are separate from these boundary declarations. The earlier geometry-bearing `edge` proposal is [retired](trim-curves-edges.md).

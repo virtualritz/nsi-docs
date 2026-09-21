@@ -21,11 +21,11 @@ Connections need no ordering because each trim node carries complete loops. A lo
 
 The inline encoding minimizes exporter bookkeeping. Separate nodes make loop groups independently editable. Neither encoding has an assumed memory or rendering advantage; those costs need measurement.
 
-## Shared 3D Edges Are a Separate Extension
+## Renderable Curves Are Separate Geometry
 
-The earlier [Option 3: `edge` Nodes](trim-curves-edges.md) also exported a model edge's 3D curve. It is not a third place to store trim data. A 3D curve could accompany either packaging option and either weld-identity encoding.
+The old `edge` node proposal is [retired](trim-curves-edges.md). A [`nurbs-curves`](../nodes/nurbs-curves.md) node can instead carry renderable model curves for wireframe display. It does not supply authoritative geometry for a surface weld.
 
-A trim curve describes a boundary in one surface's parameter domain. A weld declaration states which boundaries belong together. A model-edge curve supplies additional geometry. Keeping these roles separate lets an exporter preserve topology without exporting redundant curves.
+A trim curve defines a boundary in a surface's parameter domain. A weld declaration states which boundaries belong together. A renderable NURBS curve supplies geometry with width. These are separate roles.
 
 ## Decisions to Settle
 

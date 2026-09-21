@@ -36,3 +36,11 @@
 - Recorded the follow-up results as implementer reports; no independent renderer validation or universal claim for the Newell-vector method.
 - Updated NURBS and T-NURCC cross-references to remove mandatory matching closed starts.
 - Validation: the book build and diff checks passed. The updated shared-boundary prose passes the sentence-length check; the build retains its preprocessor version warning.
+
+## Renderable NURBS Curves and Point Welds
+
+- Retired the geometry-bearing edge proposal; kept its URL as a short pointer to the replacement pages.
+- Added a draft nurbs-curves reference with batched geometry, curve attributes, and P/Pw naming.
+- Proposed separate point-use arrays in the existing weld namespace, with endpoint and interior-parameter examples.
+- Required declared curve joins to remain joined under displacement; left junction construction and appearance to the renderer.
+- Used AIR's documented NuCurves geometry as a precedent; did not assert unverified RenderDotC behavior.

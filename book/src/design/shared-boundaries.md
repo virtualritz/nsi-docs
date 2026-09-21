@@ -269,7 +269,7 @@ For `E` shared boundaries and `U` uses, these counts exclude existing geometry a
 
 For 10,000 boundaries with two uses each, the explicit-use approach adds 30,000 nodes. The recommended encoding adds one namespace node for that solid. Both encodings still describe 20,000 uses. Arrays reduce the node count but still carry the topology data. These counts do not establish a rendering performance difference.
 
-A [shared 3D edge curve](trim-curves-edges.md) is an independent extension. It could accompany either identity encoding. It does not identify the local boundary uses by itself.
+The geometry-bearing `edge` proposal is [retired](trim-curves-edges.md). The draft [`nurbs-curves`](../nodes/nurbs-curves.md) node supplies renderable curve geometry separately. [Point welds](curve-point-welds.md) can reuse the namespace without changing this boundary-use table.
 
 ## Scope, Edits, and Remaining Decisions
 
