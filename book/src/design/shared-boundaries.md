@@ -2,15 +2,15 @@
 
 > Proposal, revised after feedback from an experimental implementation. Names follow the [naming convention](../naming-convention.md).
 
-The [implementation findings](#implementation-feedback-and-coverage) below explain the revised rules and their evidence limits. They do not establish that the implementation already supports this revision.
+The [implementation findings](#implementation-feedback-and-coverage) explain why the rules changed. They also show which cases still need tests. The implementation may not yet support the revised rules.
 
-How can an exporter preserve joined boundaries with little bookkeeping, even when the two sides have different representations?
+How can an exporter describe a join when the two surfaces represent their boundaries differently?
 
-The declaration means: *these selected boundaries belong together and must stay joined when rendered*. Spatial coincidence alone does not declare a join. The renderer decides how to preserve the join through tessellation and displacement. This proposal specifies no welding algorithm or displacement policy.
+The declaration means: *these selected boundaries belong together and must stay joined when rendered*. Two boundaries at the same position do not necessarily belong together. The renderer decides how to preserve the join through tessellation and displacement. This proposal specifies no welding algorithm or displacement policy.
 
 ## Recommendation: One Scope, Many Welds
 
-A `weld` node supplies an identity namespace. It can describe all joins in a solid through the boundary declarations on its connected geometry. It carries no curves and needs no attributes of its own.
+A `weld` node defines a set of local IDs, called a *namespace*. The exporter chooses an integer ID for each join. One node can provide the IDs for all joins in a solid. The connected geometry carries the boundary data. The `weld` node carries no curves and needs no attributes of its own.
 
 ```text
 solid_welds --> face_a.weld
@@ -18,51 +18,58 @@ solid_welds --> face_a.weld
             --> subdivision_mesh.weld
 ```
 
-Each geometry node accepts one `weld` connection. Its local attributes select boundaries and assign integer IDs. Two boundary uses with the same ID and the same connected `weld` node belong together. ID `12` in another weld node is unrelated.
+Each geometry node accepts one `weld` connection. Its local attributes select boundaries and assign integer IDs. Two selected boundary chains belong together when they share an ID and connect to the same `weld` node. The same integer ID in a different `weld` node identifies an unrelated boundary.
 
-The effective identity is `(weld node, ID)`. Membership in the node alone does not weld every boundary together. A solid with 10,000 shared boundaries can use one extra node, not 10,000 nodes. The exporter assigns IDs from source topology and writes arrays on the geometry it already exports.
+The pair `(weld node, ID)` identifies a join. A connection to the node alone does not join every boundary. A solid with 10,000 shared boundaries can use one extra node, not 10,000 nodes. The exporter assigns IDs from source topology and writes arrays on the geometry it already exports.
 
-The earlier proposal used one `weld` per shared edge and one `weld-use` per occurrence. That remains an alternative below. The recommendation here changes the granularity: one namespace node, with boundary uses stored as data.
+An alternative uses one `weld` node per shared boundary and one `weld-use` node per use. The [comparison below](#alternatives-and-trade-offs) describes its costs. The recommended design stores the uses in arrays and needs only one namespace node.
 
 ## A Boundary Use Can Contain Several Segments
 
 A *boundary use* is one connected, ordered chain on one surface. It can be open or closed. The two uses of a weld need not contain the same number or type of segments.
 
-For example, one use can contain five NURBS trim curves. The other can select one subdivision boundary edge whose limit boundary follows the same locus. These are two uses of one weld, not six competing definitions of an edge.
+For example, one use can contain five NURBS trim curves. The other can select one subdivision edge whose limit boundary follows the same path. Together, these chains form two uses of one weld.
 
-The exporter declares the relationship already known by the source application. It orders and directs the selected segments without resampling curves or changing the underlying geometry. Different knot vectors, segment counts, or parameter speeds do not change the identity.
+The exporter preserves the relationship from the source application. It selects each segment and sets its order and direction. It does not need to resample curves or change the geometry. Different knot vectors, segment counts, or parameter speeds do not change the identity.
 
-The proposed correspondence contract below requires a common start and direction after selection and reversal. This strengthens the earlier draft, which allowed unrelated loop seams and left direction matching to the renderer.
+The rules below require a common start and direction after selection and reversal. The earlier draft left those choices to the renderer.
 
 ### What the Exporter Guarantees
 
-The exporter guarantees that counterpart uses trace the same undisplaced spatial path within the source model's geometric tolerance. Their lengths must also agree within the applicable tolerance. Equal length alone is insufficient: two unrelated curves can have equal lengths.
+The exporter guarantees that matching uses follow the same path before displacement, within the source model's geometric tolerance. Their lengths must also agree within the applicable tolerance. Equal length alone is not enough: unrelated curves can have equal lengths.
 
-This agreement applies to the complete boundaries, not just their endpoints or control vertices. Comparisons concern the evaluated surface boundaries in a common coordinate system. For subdivision, this means the limit boundary, not the cage polyline. Animated declarations must remain valid over the rendered time interval.
+This agreement applies to the complete boundaries, not just their endpoints or control vertices. The comparison uses evaluated surface boundaries in a common coordinate system. For subdivision, the comparison uses the limit boundary, not the control-cage edges. For animation, the declaration must remain valid throughout the rendered time interval.
 
-No equality of vertex counts, segment counts, knot vectors, or parameter values is required. Five trim curves can meet seventeen mesh edges, or one boundary curve, under the same declaration. The exporter preserves known source topology; it need not generate a sample-to-sample correspondence table.
+Matching uses can have different vertex counts, segment counts, knot vectors, and parameter values. Five trim curves can meet seventeen mesh edges, or one boundary curve, under the same declaration. The exporter preserves known source topology. It does not need to supply a table that pairs samples across the join.
 
-A numerical tolerance is a validity condition, not a search radius for discovering joins. Coincident boundaries with different IDs remain unrelated. The exact way to convey the source tolerance, if needed by a renderer, remains an open attribute-design decision. This draft does not invent a fixed epsilon or require a renderer to repair mismatched boundaries.
+The tolerance limits the permitted difference between declared boundaries. It does not tell the renderer to find other nearby boundaries. Boundaries with different IDs remain unrelated, even when they coincide. How to supply the source tolerance remains an open design question. This draft sets no fixed tolerance and does not require the renderer to repair mismatched boundaries.
 
 ### Start, Direction, and Correspondence
 
-For each weld ID, the exporter chooses one reference traversal of the undisplaced boundary. Every use follows that same traversal after its ranges, segment order, and `weld.reverse` values are applied. No reference-use handle or additional direction attribute is needed: agreement between the resulting traversals is the contract.
+For each weld ID, the exporter chooses a start point and direction along the boundary before displacement. Together, these define the *reference traversal*. Each use must follow that traversal after the renderer applies its ranges, segment order, and `weld.reverse` values. This rule needs no reference-use handle or additional direction attribute.
 
-For an open boundary, all uses start at the same endpoint and finish at the same endpoint, within tolerance. For a closed boundary, all uses start at the same anchor and travel in the same direction, exactly once around. A use must not backtrack or traverse the boundary multiple times. Degenerate boundaries without a defined traversal are outside this contract.
+For an open boundary, all uses start at the same endpoint and finish at the same endpoint, within tolerance. For a closed boundary, all uses start at the same anchor and travel in the same direction, exactly once around. A use must not backtrack or traverse the boundary multiple times. These rules do not cover degenerate boundaries with no defined traversal.
 
-The exporter expresses an opposite source traversal by reversing its selected segments and their order. For a single segment, only `weld.reverse = 1` is needed. Reversing a closed `trim-loop` reverses both curve order and curve traversal while retaining the loop's original start as the anchor.
+If the source chain runs in the opposite direction, the exporter reverses each selected segment and the segment order. For a single segment, only `weld.reverse = 1` is needed. For a closed `trim-loop`, reversal changes both curve order and curve direction. The loop keeps its original start point.
 
-Different closed-loop seams need an explicit selection adjustment. Segment order can rotate when the common anchor is already a segment endpoint. An anchor inside a curve can be expressed by two ranges of that curve: the tail first, then the head. This changes only the selection; it does not split the source geometry. A whole `trim-loop` selector is suitable when its stored start already matches the anchor.
+Closed loops with different start points need different selections. If the common start is a segment endpoint, the exporter can rotate the segment order. If the common start lies inside a curve, the exporter can select two ranges: the tail, then the head. This selection does not split the source geometry. A whole `trim-loop` selector works when its stored start already matches the common start.
 
-For example, a periodic curve with the desired anchor at local parameter `0.25` can use ranges `[0.25, 1]` and `[0, 0.25]`. Both segments select the same curve index, in that order. Their joint traversal starts and ends at the desired anchor.
+For example, suppose a periodic curve needs to start at local parameter `0.25`. The use selects ranges `[0.25, 1]` and `[0, 0.25]`. Both segments select the same curve index, in that order. Together, the two ranges start and end at the required point.
 
-Opposite *face-boundary* traversals in an oriented manifold shell remain valid source topology. The weld traversal is a separate convention used for correspondence. Reversal does not change face orientation or which surface region is retained. Requiring every pair of uses to be anti-parallel would also fail for a weld with more than two uses.
+In an oriented manifold shell, the two face boundaries can run in opposite directions. The weld traversal provides a separate direction for matching their positions. Reversal does not change face orientation or which surface region is retained. A weld with more than two uses cannot make every pair run in opposite directions.
 
-A renderer must not infer a closed use's direction from its coincident endpoints. A circle's midpoint also cannot distinguish the two senses. The exporter supplies direction through the reference-traversal contract, rather than through a geometric direction test.
+A renderer must not infer a closed use's direction from its coincident endpoints. A circle's midpoint also cannot distinguish the two directions. The exporter supplies the direction through the reference traversal.
 
-Common starts and directions do not imply common parameter speeds. For example, `A(t) = (t, 0, 0)` and `B(t) = ((t + t*t)/2, 0, 0)` traverse the same unit segment. At `t = 0.5`, their positions are `0.5` and `0.375`. Both declarations can be valid, but pairing samples by parameter or array index is invalid.
+Common starts and directions do not imply common parameter speeds. For example, consider these two curves over `0 <= t <= 1`:
 
-Consequently, a consumer can pair sample runs directly only after establishing corresponding sample locations. It still resolves correspondence and refinement when segmentation or parameterization differs. Equal normalized distance along a simple boundary is one possible correspondence convention; this draft does not require that algorithm.
+```text
+A(t) = (t, 0, 0)
+B(t) = ((t + t*t)/2, 0, 0)
+```
+
+Both curves follow the same unit segment. At `t = 0.5`, their positions are `0.5` and `0.375`. Both uses can be valid. A renderer cannot assume that equal parameters or array indices identify matching positions.
+
+The renderer can pair sample runs directly only when their sample locations match. It must handle differences in segment counts and parameter speeds. Equal fractions of the total boundary length can provide one way to match positions on a simple boundary. This draft does not require that algorithm.
 
 ### A Five-Curve Hole
 
@@ -76,12 +83,12 @@ trim-curves.hole = [1]
 
 The five curves connect head-to-tail. The last curve ends at the start of the first curve. Their individual orders, knots, ranges, and control points remain separate. The hole flag applies to the whole loop.
 
-There are two different topological declarations an exporter might need:
+An exporter might need either of these declarations:
 
 - Each curve meets a different neighboring face: assign five different weld IDs, one to each boundary use.
 - The entire loop meets one boundary on another surface: select the loop as one use and assign one weld ID.
 
-Trim segmentation therefore does not determine weld granularity.
+The number of trim curves does not determine the number of welds.
 
 ## Concrete Encoding
 
@@ -96,50 +103,82 @@ Each geometry node carries a local boundary-use table:
 - `weld.reverse`: one integer per segment; omitted means all zero. `1` reverses the selected segment. The resulting chain must follow the shared reference traversal.
 - `weld.range`: one _`float[2]`_ tuple per segment; omitted means the full selected segment.
 
-Segments are concatenated in use order. Counts partition those arrays; their sum equals the segment-array length. Each segment belongs to exactly one use. IDs belong to uses, not to segments.
+The segment arrays list each use's segments in order. The counts mark where each use ends. Their sum equals the number of entries in each segment array. Each segment belongs to exactly one use. IDs belong to uses, not to segments.
 
-The index tuple has a fixed width so exporters can build one table without node handles for every segment. Unused components are zero. All indices are zero-based.
+Each `weld.index` entry contains three integers. For `mesh-edge`, they mean `[face, perimeter, edge]`. The first two locate a vertex list; the third selects one edge in that list. All indices start at zero.
+
+The other selector types need only the first integer. Their remaining two integers are unused and must be zero. This proposed fixed-width layout lets every selector use the same array format. It is not a requirement of the ɴsɪ API.
 
 | `weld.kind` | `weld.index` | Selected boundary |
 | ----------- | ------------ | ----------------- |
 | `trim-loop` | `[loop, 0, 0]` | Complete loop, in its stored curve order |
 | `trim-curve` | `[curve, 0, 0]` | One curve in the flattened trim-curve arrays |
 | `nurbs-side` | `[side, 0, 0]` | Active-domain side: 0 = u-min, 1 = u-max, 2 = v-min, 3 = v-max |
-| `mesh-edge` | `[face, loop, edge]` | Directed local edge occurrence in a polygon or subdivision control mesh |
+| `mesh-edge` | `[face, perimeter, edge]` | One directed edge within a face perimeter |
 
-For meshes, loop 0 is the outer perimeter; later loops are polygon holes. The edge runs from a local vertex to the next vertex in that loop, with wraparound. For subdivision, the selection denotes the associated limit-surface boundary, not the straight control-cage segment. Each supported subdivision scheme must define that association. The same declaration applies to the draft `t-nurcc` control topology.
+### Mesh Edges and Perimeters
+
+A [polygon face can contain holes](../nodes/mesh.md). The mesh's `nholes` and `nvertices` arrays describe its outer perimeter and each hole perimeter. These perimeters are vertex lists, not NURBS trim curves.
+
+For a `mesh-edge` selector, the three indices mean:
+
+- `face`: the face within the mesh node.
+- `perimeter`: `0` for the outer perimeter, `1` for the first hole, and so on.
+- `edge`: the edge within the selected perimeter's vertex list.
+
+An edge runs from a vertex to the next vertex in the list. The last edge returns to the first vertex. Thus, a perimeter with vertices `[a, b, c, d]` has these edges:
+
+| Edge index | Start vertex | End vertex |
+| ---------- | ------------ | ---------- |
+| `0` | `a` | `b` |
+| `1` | `b` | `c` |
+| `2` | `c` | `d` |
+| `3` | `d` | `a` |
+
+Suppose face 7 is a square with one triangular hole. It has four outer edges and three hole edges:
+
+- `[7, 0, 2]` selects the third edge of the square's outer perimeter.
+- `[7, 1, 2]` selects the third edge of the triangular hole's perimeter.
+
+Both selectors select one edge. Neither selects a whole perimeter. For a face without holes, the perimeter index is always `0`. The `trim-loop` selector, by contrast, selects a complete NURBS trim loop.
+
+For subdivision, the selected control-cage edge identifies a limit-surface boundary. It does not select the straight control-cage segment. Each supported subdivision scheme must define this relationship. The same declaration applies to the draft `t-nurcc` control topology.
+
+### Directions and Partial Ranges
 
 A natural side follows increasing `v` for a u-side and increasing `u` for a v-side. A trim curve follows its stored parameter range. Reversal applies after selection.
 
-A range selects a subinterval before reversal. Its endpoints satisfy `0 <= start < end <= 1`, normalized over the curve's active range or the edge's local domain. A `trim-loop` selector accepts only its full range. Partial loops use ordered `trim-curve` selectors instead.
+A range selects a subinterval before reversal. Its endpoints satisfy `0 <= start < end <= 1`. These values are fractions of the curve's active parameter range or the edge's local parameter domain. A `trim-loop` selector accepts only its full range. Partial loops use ordered `trim-curve` selectors instead.
 
-The resulting *use* endpoints must coincide with the counterpart's endpoints in reference-traversal order. At a split between neighboring welds, the adjoining declarations must also select the same geometric junction. Internal segment breaks need no counterpart break when the other use has different granularity.
+Matching uses must have the same start and end positions, within tolerance, after reversal. Where neighboring welds meet, their declarations must select the same geometric junction, within tolerance. A segment break inside one use needs no matching break in another use.
 
-Local range numbers need not match across surfaces. For example, `[0, 0.5]` on `A(t)` above corresponds geometrically to `[0, (sqrt(5)-1)/2]` on `B(t)`. Both finish at position `0.5`. The exporter guarantees that geometric agreement; the renderer cannot assume equal range numbers or equal parameter increments.
+Local range numbers need not match across surfaces. For example, `[0, 0.5]` on `A(t)` above corresponds geometrically to `[0, (sqrt(5)-1)/2]` on `B(t)`. Both finish at position `0.5`. The exporter guarantees this geometric agreement. The renderer cannot assume equal range numbers or equal parameter increments.
 
-The selected segments must form one connected chain on one effective boundary component of the retained surface. A closed-loop selector is a complete use and cannot be mixed with additional segments in that use. Empty uses, invalid indices, and disconnected chains are invalid declarations.
+The selected segments must form one connected chain on one boundary of the surface that remains after trimming. A closed-loop selector is a complete use and cannot be mixed with additional segments in that use. Empty uses, invalid indices, and disconnected chains are invalid declarations.
 
 ### Retained Region and Mixed Selectors
 
-A weld belongs to the retained surface adjacent to the selected boundary. Trimming determines that region before the weld is considered. The declaration does not restore removed surface or infer which material exists from traversal direction.
+A weld belongs to the retained surface beside the selected boundary. Trimming determines that region before the weld is considered. The declaration does not restore removed surface. Traversal direction does not determine which region remains.
 
-With the draft's `trim-curves.hole = 1`, the use belongs to the surface outside that hole. With `hole = 0`, it belongs to the retained region inside the outer or island loop. Nested loops and domain clipping still determine the final retained region.
+With the draft's `trim-curves.hole = 1`, the use belongs to the surface outside that hole. With `hole = 0`, the use belongs to the retained region inside the outer or island loop. Nested loops and domain clipping still determine the final retained region.
 
-The documented legacy `trimcurves.inside = 0` similarly selects the retained region outside the loops; `inside = 1` selects the inside. A weld on such a loop therefore has a defined incident surface in either case. These opposite trim settings do not require opposite weld-reference directions. The `inside` and `hole` values have opposite meanings and are not interchangeable.
+The legacy attribute `trimcurves.inside = 0` keeps the region outside the loops. A value of `1` keeps the region inside. In either case, the weld belongs to the surface that remains beside the loop. These trim settings do not require opposite weld directions. The `inside` and `hole` values have opposite meanings and are not interchangeable.
 
-A selected portion must actually separate retained surface from removed surface or from the exterior of the active domain. A curve that does not bound the final retained region cannot declare a boundary use there. If only part survives trimming, the declaration selects only that part.
+A selected portion must separate retained surface from removed surface or from the area outside the active domain. A curve that does not bound the final retained region cannot declare a boundary use there. If only part survives trimming, the declaration selects only that part.
 
-A `nurbs-side` selector is valid wherever that domain side bounds retained surface. This includes a patch whose only trim loop is an interior hole: its four outer sides remain boundaries. A trim curve need not duplicate those sides.
+A `nurbs-side` selector is valid wherever that domain side bounds retained surface. For example, a patch with one interior hole still has four outer boundary sides. A trim curve need not duplicate those sides.
 
-Mixed `nurbs-side` and `trim-curve` segments are permitted only when they are consecutive portions of one effective boundary component. Their endpoints must be adjacent in surface boundary topology, and the chain must follow that component without a jump or repeated portion. An open use need not close; a closed use must return to its start on the same component. Separate inner and outer loops cannot be concatenated merely because their 3D positions touch.
+A use can mix `nurbs-side` and `trim-curve` segments only when they follow consecutive portions of one boundary after trimming. The surface topology must connect their endpoints. The chain must follow the boundary without a jump or repeated portion. An open use need not close. A closed use must return to its start on the same boundary. Separate inner and outer loops cannot form one use merely because their 3D positions touch.
 
-For example, clipping a trim region against the active domain can produce a boundary composed of trim arcs and domain-side portions. Such consecutive portions may form one use. If a trim curve coincides with a domain side, either selector may describe that portion, but the use must not include both copies.
+For example, a trim region can extend beyond the active domain. After clipping, its boundary can contain both trim arcs and domain-side portions. Consecutive portions can form one use. If a trim curve coincides with a domain side, either selector can describe that portion. The use must not include both copies.
 
 A renderer that does not support mixed uses must report that limitation. It must not silently interpret them as separate complete uses or claim that the requested join was preserved.
 
 ### The Five-to-One Join
 
-Suppose `patch` already has the five-curve hole above. Suppose `subdiv` has a boundary edge that describes the same closed locus. This illustrative stream fragment contains the entire additional declaration:
+Suppose `patch` has the five-curve hole above. Suppose `subdiv` has one boundary edge whose limit boundary follows the same closed path. The exporter chooses ID `12` for this join. The number is arbitrary; it is not a curve or vertex index.
+
+The exporter selects trim loop 0 on `patch` and edge 2 of the outer perimeter on subdivision face 7. Those indices identify existing geometry in this example. This stream fragment adds the weld declaration:
 
 ```text
 Create "solid_welds" "weld"
@@ -157,9 +196,9 @@ SetAttribute "subdiv"
     "weld.index" "int[3]" 1 [7 0 2]
 ```
 
-This declares that trim loop 0 joins edge 2 of loop 0 on subdivision face 7. The example assumes the same closed locus, start, and traversal direction on both selectors. If one selector runs oppositely, its declaration also supplies `weld.reverse = 1`. An ordinary open edge cannot join an entire closed hole. If several subdivision edges form the matching ring, they form one use instead.
+Both uses have ID `12` and connect to `solid_welds`, so they declare one join. The example assumes that both selections follow the same closed path, start, and direction. If one selector runs oppositely, its declaration also supplies `weld.reverse = 1`. An ordinary open edge cannot join an entire closed hole. If several subdivision edges form the matching ring, they form one use instead.
 
-The five trim curves could also be listed explicitly. The following replaces the patch's three attributes above and selects the same chain:
+The exporter can also list the five trim curves separately. This alternative selects the same chain and keeps ID `12`:
 
 ```text
 SetAttribute "patch"
@@ -169,11 +208,11 @@ SetAttribute "patch"
     "weld.index" "int[3]" 5 [0 0 0  1 0 0  2 0 0  3 0 0  4 0 0]
 ```
 
-A chain of mesh edges uses the same count and concatenation mechanism. Mixed selectors follow the retained-boundary rules above. The renderer sees one use on each side regardless of segmentation.
+A chain of mesh edges uses the same counts and array order. Mixed selectors follow the retained-region rules above. Each side declares one use, regardless of its segment count.
 
 ### Several Independent Joins
 
-The same patch can declare another boundary without another node:
+The exporter now chooses ID `13` for a second join on the patch's u-max side. It keeps ID `12` for the hole. Both joins use the existing `solid_welds` node:
 
 ```text
 SetAttribute "patch"
@@ -195,11 +234,11 @@ The [NURBS stitching attributes](nurbs-draft.md#stitching) remain a compact shor
 - The paired orientation value becomes `weld.reverse`, aligning that selector with the shared reference traversal.
 - `-1` means no use is declared for that entry.
 
-These arrays need no separate matching rules. They lower to the boundary-use table described above. A surface supplies either these shorthand arrays or the general table, never both. An exporter can use the general table everywhere to avoid maintaining two encodings.
+These arrays follow the same matching rules. A renderer can express them as entries in the general use table above. A surface supplies either these shorthand arrays or the general table, never both. An exporter can use the general table everywhere to avoid maintaining two encodings.
 
 Assigning one shorthand ID to five consecutive curves would declare five complete uses of the same boundary. It would not make one five-segment use. A `trim-loop` selector or explicit segment count expresses that grouping.
 
-With [separate trim nodes](trim-curves-nodes.md), a general table can reside on each trim node. Its trim indices refer to that node's arrays. It obtains the weld namespace through its single consuming surface; natural sides stay on the surface. A trim node carrying weld declarations has one consuming surface, to keep its use unambiguous. Trim packaging does not otherwise change the identity model.
+With [separate trim nodes](trim-curves-nodes.md), a general table can reside on each trim node. Its trim indices refer to that node's arrays. The table uses the weld namespace of the surface connected to that trim node. Natural-side declarations stay on the surface. A trim node with weld declarations connects to exactly one surface. The choice of trim storage does not otherwise change weld identity.
 
 ## Alternatives and Trade-offs
 
@@ -212,32 +251,32 @@ For `E` shared boundaries and `U` uses, these counts exclude existing geometry a
 | One `weld` per boundary plus explicit `weld-use` nodes | `E + U` | Independent graph edits; each use has an explicit handle | More nodes, handles, connections, and lifetime bookkeeping |
 | One `weld` per boundary with direct geometry connections | `E` | Fewer nodes than explicit uses | Still needs selectors and grouping on connections or attribute slots |
 
-For 10,000 boundaries with two uses each, the explicit-use approach adds 30,000 nodes. The recommended encoding adds one namespace node for that solid. Both still describe 20,000 uses; batching removes node overhead, not the topology data. No render-time performance claim follows from these counts.
+For 10,000 boundaries with two uses each, the explicit-use approach adds 30,000 nodes. The recommended encoding adds one namespace node for that solid. Both encodings still describe 20,000 uses. Arrays reduce the node count but still carry the topology data. These counts do not establish a rendering performance difference.
 
-A [shared 3D edge curve](trim-curves-edges.md) is an independent extension. It could accompany either identity encoding. It is not required to preserve belonging, and it does not select the local boundaries by itself.
+A [shared 3D edge curve](trim-curves-edges.md) is an independent extension. It could accompany either identity encoding. It does not identify the local boundary uses by itself.
 
 ## Scope, Edits, and Remaining Decisions
 
-One geometry node participates in one weld namespace in this recommendation. A mesh containing several solids can use one namespace with distinct IDs. This avoids splitting geometry solely to allocate scopes. Combining independently authored namespaces needs ID remapping, just as combining indexed geometry needs index remapping.
+One geometry node participates in one weld namespace in this recommendation. A mesh containing several solids can use one namespace with distinct IDs. The exporter does not need to split that mesh into separate nodes. To combine namespaces from different sources, the exporter must change IDs that conflict. Combining indexed geometry similarly requires changes to conflicting indices.
 
-Node handles identify definitions; rendered occurrences need an additional scope rule. Repeating an assembly must repeat its internal joins without welding separate instances together. The exact attachment of that assembly scope remains an implementation discussion. Ambiguous instances must not silently weld to every occurrence of a connected geometry node.
+Node handles identify definitions. Instances of those definitions need an additional scope rule. Repeating an assembly must repeat its internal joins without welding separate instances together. How to attach that scope to an assembly remains an open design question. If the instance scope is ambiguous, the renderer must not join every instance of the connected geometry.
 
-Topology edits that change indices must update the use tables. A table's arrays form one coherent declaration at a render synchronization point. Removing the `weld` connection removes its membership; the remaining IDs do not become scene-global. A renderer that ignores these declarations cannot claim to preserve the requested joins.
+Topology edits that change indices must update the use tables. At each render synchronization point, the table's arrays must describe one consistent set of uses. Removing the `weld` connection removes the geometry from that namespace. Its remaining IDs do not become scene-global. A renderer that ignores these declarations cannot claim to preserve the requested joins.
 
 ## Implementation Feedback and Coverage
 
-The first implementer reported results from `nsi-intermediate` and `nsi-tessellate` in the [ɴsɪ repository](https://github.com/virtualritz/nsi). The former resolves declarations; the latter welds NURBS nodes. Reported fixtures include io1-ec-214 with 17 faces and 35 edges, and boxy with 80 faces and 124 edges. These measurements have not been independently reproduced for this documentation change.
+The first implementer reported results from `nsi-intermediate` and `nsi-tessellate` in the [ɴsɪ repository](https://github.com/virtualritz/nsi). `nsi-intermediate` resolves declarations. `nsi-tessellate` welds NURBS nodes. The reported fixtures include io1-ec-214, with 17 faces and 35 edges, and boxy, with 80 faces and 124 edges. We did not independently reproduce these measurements during this documentation change.
 
 | Reported finding | Consequence for this revision |
 | ---------------- | ----------------------------- |
 | Endpoint-only direction matching folded closed cylinder bands, producing areas 3.2 and 7.8 times the expected values. Quarter-point comparisons distinguished direction in the measured cases. | All uses must share a start and traversal direction after reversal. This removes the need to infer direction from endpoints. |
 | Measured manifold uses had opposite source traversals and coincident starts. | Exporters align these traversals with `weld.reverse`. The shared traversal also supports more than two uses; it does not imply equal parameter speeds. |
-| The implementation rejected outside-loop trims because the incident surface was unspecified. | A weld belongs to the retained region adjacent to its selected boundary. Hole and outside-loop settings are valid and do not change weld traversal. |
-| Mixed side/trim uses were unsupported and did not occur in the measured exports. | Mixed selections must follow consecutive portions of one effective retained boundary component. Separate loops and duplicate portions remain invalid. |
+| The implementation rejected outside-loop trims because the draft did not specify which surface region the weld joined. | A weld belongs to the retained region beside its selected boundary. Hole and outside-loop settings are valid and do not change weld traversal. |
+| Mixed side/trim uses were unsupported and did not occur in the measured exports. | Mixed selections must follow consecutive portions of one boundary of the retained surface. Separate loops and duplicate portions remain invalid. |
 | Of io1-ec-214's 70 segments, 48 were natural sides, including partial sides. Ranges worked where split points agreed. | Corresponding use endpoints and adjoining weld junctions must agree geometrically. Local range numbers need not match. |
 | All uses across five STEP fixtures had one segment. Circular edges were single rational curves with doubled knots. | The default segment count stays one. Ordered chains remain available for differently segmented exports. |
 | Twelve of io1-ec-214's 17 faces were cylinder bands with self-seams. Open declarations also served as useful diagnostics. | Two uses on the same geometry remain distinct uses of one weld. A lone use joins nothing and can help diagnose incomplete export. |
 
-The report supplies no validation of mesh-edge selectors, multi-segment correspondence, or differing parameter speeds. Those capabilities remain part of the proposal, with implementation validation outstanding. Open declarations alone do not distinguish an intentional open boundary from missing export data.
+The report does not test mesh-edge selectors, chains with several segments, or different parameter speeds. The proposal supports those cases, but implementation tests are still needed. An open declaration alone cannot distinguish an intentional open boundary from missing export data.
 
-The main remaining decisions are occurrence scope, tolerance transport, and the exact attribute encoding. One namespace contains many identities, and one use can contain many ordered segments. Displacement, tessellation, and geometric correspondence remain renderer decisions.
+The remaining decisions concern instance scope, how to supply tolerances, and the exact attribute encoding. One namespace contains many identities, and one use can contain many ordered segments. Displacement, tessellation, and geometric correspondence remain renderer decisions.
